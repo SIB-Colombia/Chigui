@@ -17,6 +17,7 @@
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
     "cors":"~2.7.1",
-    "nodemon": "latest"
+    "nodemon": "latest",
+    "mongoose-schema-extend" : "latest"
   }
 }
