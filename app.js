@@ -13,6 +13,7 @@ var records = require('./routes/getFicha');
 var post_records = require('./routes/postFicha');
 var list_records = require('./routes/getList');
 var update_records = require('./routes/updateFicha');
+var search = require('./routes/searchFicha');
 
 var app = express();
 app.use(compress());
@@ -30,14 +31,27 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 
 
+
+
+
+
+/*
+
+var corsOption ={
+  origin: '192.168.205.10:*'
+} 
+*/
+
+
+
 app.use(cors());
 
 //app.use('/', routes);
-//app.use('/users', users);
-app.use('/get-record', records);
+app.use('/get-record', cors(), records);
 app.use('/post-record', cors(), post_records);
-app.use('/get-list', list_records);
+app.use('/get-list', cors(), list_records);
 app.use('/update-record', cors(), update_records);
+app.use('/search', cors(), search);
 
 
 
@@ -47,29 +61,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-/*
-app.use(function (req, res, next) {
-
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://192.168.205.27:7000');
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    // Pass to next layer of middleware
-    next();
-});
-*/
-
-
 
 
 // error handlers

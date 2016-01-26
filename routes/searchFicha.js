@@ -8,7 +8,7 @@ Object.assign = require('object-assign');
 
 router.get('/taxons/:ficha_tax', function(req, res){
   console.log("param: "+req.params.ficha_tax);
-  Record.find({'taxonRecordName.scientificName.simple':req.params.ficha_tax}, function(err, records){
+  Record.find({'taxonRecordName.scientificName.simple':req.params.ficha_tax}, 'taxonRecordName associatedParty', function(err, records){
       if(err)
         res.send(err);
       res.json(records);
@@ -17,7 +17,7 @@ router.get('/taxons/:ficha_tax', function(req, res){
 
 router.get('/taxon/:ficha_tax', function(req, res){
   console.log(req.params.ficha_tax);
-  Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_tax, "$options": "i" } }, function(err, records){
+  Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_tax, "$options": "i" } }, 'taxonRecordName associatedParty', function(err, records){
       if(err)
         res.send(err);
       res.json(records);
@@ -25,17 +25,28 @@ router.get('/taxon/:ficha_tax', function(req, res){
 });
 
 router.get('/author/:ficha_aut', function(req, res){
-  var name = req.params.ficha_aut.split(" ");
-  Record.find({'associatedParty.firstName':name[0],'associatedParty.lastName':name[1]}, function(err, records){
-      if(err)
-        res.send(err);
-      res.json(records);
-    });
-
-  var queryFullName=Record.find({'associatedParty.firstName':name[0],'associatedParty.lastName':name[1]});
-
-  var queryFirstName =Record.find({'associatedParty.firstName':name[0],'associatedParty.lastName':name[1]});
-});
+  var response={};
+  var name = req.params.ficha_aut;
+  name = name.replace(/\\"/g, '"');
+  name = name.split(" ");
+  	if(name.length!=0){
+  		if(name.length>=2){
+  			Record.find({'associatedParty.firstName':{ "$regex": name[0], "$options": "i" },'associatedParty.lastName':{ "$regex": name[1], "$options": "i" }}, 'taxonRecordName associatedParty', function(err, records){
+   		   		if(err)
+    		    	res.send(err);
+    		  	res.json(records);
+   		 	});
+  		}else{
+  			Record.find({'associatedParty.lastName':{ "$regex": req.params.ficha_aut, "$options": "i" }}, 'taxonRecordName associatedParty', function(err, records){
+   		   		if(err)
+    		    	res.send(err);
+    		  	res.json(records);
+   		 	});
+  		}
+  	}else{
+  		res.json({ message: 'No info to search'});
+  	}
+  });
 
 /*
 

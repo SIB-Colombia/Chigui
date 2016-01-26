@@ -10,7 +10,6 @@ var cors = require
 router.post('/', function(req, res) {
   var test=req.body.hierarchy;
   var fic= new Record(req.body);
-  console.log("Info: "+fic);
   fic.save(function(err) {
             if (err)
                 res.send(err);

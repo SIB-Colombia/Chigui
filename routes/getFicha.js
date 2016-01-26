@@ -33,22 +33,6 @@ router.get('/:ficha_id', function(req, res) {
 });
 
 
-router.get('/pagination/:page/:limit',function(req, res){
-  var response={};
-  Record.paginate({}, { page: req.params.page, limit: req.params.limit }, function(err, data) {
-    if(err){
-        response = {"error" : true,"message" : "Error fetching data"};
-      }else{
-        console.log(data.length);
-        response = data;
-      }
-      res.json(response);
-  });
-});
-
-
-
-
 
 module.exports = router;
 
