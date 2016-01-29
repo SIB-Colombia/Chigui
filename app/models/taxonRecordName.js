@@ -2,11 +2,14 @@ var mongoose = require('mongoose');
 var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
+var rec_object = require('./recordVersion.js');
 var Element = require('mongoose').model('Element').schema;
+var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 
 
 var TaxonRecordNameVersion = new Schema({
+	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
 	created : {type: Date, default: Date.now},
 	id_user : String,
 	version : { type: Number, min: 0 },

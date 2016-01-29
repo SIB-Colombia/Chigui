@@ -23,8 +23,6 @@ router.post('/post', function(req, res) {
   trn.trn_ver=trnv._id;
   trn = new taxon_objects.TaxonRecordName(trn);
 
-  console.log("Num ancy: "+anc_temp.length);
-
   for(i=0;i<anc_temp.length;i++){
   	anc_temp[i]._id=mongoose.Types.ObjectId();
   	anc_temp[i].element=trn._id;

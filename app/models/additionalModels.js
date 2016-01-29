@@ -7,6 +7,12 @@ var Element = new Schema ({
 	ancillaryData : [{type: Schema.Types.ObjectId, ref: 'AncillaryData'}]
 });
 
+var RecordVersion = new Schema({
+	name : String,
+	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
+	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }]
+}, { strict: false, collection: 'RecordVersion' });
+
 
 var Reference = new Schema ({
 	profile_id : String,
@@ -37,16 +43,16 @@ var Reference = new Schema ({
 	doi : String,
 	isbn : String,
 	issn : String,
-	link : String,
-	taxonRecordId : String
-});
+	link : String
+	//taxonRecordId : String
+},{ collection: 'Reference' });
 
 
 var AncillaryData = new Schema({
 	dataType : String,
 	mimeType : String,
 	element : { type: Schema.Types.ObjectId, ref: 'Element' },
-	reference : [Reference]
+	reference : [{ type: Schema.Types.ObjectId, ref: 'Reference' }]
 },{ collection: 'ancillaryData' });
 
 
@@ -55,6 +61,8 @@ var AncillaryData = new Schema({
 
 module.exports = {
 	             	Element : mongoose.model('Element', Element),
-	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData )
+	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData ),
+	             	RecordVersion : mongoose.model('RecordVersion', RecordVersion ),
+	             	Reference : mongoose.model('Reference', Reference )
 	             };
 	             

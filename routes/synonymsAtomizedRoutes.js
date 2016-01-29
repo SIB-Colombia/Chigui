@@ -11,11 +11,8 @@ var cors = require;
 
 router.post('/post', function(req, res) {
   //var temp= req.body.taxonRecordName;
-  console.log("OBJECTS: "+JSON.stringify(synonym_objects));
   var syav = req.body; 
-  console.log("SYSAT: "+req.body.synonymsAtomized);
   var sya= req.body.synonymsAtomized; 
-  console.log("SYA: "+sya);
   var ancd =sya.ancillaryData; //anc_temp
   delete syav.synonymsAtomized;
   delete sya.ancillaryData;
@@ -26,14 +23,16 @@ router.post('/post', function(req, res) {
   sya.trn_ver=sya._id;
   sya = new synonym_objects.SynonymsAtomized(sya);
 
+  var references = [];
+
   for(i=0;i<ancd.length;i++){
   	ancd[i]._id=mongoose.Types.ObjectId();
   	ancd[i].element=sya._id;
+    references.concat(ancd[i].reference);
   }
 
 
   syav.save(function(err) {
-    console.log("LEN: "+ancd.length);
             if (err)
                 res.send(err);
             sya.save(function(err) {
@@ -41,9 +40,13 @@ router.post('/post', function(req, res) {
                 	res.send(err);
             	add_objects.AncillaryData.create(ancd, function(err) {
             		if (err)
-                		res.send(err);
-                	res.json({ message: 'Record created!' });
-            		console.log("Record created!");
+                  res.send(err);
+                add_objects.RecordVersion.findByIdAndUpdate( syav.record, { $push: { "synonymsAtomizedVersion": syav._id} },{safe: true, upsert: true},function(err, model) {
+                  if (err)
+                    res.send(err);
+                  res.json({ message: 'Record created!' });
+                  console.log("Record created!");
+                });
             	});
             });  
         });

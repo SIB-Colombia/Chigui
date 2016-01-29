@@ -15,6 +15,7 @@ var list_records = require('./routes/getList');
 var update_records = require('./routes/updateFicha');
 var tax_reco = require('./routes/taxonRecordNameRoutes');
 var syn_ato = require('./routes/synonymsAtomizedRoutes');
+var record = require('./routes/recordRoutes');
 //var get_test = require();
 
 var app = express();
@@ -43,6 +44,7 @@ app.use('/get-list', list_records);
 app.use('/update-record', cors(), update_records);
 app.use('/test', tax_reco);
 app.use('/syn_ato', syn_ato);
+app.use('/record', record);
 
 
 
