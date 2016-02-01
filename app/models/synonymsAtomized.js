@@ -14,7 +14,19 @@ var SynonymsAtomizedVersion = new Schema({
 },{ collection: 'SynonymsAtomizedVersion' });
 
 var scientificName = new Schema({
-	attributes : { id : Number, isAnamorphic: Boolean, nomenclaturalCode: String }
+	attributes : { id : Number, isAnamorphic: Boolean, nomenclaturalCode: String },
+	simple : String,
+	rank : String,
+	canonicalName : { simple : String, uninomial : String, genus : { ref : String, linkType : String }, epithet :{ infragenericEpithet : String, specificEpithet : String, infraspecificEpithet : String }},
+	canonicalAuthorship : { simple : String, authorship : { simple : String, year : [{ type: Date, default: Date.now }], authors : [String] }},
+	specialAuthorship :{ basionymAuthorship : { simple : String, year : [{ type: Date, default: Date.now }], authors : [String], combinationAuthorship : [String]}},
+	publishedln : { identifier : String, datatype : String, source : String, simple : String },
+	year : { type: Date, default: Date.now },
+	microReference : String,
+	typificacion : { simple : String, typeVoucherEntity : { voucherReference : [String], lectotypePublicationVoucher : [String], lectotypeMicroReferenceVoucher : [String], typeOfType : String }},
+	typeNameEntity : { nameReference : { identifier : String, datatype : String, source : String }, lectotypePublication : { identifier : String , datatype : String, source : String }, lectotypeMicroReference : { identifier : String , datatype : String, source : String }},
+	spellingCorrentionOf : [String],
+	basionym : { ruleConsidered : String,note : String, reletedName :{ identifier : String, datatype : String, source : String }, publishedln : { identifier : String, datatype : String, source : String }, microReference : String },
 });
 
 

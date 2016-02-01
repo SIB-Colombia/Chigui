@@ -47,10 +47,40 @@ var Reference = new Schema ({
 	//taxonRecordId : String
 },{ collection: 'Reference' });
 
+var Agent = new Schema({
+	firstName: String,
+	lastName: String,
+	organisation: String,
+	position: String,
+	address: String,
+	phone: String,
+	email: String,
+	role: String,
+	homepage: String
+});
+
 
 var AncillaryData = new Schema({
+	//identifier : String,
 	dataType : String,
 	mimeType : String,
+	agent: [Agent],
+	created : {type: Date, default: Date.now},
+	modified : {type: Date, default: Date.now},
+	license : String,
+	rights  : String,
+	rigthsHolder : String,
+	bibliographicCitation : String,
+	audience: [String],
+	source : String,
+	subject : [String],
+	description : String,
+	mediaURL : [String],
+	thumbnailURL : String,
+	location : String,
+	geoPoint : String,
+	additionalInformation : String,
+	dataObject: String,
 	element : { type: Schema.Types.ObjectId, ref: 'Element' },
 	reference : [{ type: Schema.Types.ObjectId, ref: 'Reference' }]
 },{ collection: 'ancillaryData' });
