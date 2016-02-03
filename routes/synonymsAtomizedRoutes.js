@@ -11,16 +11,22 @@ var cors = require;
 
 router.post('/post', function(req, res) {
   //var temp= req.body.taxonRecordName;
-  var syav = req.body; 
-  var sya= req.body.synonymsAtomized; 
+  var synonyms_atomized_version = req.body; 
+  var synonyms_atomized= req.body.synonymsAtomized; 
+  for(k=0;k<synonyms_atomized.length;k++){
+    var ancd_element = [];
+    var ancd_scientificName = [];
+    ancd_element.concat(synonyms_atomized[k].ancillaryData);
+    //ancd_scientificName.concat(synonyms_atomized[k].scientificName.ancillaryData);
+  }
   var ancd =sya.ancillaryData; //anc_temp
   var ancd_scientificName =sya.scientificName.ancillaryData; //anc_temp
-  delete syav.synonymsAtomized;
+  delete synonyms_atomized_version.synonymsAtomized;
   delete sya.ancillaryData;
   delete sya.scientificName.ancillaryData
-  syav._id=mongoose.Types.ObjectId();
-  console.log(syav._id);
-  syav= new synonym_objects.SynonymsAtomizedVersion(syav);
+  synonyms_atomized_version._id=mongoose.Types.ObjectId();
+  console.log(synonyms_atomized_version._id);
+  synonyms_atomized_version= new synonym_objects.SynonymsAtomizedVersion(synonyms_atomized_version);
   sya._id=mongoose.Types.ObjectId();
   sya.trn_ver=sya._id;
   sya = new synonym_objects.SynonymsAtomized(sya);
@@ -28,7 +34,7 @@ router.post('/post', function(req, res) {
   var references = [];
 
   //References for the element
-  for(i=0;i<ancd.length;i++){
+  for(i=0;i<ancd_element.length;i++){
   	ancd[i]._id=mongoose.Types.ObjectId();
   	ancd[i].element=sya._id;
     references.concat(ancd[i].reference);
@@ -41,7 +47,7 @@ router.post('/post', function(req, res) {
   }
 
 
-  syav.save(function(err) {
+  synonyms_atomized_version.save(function(err) {
             if (err)
                 res.send(err);
             sya.save(function(err) {
