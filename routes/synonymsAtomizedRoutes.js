@@ -14,8 +14,10 @@ router.post('/post', function(req, res) {
   var syav = req.body; 
   var sya= req.body.synonymsAtomized; 
   var ancd =sya.ancillaryData; //anc_temp
+  var ancd_scientificName =sya.scientificName.ancillaryData; //anc_temp
   delete syav.synonymsAtomized;
   delete sya.ancillaryData;
+  delete sya.scientificName.ancillaryData
   syav._id=mongoose.Types.ObjectId();
   console.log(syav._id);
   syav= new synonym_objects.SynonymsAtomizedVersion(syav);
@@ -25,10 +27,17 @@ router.post('/post', function(req, res) {
 
   var references = [];
 
+  //References for the element
   for(i=0;i<ancd.length;i++){
   	ancd[i]._id=mongoose.Types.ObjectId();
   	ancd[i].element=sya._id;
     references.concat(ancd[i].reference);
+  }
+
+  for(j=0;j<ancd_scientificName.length;j++){
+    ancd_scientificName[i].id=mongoose.Types.ObjectId();
+    ancd_scientificName[i].element=sya.scientificName_id;
+    references.concat(ancd_scientificName[i].reference);
   }
 
 

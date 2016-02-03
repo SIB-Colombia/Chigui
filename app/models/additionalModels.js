@@ -2,18 +2,6 @@ var mongoose = require('mongoose');
 var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 
-
-var Element = new Schema ({
-	ancillaryData : [{type: Schema.Types.ObjectId, ref: 'AncillaryData'}]
-});
-
-var RecordVersion = new Schema({
-	name : String,
-	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
-	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }]
-}, { strict: false, collection: 'RecordVersion' });
-
-
 var Reference = new Schema ({
 	profile_id : String,
 	group_id : String,
@@ -43,8 +31,8 @@ var Reference = new Schema ({
 	doi : String,
 	isbn : String,
 	issn : String,
-	link : String
-	//taxonRecordId : String
+	link : String,
+	RecordId : String
 },{ collection: 'Reference' });
 
 var Agent = new Schema({
@@ -58,7 +46,6 @@ var Agent = new Schema({
 	role: String,
 	homepage: String
 });
-
 
 var AncillaryData = new Schema({
 	//identifier : String,
@@ -84,6 +71,26 @@ var AncillaryData = new Schema({
 	element : { type: Schema.Types.ObjectId, ref: 'Element' },
 	reference : [{ type: Schema.Types.ObjectId, ref: 'Reference' }]
 },{ collection: 'ancillaryData' });
+
+
+
+var Element = new Schema ({
+	ancillaryData : [{type: Schema.Types.ObjectId, ref: 'AncillaryData'}]
+});
+
+var RecordVersion = new Schema({
+	name : String,
+	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
+	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }]
+}, { strict: false, collection: 'RecordVersion' });
+
+
+
+
+
+
+
+
 
 
 //module.exports = mongoose.model('Element', Element);
