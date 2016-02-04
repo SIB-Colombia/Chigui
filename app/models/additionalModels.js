@@ -32,7 +32,9 @@ var Reference = new Schema ({
 	isbn : String,
 	issn : String,
 	link : String,
-	RecordId : String
+	recordId : String,
+	ancillaryData : { type: Schema.Types.ObjectId, ref: 'AncillaryData' },
+	element : { type: Schema.Types.ObjectId, ref: 'Element' }
 },{ collection: 'Reference' });
 
 var Agent = new Schema({
@@ -68,14 +70,18 @@ var AncillaryData = new Schema({
 	geoPoint : String,
 	additionalInformation : String,
 	dataObject: String,
-	element : { type: Schema.Types.ObjectId, ref: 'Element' },
+	//element : { type: Schema.Types.ObjectId, ref: 'Element' },
 	reference : [{ type: Schema.Types.ObjectId, ref: 'Reference' }]
 },{ collection: 'ancillaryData' });
 
-
-
+/*
 var Element = new Schema ({
 	ancillaryData : [{type: Schema.Types.ObjectId, ref: 'AncillaryData'}]
+});
+*/
+
+var Element = new Schema ({
+	ancillaryData : [AncillaryData]
 });
 
 var RecordVersion = new Schema({
