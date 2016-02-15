@@ -13,9 +13,9 @@ var records = require('./routes/getFicha');
 var post_records = require('./routes/postFicha');
 var list_records = require('./routes/getList');
 var update_records = require('./routes/updateFicha');
-var tax_reco = require('./routes/taxonRecordNameRoutes');
-var syn_ato = require('./routes/synonymsAtomizedRoutesTest');
+//var tax_reco = require('./routes/taxonRecordNameRoutes');
 var record = require('./routes/recordRoutes');
+var base_elements = require('./routes/baseElementsRoutes');
 //var get_test = require();
 
 var app = express();
@@ -42,9 +42,9 @@ app.use('/get-record', records);
 app.use('/post-record', cors(), post_records);
 app.use('/get-list', list_records);
 app.use('/update-record', cors(), update_records);
-app.use('/test', tax_reco);
-app.use('/syn_ato', syn_ato);
+//app.use('/test', tax_reco);
 app.use('/record', record);
+app.use('/base-elements', base_elements);
 
 
 

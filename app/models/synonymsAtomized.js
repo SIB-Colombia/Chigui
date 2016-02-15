@@ -35,7 +35,6 @@ var scientificName = Element.extend ({
 	publicationStatus : { ruleConsidered : String, note : String, reletedName : { identifier : String, datatype : String, source : String }, publishedln : { identifier : String, datatype : String, source : String }, microReference : String },
 	providerLink : String,
 	providerSpecificData : { anyOne : [String], anyTwo : String }
-	//ancillaryData : [{type: Schema.Types.ObjectId, ref: 'AncillaryData'}]
 });
 
 
