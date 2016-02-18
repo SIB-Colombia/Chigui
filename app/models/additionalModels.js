@@ -90,12 +90,18 @@ var RecordVersion = new Schema({
 	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }]
 }, { strict: false, collection: 'RecordVersion' });
 
-
-
-
-
-
-
+var MeasurementOrFact = new Schema({
+	measurementID : String,
+	measurementType : String,
+	measurementValue : String,
+	measurementAccuracy : String,
+	measurementUnit : String,
+	measurementDetermineDate : String,
+	measurementDetermineBy: [String],
+	measurementMethod : String,
+	measurementRemarks : String,
+	realtedTo : String
+},{ collection : 'measurementOrFact'});
 
 
 
@@ -106,6 +112,7 @@ module.exports = {
 	             	Element : mongoose.model('Element', Element),
 	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData ),
 	             	RecordVersion : mongoose.model('RecordVersion', RecordVersion ),
-	             	Reference : mongoose.model('Reference', Reference )
+	             	Reference : mongoose.model('Reference', Reference ),
+	             	MeasurementOrFact : mongoose.model('MeasurementOrFact', MeasurementOrFact)
 	             };
 	             

@@ -15,6 +15,7 @@ var BaseElementsVersion = new Schema({
 },{ collection: 'BaseElementsVersion' });
 
 var BaseElements = Element.extend({
+	taxonRecordID: String,
 	taxonConceptID: String,
 	globalUniqueIdentifier: String,
 	abstractBaseElement: String,
