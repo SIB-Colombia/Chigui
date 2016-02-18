@@ -84,6 +84,13 @@ var Element = new Schema ({
 	ancillaryData : [AncillaryData]
 });
 
+var ElementVersion = new Schema ({
+	id_record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
+	created : {type: Date, default: Date.now},
+	id_user : String,
+	version : { type: Number, min: 0 }
+});
+
 var RecordVersion = new Schema({
 	name : String,
 	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
