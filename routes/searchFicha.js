@@ -7,7 +7,6 @@ var Record = require('../app/models/record.js');
 Object.assign = require('object-assign');
 
 router.get('/taxons/:ficha_tax', function(req, res){
-  console.log("param: "+req.params.ficha_tax);
   Record.find({'taxonRecordName.scientificName.simple':req.params.ficha_tax}, 'taxonRecordName associatedParty', function(err, records){
       if(err)
         res.send(err);
@@ -16,7 +15,6 @@ router.get('/taxons/:ficha_tax', function(req, res){
 });
 
 router.get('/taxon/:ficha_tax', function(req, res){
-  console.log(req.params.ficha_tax);
   Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_tax, "$options": "i" } }, 'taxonRecordName associatedParty', function(err, records){
       if(err)
         res.send(err);
@@ -44,9 +42,45 @@ router.get('/author/:ficha_aut', function(req, res){
    		 	});
   		}
   	}else{
-  		res.json({ message: 'No info to search'});
+  		res.json({ message: 'No results'});
   	}
   });
+
+router.get('/tax_author/:ficha_aut_tax', function(req, res){
+  var response={};
+  var consl = req.params.ficha_aut_tax;
+  consl = consl.replace(/\\"/g, '"');
+    if(consl.length!=0){
+        Record.find({'associatedParty.firstName':{ "$regex": consl, "$options": "i" }}, 'taxonRecordName associatedParty', function(err, recordsA){
+            if(err)
+              res.send(err);
+            if(recordsA.length==0){
+              Record.find({'associatedParty.lastName':{ "$regex": consl, "$options": "i" }}, 'taxonRecordName associatedParty', function(err, recordsB){
+                if(err)
+                  res.send(err);
+                if(recordsB.length==0){
+                  Record.find({'taxonRecordName.scientificName.simple':{ "$regex": consl, "$options": "i" } }, 'taxonRecordName associatedParty', function(err, recordsC){
+                    if(err)
+                      res.send(err);
+                    if(recordsC.length==0){
+                      res.json({ message: 'No results'});
+                    }else{
+                      res.json(recordsC);
+                    }
+                  });
+                }else{
+                  res.json(recordsB);
+                }
+              });
+            }else{
+              res.json(recordsA);
+            }
+        });
+    }else{
+      res.json({ message: 'No info to search'});
+    }
+  });
+
 
 /*
 
