@@ -21,6 +21,7 @@
     "mongoose-paginate": "latest", 
     "object-assign" : "latest",
     "mongoose-searchable" : "latest",
-    "mongoose-text-search" : "latest"
+    "mongoose-text-search" : "latest",
+    "unix-timestamp" : "latest"
   }
 }

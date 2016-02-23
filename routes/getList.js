@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
 var Record = require('../app/models/record.js');
+var TimeStamp = require('unix-timestamp');
 
 router.get('/', function(req, res) {
   //var response={};
@@ -20,7 +21,18 @@ router.get('/', function(req, res) {
           var creation_date="";
           for(i=0;i<data.length;i++){
             creation_date=data[i]._id.getTimestamp();
-            data[i]._doc.creation_date =creation_date;
+            var timeInMillis = Date.parse(creation_date);
+            console.log(timeInMillis);
+            console.log(TimeStamp.toDate(timeInMillis/10000));
+            console.log(typeof data[i]._id.getTimestamp());
+            console.log(Object.keys(data[i]._id.getTimestamp()));
+            console.log(creation_date);
+            console.log(Date.now());
+            console.log(TimeStamp.toDate(Date.now()/1000));
+            var dateParts = creation_date.toString().match(/(\d+)-(\d+)-(\d+) (\d+):(\d+)/);
+            console.log(creation_date.toString());
+            console.log(Date());
+            data[i]._doc.creation_date =creation_date.toString();
           }
           res.json(data);
       }
