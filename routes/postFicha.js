@@ -8,8 +8,8 @@ var cors = require
 
 /* POST */
 router.post('/', function(req, res) {
-  var test=req.body.hierarchy;
   var fic= new Record(req.body);
+  //fic._doc.creation_date=Date();
   fic.save(function(err) {
             if (err)
                 res.send(err);

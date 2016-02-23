@@ -15,7 +15,7 @@ router.get('/taxons/:ficha_tax', function(req, res){
 });
 
 router.get('/taxon/:ficha_tax', function(req, res){
-  Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_tax, "$options": "i" } }, 'taxonRecordName associatedParty', function(err, records){
+  Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_tax, "$options": "i" } }, 'taxonRecordName associatedParty creation_date', function(err, records){
       if(err)
         res.send(err);
       res.json(records);
@@ -29,23 +29,26 @@ router.get('/tax_author/:ficha_aut_tax', function(req, res){
   consl = consl.split("-");
   	if(consl.length!=0){
   		if(consl.length>=2){
-  			Record.find({'associatedParty.firstName':{ "$regex": consl[0], "$options": "i" },'associatedParty.lastName':{ "$regex": consl[1], "$options": "i" }}, 'taxonRecordName associatedParty', {sort : { _id: -1 }}, function(err, records){
+  			Record.find({'associatedParty.firstName':{ "$regex": consl[0], "$options": "i" },'associatedParty.lastName':{ "$regex": consl[1], "$options": "i" }}, 'taxonRecordName associatedParty creation_date', {sort : { _id: -1 }}, function(err, records){
    		   		if(err)
     		    	res.send(err);
             for(i=0;i<records.length;i++){
-              creation_date=records[i]._id.getTimestamp();
-              records[i]._doc.creation_date =creation_date;
+              if(typeof  records[i]._doc.creation_date==="undefined"){
+                creation_date=records[i]._id.getTimestamp();
+                records[i]._doc.creation_date =creation_date.toString();
+              }
             }
     		  	res.json(records);
    		 	});
   		}else{
-  			Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_aut_tax, "$options": "i" } }, 'taxonRecordName associatedParty', {sort : { _id: -1 }}, function(err, records){
+  			Record.find({'taxonRecordName.scientificName.simple':{ "$regex": req.params.ficha_aut_tax, "$options": "i" } }, 'taxonRecordName associatedParty creation_date', {sort : { _id: -1 }}, function(err, records){
    		   		if(err)
     		    	res.send(err);
             for(i=0;i<records.length;i++){
-              creation_date=records[i]._id.getTimestamp();
-              records[i].creation_date =creation_date;
-              records[i]._doc.creation_date =creation_date;
+              if(typeof  records[i]._doc.creation_date==="undefined"){
+                creation_date=records[i]._id.getTimestamp();
+                records[i]._doc.creation_date =creation_date.toString();
+              }
             }
     		  	res.json(records);
    		 	});
