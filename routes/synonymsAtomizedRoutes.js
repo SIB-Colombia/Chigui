@@ -16,15 +16,21 @@ router.post('/post', function(req, res) {
   	count_version=count;
   });
 
+  if(typeof  synonyms_atomized_version.id_record==="undefined" || synonyms_atomized_version.id_record==""){
+    synonyms_atomized_version.id_record=mongoose.Types.ObjectId();
+  }
+
   add_objects.RecordVersion.count({ _id : synonyms_atomized_version._id }, function (err, count){ 
-    if(count>0){
-        //document exists });
+    if(count==0){
+        console.log("Cero FICHAS!!");
     }
   }); 
 
   console.log("Numero de versiones: "+ count_version);
   synonyms_atomized_version._id=mongoose.Types.ObjectId();
   synonyms_atomized_version.version=count_version+1;
+  console.log(typeof SynonymsAtomizedVersion);
+  console.log(Object.keys(SynonymsAtomizedVersion));
   synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);
 
 

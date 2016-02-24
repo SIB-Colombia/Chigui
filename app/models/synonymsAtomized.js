@@ -51,9 +51,12 @@ var SynonymsAtomizedVersion = new Schema({
 
 
 
-
+/*
 module.exports = {
 	             	SynonymsAtomizedVersion: mongoose.model('SynonymsAtomizedVersion', SynonymsAtomizedVersion ),
 	             	SynonymsAtomized: mongoose.model('SynonymsAtomized', SynonymsAtomized )
 	             };
+	             */
+
+module.exports = mongoose.model('SynonymsAtomizedVersion', SynonymsAtomizedVersion );
 

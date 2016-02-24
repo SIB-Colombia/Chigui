@@ -14,7 +14,7 @@ var post_records = require('./routes/postFicha');
 var list_records = require('./routes/getList');
 var update_records = require('./routes/updateFicha');
 //------
-var synonyms_atomized = require('./routes/updateFicha');
+var synonyms_atomized = require('./routes/synonymsAtomizedRoutes');
 
 var app = express();
 app.use(compress());
@@ -53,26 +53,6 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-/*
-app.use(function (req, res, next) {
-
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://192.168.205.27:7000');
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    // Pass to next layer of middleware
-    next();
-});
-*/
 
 
 
