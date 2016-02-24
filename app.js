@@ -13,10 +13,8 @@ var records = require('./routes/getFicha');
 var post_records = require('./routes/postFicha');
 var list_records = require('./routes/getList');
 var update_records = require('./routes/updateFicha');
-//var tax_reco = require('./routes/taxonRecordNameRoutes');
-var record = require('./routes/recordRoutes');
-var base_elements = require('./routes/baseElementsRoutes');
-//var get_test = require();
+//------
+var synonyms_atomized = require('./routes/updateFicha');
 
 var app = express();
 app.use(compress());
@@ -42,9 +40,9 @@ app.use('/get-record', records);
 app.use('/post-record', cors(), post_records);
 app.use('/get-list', list_records);
 app.use('/update-record', cors(), update_records);
-//app.use('/test', tax_reco);
-app.use('/record', record);
-app.use('/base-elements', base_elements);
+//---for elements
+//app.use('/base-elements', base_elements);
+app.use('/synonyms_atomized', synonyms_atomized);
 
 
 

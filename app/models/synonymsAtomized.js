@@ -3,6 +3,7 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var SynonymsAtomizedVersion = new Schema({
@@ -40,9 +41,13 @@ var scientificName = Element.extend ({
 
 var SynonymsAtomized = Element.extend({
 	synonymName : scientificName,
-	synonymStatus : String,
-	sa_ver : { type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }
+	synonymStatus : String
 },{ collection: 'SynonymsAtomized' });
+
+
+var SynonymsAtomizedVersion = new Schema({
+	synonymsAtomized : [SynonymsAtomized]
+},{ collection: 'SynonymsAtomizedVersion' });
 
 
 
