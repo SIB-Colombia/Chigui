@@ -117,6 +117,7 @@ var MeasurementOrFact = new Schema({
 
 module.exports = {
 	             	Element : mongoose.model('Element', Element),
+	             	ElementVersion : mongoose.model('ElementVersion', ElementVersion),
 	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData ),
 	             	RecordVersion : mongoose.model('RecordVersion', RecordVersion ),
 	             	Reference : mongoose.model('Reference', Reference ),

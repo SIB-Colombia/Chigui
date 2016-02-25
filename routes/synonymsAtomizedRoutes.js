@@ -8,41 +8,77 @@ var cors = require;
 
 router.post('/post', function(req, res) {
   var synonyms_atomized_version  = req.body; 
+  synonyms_atomized_version._id = mongoose.Types.ObjectId();
   console.log(req.body); 
-  var count_version= 0;
-  add_objects.RecordVersion.count({type: 'synonymsAtomizedVersion'}, function (err, count) {
-  	if (err)
-  		res.send(err);
-  	count_version=count;
-  });
 
+  //Verify if the Json have  a RecordId(ID de la Ficha). If the Json don't have a id for record this will be created
   if(typeof  synonyms_atomized_version.id_record==="undefined" || synonyms_atomized_version.id_record==""){
     synonyms_atomized_version.id_record=mongoose.Types.ObjectId();
   }
 
-  add_objects.RecordVersion.count({ _id : synonyms_atomized_version._id }, function (err, count){ 
+  var count_record=0;
+  add_objects.RecordVersion.count({ _id : synonyms_atomized_version.id_record }, function (err, count){ 
+    count_record=count;
     if(count==0){
-        console.log("Cero FICHAS!!");
+        console.log("No exist record with id: "+synonyms_atomized_version._id);
     }
   }); 
 
+  console.log("Numero de fichas encontradas con id: "+count_record);
+
+  var count_version= 0;
+  if(count_record==1){
+
+    add_objects.RecordVersion.findById(synonyms_atomized_version._id, function(err, doc){
+      if (err)
+        res.send(err);
+      if(!doc){
+        res.send("Document not found");
+      }
+      count_version=doc.synonymsAtomizedVersion.length;
+    });
+  };
+
   console.log("Numero de versiones: "+ count_version);
+
   synonyms_atomized_version._id=mongoose.Types.ObjectId();
   synonyms_atomized_version.version=count_version+1;
   console.log(typeof SynonymsAtomizedVersion);
   console.log(Object.keys(SynonymsAtomizedVersion));
   synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);
 
+  var id_v = synonyms_atomized_version._id;
+
+  var id_rc = synonyms_atomized_version.id_record; 
 
   synonyms_atomized_version.save(function(err) {
             if (err)
                 res.send(err);
-            add_objects.RecordVersion.findByIdAndUpdate( synonyms_atomized_version.id_record, { $push: { "synonymsAtomizedVersion": synonyms_atomized_version._id } },{safe: true, upsert: true},function(err, model) {
-                  	if (err)
-                    	res.send(err);
-                  	res.json({ message: 'Save SynonymsAtomizedVersion!' });
-                  	console.log("Save SynonymsAtomizedVersion!");
-            }); 
+            add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "synonymsAtomizedVersion": id_v } },{ safe: true, upsert: true },function(err, model) {
+                     if (err)
+                       res.send(err);
+                     res.json({ message: 'Save SynonymsAtomizedVersion!' });
+                     console.log("Save SynonymsAtomizedVersion!");
+            });
+            /*  
+            if(count_record==1){
+              add_objects.RecordVersion.findByIdAndUpdate( synonyms_atomized_version.id_record, { $push: { "synonymsAtomizedVersion": synonyms_atomized_version._id } },{safe: true, upsert: true},function(err, model) {
+                  	 if (err)
+                    	 res.send(err);
+                  	 res.json({ message: 'Save SynonymsAtomizedVersion!' });
+                  	 console.log("Save SynonymsAtomizedVersion!");
+              }); 
+            }else{
+              var ob_ids= new Array();
+              ob_ids.push(synonyms_atomized_version._id);
+              add_objects.RecordVersion.create({ _id:synonyms_atomized_version._id, synonymsAtomizedVersion: ob_ids },function(err, doc){
+                if(err)
+                  res.send(err);
+                res.json({ message: 'Created a new Record and Save SynonymsAtomizedVersion!' });
+                console.log("Created a new Record and Save SynonymsAtomizedVersion!!");
+              });
+            }
+            */
         });
 });
 
