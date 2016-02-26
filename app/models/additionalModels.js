@@ -86,7 +86,7 @@ var Element = new Schema ({
 
 var ElementVersion = new Schema ({
 	id_record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : {type: Date, default: Date.now},
+	created : { type: Date, default: Date.now },
 	id_user : String,
 	version : { type: Number, min: 0 }
 });
@@ -94,7 +94,8 @@ var ElementVersion = new Schema ({
 var RecordVersion = new Schema({
 	name : String,
 	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
-	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }]
+	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }],
+	commonNamesAtomized : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomized' }]
 }, { strict: false, collection: 'RecordVersion' });
 
 var MeasurementOrFact = new Schema({

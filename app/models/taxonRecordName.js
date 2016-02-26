@@ -30,13 +30,13 @@ var scientificName = Element.extend({
 	publicationStatus : { ruleConsidered : String, note : String, reletedName : { identifier : String, datatype : String, source : String }, publishedln : { identifier : String, datatype : String, source : String }, microReference : String },
 	providerLink : String,
 	providerSpecificData : { anyOne : [String], anyTwo : String }
-}, { strict: false, versionKey: false });
+}, { versionKey: false });
 
 var TaxonRecordName = Element.extend({
 	scientificName : scientificName
 }, { collection: 'taxonRecordName' });
 
-var TaxonRecordNameVersion = new Schema({
+var TaxonRecordNameVersion = ElementVersion.extend({
 	taxonRecordName : TaxonRecordName
 }, { collection: 'TaxonRecordNameVersion' });
 

@@ -9,7 +9,7 @@ var cors = require;
 router.post('/post', function(req, res) {
   var synonyms_atomized_version  = req.body; 
   synonyms_atomized_version._id = mongoose.Types.ObjectId();
-  //console.log(req.body); 
+  console.log(req.body); 
 
   //Verify if the Json have  a RecordId(ID de la Ficha). If the Json don't have a id for record this will be created
   if(typeof  synonyms_atomized_version.id_record==="undefined" || synonyms_atomized_version.id_record==""){
@@ -90,7 +90,7 @@ router.get('/get/:element_id', function(req, res) {
     SynonymsAtomizedVersion.findOne({ '_id' : req.params.element_id }).exec(function (err, doc){
 		if(err)
   			res.send(err);
-  		res.json(docver);
+  		res.json(doc);
 	});
 });
 
