@@ -21,7 +21,7 @@ var Hierarchy = Element.extend({
 	infraspecificEpithet : String,
 	higherClassification : String,
 	parentTaxon : String
-},{ collection: 'BaseElements' });
+},{ collection: 'Hierarchy' });
 
 var HierarchyVersion = new ElementVersion.extend({
 	hierarchy : [Hierarchy]

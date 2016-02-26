@@ -2,51 +2,24 @@ var express = require('express');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var SynonymsAtomizedVersion = require('../app/models/synonymsAtomized.js');
+var TaxonRecordNameVersion = require('../app/models/taxonRecordName.js');
 var add_objects = require('../app/models/additionalModels.js');
 var cors = require;
 
 router.post('/post', function(req, res) {
-  var synonyms_atomized_version  = req.body; 
-  synonyms_atomized_version._id = mongoose.Types.ObjectId();
+  var taxon_record_name_version  = req.body; 
+  taxon_record_name_version._id = mongoose.Types.ObjectId();
   //console.log(req.body); 
 
   //Verify if the Json have  a RecordId(ID de la Ficha). If the Json don't have a id for record this will be created
-  if(typeof  synonyms_atomized_version.id_record==="undefined" || synonyms_atomized_version.id_record==""){
-    synonyms_atomized_version.id_record=mongoose.Types.ObjectId();
+  if(typeof  taxon_record_name_version.id_record==="undefined" || taxon_record_name_version.id_record==""){
+    taxon_record_name_version.id_record=mongoose.Types.ObjectId();
   }
 
-  
-  test=add_objects.RecordVersion.count({ _id : synonyms_atomized_version.id_record }, function (err, count){ 
-    count_record=count;
-    if(count==0){
-        console.log("No exist record with id: "+synonyms_atomized_version.id_record);
-    }
-  }); 
-
-  console.log(Object.keys(test));
-  console.log(test.count);
-  
-  /*
-  if(count_record==1){
-
-    add_objects.RecordVersion.findById(synonyms_atomized_version._id, function(err, doc){
-      if (err)
-        res.send(err); //to do: throw error or message
-      if(!doc){
-        res.send("Document not found");
-      }
-      console.log("La ficha: "+RecordVersion);
-      count_version=doc.synonymsAtomizedVersion.length;
-    });
-  };
-  */
-
-  synonyms_atomized_version._id=mongoose.Types.ObjectId();
   synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);
 
-  var id_v = synonyms_atomized_version._id;
-  var id_rc = synonyms_atomized_version.id_record; 
+  var id_v = taxon_record_name_version._id;
+  var id_rc = taxon_record_name_version.id_record; 
 
   var ob_ids= new Array();
   ob_ids.push(synonyms_atomized_version._id);

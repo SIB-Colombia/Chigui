@@ -3,16 +3,11 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var SynonymsAtomizedVersion = new Schema({
-	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : { type: Date, default: Date.now },
-	id_user : String,
-	version : { type: Number, min: 0 },
-	synonymsAtomized : [{type: Schema.Types.ObjectId, ref: 'SynonymsAtomized'}]
-},{ collection: 'SynonymsAtomizedVersion' });
+
 
 var scientificName = Element.extend ({
 	attributes : { id : Number, isAnamorphic: Boolean, nomenclaturalCode: String },
@@ -45,18 +40,11 @@ var SynonymsAtomized = Element.extend({
 },{ collection: 'SynonymsAtomized' });
 
 
-var SynonymsAtomizedVersion = new Schema({
+var SynonymsAtomizedVersion = ElementVersion.extend({
 	synonymsAtomized : [SynonymsAtomized]
 },{ collection: 'SynonymsAtomizedVersion' });
 
 
-
-/*
-module.exports = {
-	             	SynonymsAtomizedVersion: mongoose.model('SynonymsAtomizedVersion', SynonymsAtomizedVersion ),
-	             	SynonymsAtomized: mongoose.model('SynonymsAtomized', SynonymsAtomized )
-	             };
-	             */
 
 module.exports = mongoose.model('SynonymsAtomizedVersion', SynonymsAtomizedVersion );
 
