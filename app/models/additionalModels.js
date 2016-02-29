@@ -95,7 +95,10 @@ var RecordVersion = new Schema({
 	name : String,
 	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
 	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }],
-	commonNamesAtomized : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomized' }]
+	commonNamesAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomizedVersion' }],
+	hierarchyVersion : [{ type: Schema.Types.ObjectId, ref: 'HierarchyVersion' }],
+	briefDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'BriefDescriptionVersion' }],
+
 }, { strict: false, collection: 'RecordVersion' });
 
 var MeasurementOrFact = new Schema({
