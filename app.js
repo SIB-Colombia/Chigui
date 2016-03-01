@@ -16,6 +16,7 @@ var update_records = require('./routes/updateFicha');
 //------
 var synonyms_atomized = require('./routes/synonymsAtomizedRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
+var common_names_atomized = require('./routes/commonNamesAtomizedRoutes');
 
 var app = express();
 app.use(compress());
@@ -45,6 +46,7 @@ app.use('/update-record', cors(), update_records);
 //app.use('/base-elements', base_elements);
 app.use('/synonyms_atomized', synonyms_atomized);
 app.use('/taxon_record_name', taxon_record_name);
+app.use('/common_names_atomized', common_names_atomized);
 
 
 
