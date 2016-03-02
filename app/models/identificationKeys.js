@@ -3,14 +3,16 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
+var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var IdentificationKeys = Element.extend({
-	keys : [String]
-},{ collection: 'IdentificationKeys', strict: false, versionKey: false });
+	keys : String
+}, { collection: 'identificationKeys' });
 
-var IdentificationKeysVersion = new ElementVersion.extend({
+var IdentificationKeysVersion = ElementVersion.extend({
 	identificationKeys : IdentificationKeys
-},{ collection: 'IdentificationKeysVersion', versionKey: false });
+}, { collection: 'IdentificationKeysVersion' });
 
-module.exports = mongoose.model('IdentificationKeysVersion', IdentificationKeysVersion );
+module.exports = mongoose.model( 'IdentificationKeysVersion', IdentificationKeysVersion );

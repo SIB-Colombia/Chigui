@@ -32,9 +32,7 @@ var Reference = new Schema ({
 	isbn : String,
 	issn : String,
 	link : String,
-	recordId : String,
-	ancillaryData : { type: Schema.Types.ObjectId, ref: 'AncillaryData' },
-	element : { type: Schema.Types.ObjectId, ref: 'Element' }
+	recordId : String
 },{ collection: 'Reference' });
 
 var Agent = new Schema({
@@ -70,8 +68,7 @@ var AncillaryData = new Schema({
 	geoPoint : String,
 	additionalInformation : String,
 	dataObject: String,
-	//element : { type: Schema.Types.ObjectId, ref: 'Element' },
-	reference : [{ type: Schema.Types.ObjectId, ref: 'Reference' }]
+	reference : [Reference]
 },{ collection: 'ancillaryData' });
 
 /*
@@ -98,7 +95,8 @@ var RecordVersion = new Schema({
 	commonNamesAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomizedVersion' }],
 	hierarchyVersion : [{ type: Schema.Types.ObjectId, ref: 'HierarchyVersion' }],
 	briefDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'BriefDescriptionVersion' }],
-	fullDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'FullDescriptionVersion' }]
+	fullDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'FullDescriptionVersion' }],
+	identificationKeysVersion : [{ type: Schema.Types.ObjectId, ref: 'IdentificationKeysVersion' }]
 
 }, { strict: false, collection: 'RecordVersion' });
 
