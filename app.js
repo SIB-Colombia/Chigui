@@ -48,7 +48,9 @@ app.use('/update-record', cors(), update_records);
 app.use('/synonyms_atomized', synonyms_atomized);
 app.use('/taxon_record_name', taxon_record_name);
 app.use('/common_names_atomized', common_names_atomized);
-app.use('/identification_keys', identification_keys);
+//app.use('/identification_keys', identification_keys);
+console.log("THE KEYS: "+Object.keys(identification_keys));
+app.post('/fichas/:id_record/identification_keys/', identification_keys.getVersion);
 
 
 
