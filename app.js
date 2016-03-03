@@ -46,11 +46,13 @@ app.use('/update-record', cors(), update_records);
 //---for elements
 //app.use('/base-elements', base_elements);
 app.use('/synonyms_atomized', synonyms_atomized);
-app.use('/taxon_record_name', taxon_record_name);
+//app.use('/taxon_record_name', taxon_record_name);
+app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);
+app.post('/fichas/taxon_record_name/', taxon_record_name.postRecord);
+app.get('/fichas/:id_record/taxon_record_name/:version', taxon_record_name.getVersion);
 app.use('/common_names_atomized', common_names_atomized);
-//app.use('/identification_keys', identification_keys);
-console.log("THE KEYS: "+Object.keys(identification_keys));
-app.post('/fichas/:id_record/identification_keys/', identification_keys.getVersion);
+app.post('/fichas/:id_record/identification_keys/', identification_keys.postVersion);
+app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
 
 
 

@@ -98,7 +98,7 @@ var RecordVersion = new Schema({
 	fullDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'FullDescriptionVersion' }],
 	identificationKeysVersion : [{ type: Schema.Types.ObjectId, ref: 'IdentificationKeysVersion' }]
 
-}, { strict: false, collection: 'RecordVersion' });
+}, { collection: 'Records' });
 
 var MeasurementOrFact = new Schema({
 	measurementID : String,

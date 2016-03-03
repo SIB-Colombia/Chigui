@@ -34,7 +34,7 @@ var scientificName = Element.extend({
 
 var TaxonRecordName = Element.extend({
 	scientificName : scientificName
-}, { collection: 'taxonRecordName' });
+}, { versionKey: false });
 
 var TaxonRecordNameVersion = ElementVersion.extend({
 	taxonRecordName : TaxonRecordName

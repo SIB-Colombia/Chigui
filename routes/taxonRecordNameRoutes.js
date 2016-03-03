@@ -6,26 +6,69 @@ var TaxonRecordNameVersion = require('../app/models/taxonRecordName.js');
 var add_objects = require('../app/models/additionalModels.js');
 var cors = require;
 
-router.post('/post', function(req, res) {
+var exports = module.exports = {};
+
+exports.postVersion = function(req, res) {
   var taxon_record_name_version  = req.body; 
-  //console.log(taxon_record_name_version);
   taxon_record_name_version._id = mongoose.Types.ObjectId();
 
-  //Verify if the Json have  a RecordId(ID de la Ficha). If the Json don't have a id for record this will be created
-  if(typeof  taxon_record_name_version.id_record==="undefined" || taxon_record_name_version.id_record==""){
-    taxon_record_name_version.id_record=mongoose.Types.ObjectId();
+  taxon_record_name_version.created=Date();
+  taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
+
+  var id_v = taxon_record_name_version._id;
+  var id_rc = req.params.id_record;
+
+  var ob_ids= new Array();
+  ob_ids.push(id_v);
+
+  console.log("ID Ficha: "+id_rc);
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
+      if(typeof count!=="undefined"){
+      console.log("El conteo: "+count);
+      if(count==0){
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }else{
+       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "taxonRecordNameVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+          if (err){
+              res.send(err);
+          }
+          taxon_record_name_version.id_record=id_rc;
+          taxon_record_name_version.version=doc.taxonRecordNameVersion.length+1;
+          var ver = taxon_record_name_version.version;
+          taxon_record_name_version.save(function(err){
+            if(err){
+             res.send(err);
+            }
+            res.json({ message: 'Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+         });
+        });
+      }
+      }else{
+        res.json({message: "Empty Database"});
+      }
+   });
+  }else{
+    res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
+};
+
+exports.postRecord = function(req, res) {
+  var taxon_record_name_version  = req.body; 
+  taxon_record_name_version._id = mongoose.Types.ObjectId();
+
+  taxon_record_name_version.id_record=mongoose.Types.ObjectId();
   taxon_record_name_version.created=Date();
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
 
   var id_v = taxon_record_name_version._id;
   var id_rc = taxon_record_name_version.id_record;
-
-
+  var ver = 1;
   var ob_ids= new Array();
   ob_ids.push(id_v);
 
-  add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
     console.log("El conteo: "+count);
     if(count==0){
       add_objects.RecordVersion.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
@@ -33,48 +76,38 @@ router.post('/post', function(req, res) {
           res.send(err);
         }
         taxon_record_name_version.version=1;
+
         taxon_record_name_version.save(function(err){
           if(err){
           res.send(err);
           }
-          res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion!' });
-          console.log("Created a new Record and Save TaxonRecordNameVersion!!");
+          res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
         });
       });
     }else{
-      add_objects.RecordVersion.findByIdAndUpdate( taxon_record_name_version.id_record, { $push: { "taxonRecordNameVersion": taxon_record_name_version._id } },{safe: true, upsert: true},function(err, doc) {
-        if (err){
-            res.send(err);
-        }
-        taxon_record_name_version.version=doc.taxonRecordNameVersion.length+1;
-        taxon_record_name_version.save(function(err){
-          if(err){
-          res.send(err);
-          }
-          res.json({ message: 'Save TaxonRecordNameVersion!' });
-          console.log("Save TaxonRecordNameVersion!!");
-        });
-      });
+      res.json({message: "Already exists a Record(Ficha) with id: "+id_rc });
     }
   });
-      /*
-  
+}
 
-  
-
-  console.log("Con el modelo: "+taxon_record_name_version);
-
-  
-  */
-  
-});
-
-router.get('/get/:element_id', function(req, res) {
-    TaxonRecordNameVersion.findOne({ '_id' : req.params.element_id }).exec(function (err, doc){
-		if(err)
-  			res.send(err);
-  		res.json(doc);
-	});
-});
-
-module.exports = router;
+exports.getVersion = function(req, res) {
+  var id_rc=req.params.id_record;
+  var ver=req.params.version;
+  console.log(id_rc);
+  console.log(ver);
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('taxonRecordNameVersion').exec(function (err, record) {
+    if(record){
+      if (err){
+        res.send(err);
+      };
+      var len=record.taxonRecordNameVersion.length;
+      if(ver<=len && ver>0){
+        res.json(record.taxonRecordNameVersion[ver-1]);
+      }else{
+        res.json({message: "The number of version is not valid"});
+      }
+    }else{
+      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+    }
+  });
+};
