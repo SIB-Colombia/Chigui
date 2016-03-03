@@ -44,7 +44,7 @@ exports.postVersion = function(req, res) {
         });
       }
     }else{
-      res.json({message: "Empty Database"});
+      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
@@ -56,9 +56,7 @@ exports.postVersion = function(req, res) {
 
 exports.getVersion = function(req, res) {
 	var id_rc=req.params.id_record;
-	var ver=req.params.version;
-	console.log(id_rc);
-	console.log(ver);
+	var ver=req.params.version;;
 	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('identificationKeysVersion').exec(function (err, record) {
     if(record){
   		if (err){

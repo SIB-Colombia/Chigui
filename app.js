@@ -18,6 +18,8 @@ var synonyms_atomized = require('./routes/synonymsAtomizedRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
 var common_names_atomized = require('./routes/commonNamesAtomizedRoutes');
 var identification_keys = require('./routes/identificationKeysRoutes');
+var hierarchy = require('./routes/hierarchyRoutes');
+var brief_description = require('./routes/briefDescriptionRoutes');
 
 var app = express();
 app.use(compress());
@@ -39,20 +41,22 @@ app.use(cors());
 
 //app.use('/', routes);
 //app.use('/users', users);
-app.use('/get-record', records);
-app.use('/post-record', cors(), post_records);
-app.use('/get-list', list_records);
-app.use('/update-record', cors(), update_records);
 //---for elements
 //app.use('/base-elements', base_elements);
-app.use('/synonyms_atomized', synonyms_atomized);
-//app.use('/taxon_record_name', taxon_record_name);
 app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);
 app.post('/fichas/taxon_record_name/', taxon_record_name.postRecord);
 app.get('/fichas/:id_record/taxon_record_name/:version', taxon_record_name.getVersion);
-app.use('/common_names_atomized', common_names_atomized);
+app.post('/fichas/:id_record/synonyms_atomized/', synonyms_atomized.postVersion);
+app.get('/fichas/:id_record/synonyms_atomized/:version', synonyms_atomized.getVersion);
+app.post('/fichas/:id_record/common_names_atomized/', common_names_atomized.postVersion);
+app.get('/fichas/:id_record/common_names_atomized/:version', common_names_atomized.getVersion);
+app.post('/fichas/:id_record/hierarchy/', hierarchy.postVersion);
+app.get('/fichas/:id_record/hierarchy/:version', hierarchy.getVersion);
+app.post('/fichas/:id_record/brief_description/', brief_description.postVersion);
+app.get('/fichas/:id_record/brief_description/:version', brief_description.getVersion);
 app.post('/fichas/:id_record/identification_keys/', identification_keys.postVersion);
 app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
+
 
 
 

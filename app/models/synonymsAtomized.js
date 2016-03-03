@@ -8,7 +8,6 @@ var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 
-
 var scientificName = Element.extend ({
 	attributes : { id : Number, isAnamorphic: Boolean, nomenclaturalCode: String },
 	simple : String,
@@ -31,13 +30,13 @@ var scientificName = Element.extend ({
 	publicationStatus : { ruleConsidered : String, note : String, reletedName : { identifier : String, datatype : String, source : String }, publishedln : { identifier : String, datatype : String, source : String }, microReference : String },
 	providerLink : String,
 	providerSpecificData : { anyOne : [String], anyTwo : String }
-});
+}, { versionKey: false });
 
 
 var SynonymsAtomized = Element.extend({
 	synonymName : scientificName,
 	synonymStatus : String
-},{ collection: 'SynonymsAtomized' });
+},{ versionKey: false });
 
 
 var SynonymsAtomizedVersion = ElementVersion.extend({
