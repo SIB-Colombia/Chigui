@@ -20,6 +20,9 @@ var common_names_atomized = require('./routes/commonNamesAtomizedRoutes');
 var identification_keys = require('./routes/identificationKeysRoutes');
 var hierarchy = require('./routes/hierarchyRoutes');
 var brief_description = require('./routes/briefDescriptionRoutes');
+var full_description = require('./routes/fullDescriptionRoutes');
+var associated_party = require('./routes/associatedPartyRoutes');
+var life_cycle = require('./routes/lifeCycleRoutes');
 
 var app = express();
 app.use(compress());
@@ -43,6 +46,8 @@ app.use(cors());
 //app.use('/users', users);
 //---for elements
 //app.use('/base-elements', base_elements);
+app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
+app.get('/fichas/:id_record/associated_party/:version', associated_party.getVersion);
 app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);
 app.post('/fichas/taxon_record_name/', taxon_record_name.postRecord);
 app.get('/fichas/:id_record/taxon_record_name/:version', taxon_record_name.getVersion);
@@ -54,8 +59,12 @@ app.post('/fichas/:id_record/hierarchy/', hierarchy.postVersion);
 app.get('/fichas/:id_record/hierarchy/:version', hierarchy.getVersion);
 app.post('/fichas/:id_record/brief_description/', brief_description.postVersion);
 app.get('/fichas/:id_record/brief_description/:version', brief_description.getVersion);
+app.post('/fichas/:id_record/full_description/', full_description.postVersion);
+app.get('/fichas/:id_record/full_description/:version', full_description.getVersion);
 app.post('/fichas/:id_record/identification_keys/', identification_keys.postVersion);
 app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
+app.post('/fichas/:id_record/life_cycle/', life_cycle.postVersion);
+app.get('/fichas/:id_record/life_cycle/:version', life_cycle.getVersion);
 
 
 
