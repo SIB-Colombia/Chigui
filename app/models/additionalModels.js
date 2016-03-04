@@ -41,10 +41,16 @@ var Agent = new Schema({
 	organisation: String,
 	position: String,
 	address: String,
+	city : String,
+	state : String,
+	country : String,
+	postalCode : String,
 	phone: String,
 	email: String,
-	role: String,
-	homepage: String
+	homepage : String,
+	personnelDirectory : String,
+	personnelIdentifier : String,
+	role: String
 });
 
 var AncillaryData = new Schema({
@@ -89,7 +95,9 @@ var ElementVersion = new Schema ({
 });
 
 var RecordVersion = new Schema({
-	name : String,
+	language : String,
+	associatedPartyVersion : [{ type: Schema.Types.ObjectId, ref: 'AssociatedPartyVersion' }],
+	baseElementsVersion : [{ type: Schema.Types.ObjectId, ref: 'BaseElementsVersion' }],
 	taxonRecordNameVersion : [{ type: Schema.Types.ObjectId, ref: 'TaxonRecordNameVersion' }],
 	synonymsAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'SynonymsAtomizedVersion' }],
 	commonNamesAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomizedVersion' }],
@@ -124,6 +132,7 @@ module.exports = {
 	             	Element : mongoose.model('Element', Element),
 	             	ElementVersion : mongoose.model('ElementVersion', ElementVersion),
 	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData ),
+	             	Agent: mongoose.model('Agent', Agent ),
 	             	RecordVersion : mongoose.model('RecordVersion', RecordVersion ),
 	             	Reference : mongoose.model('Reference', Reference ),
 	             	MeasurementOrFact : mongoose.model('MeasurementOrFact', MeasurementOrFact)

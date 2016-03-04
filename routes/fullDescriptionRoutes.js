@@ -2,50 +2,77 @@ var express = require('express');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var HierarchyVersion = require('../app/models/hierarchy.js');
+var FullDescriptionVersion = require('../app/models/fullDescription.js');
 var add_objects = require('../app/models/additionalModels.js');
 var cors = require;
 
-router.post('/post', function(req, res) {
-  var hierarchy_version = req.body; 
-  console.log(req.body); 
-  var count_version= 0;
-  add_objects.RecordVersion.count({type: 'hierarchyVersion'}, function (err, count) {
-  	if (err)
-  		res.send(err);
-  	count_version=count;
-  });
-  console.log();
-  hierarchy_version._id=mongoose.Types.ObjectId();
-  hierarchy_version.version=count_version+1;
-  hierarchy_version= new HierarchyVersion(hierarchy_version);
+var exports = module.exports = {}
 
+exports.postVersion = function(req, res) {
+  var full_description_version  = req.body; 
+  //console.log(full_description_version);
+  full_description_version._id = mongoose.Types.ObjectId();
 
+  full_description_version.created=Date();
+  full_description_version = new FullDescriptionVersion(full_description_version);
 
-  hierarchy_version.save(function(err) {
-            if (err)
-                res.send(err);
-            add_objects.RecordVersion.findByIdAndUpdate( hierarchy_version.id_record, { $push: { "HierarchyVersion": hierarchy_version._id} },{safe: true, upsert: true},function(err, model) {
-                  	if (err)
-                    	res.send(err);
-                  	res.json({ message: 'Save HierarchyVersion!' });
-                  	console.log("Save HierarchyVersion!");
-            }); 
+  var id_v = full_description_version._id;
+  var id_rc = req.params.id_record;
+
+  var ob_ids= new Array();
+  ob_ids.push(id_v);
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
+      if(typeof count!=="undefined"){
+      if(count==0){
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }else{
+        add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "fullDescriptionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+          if (err){
+              res.send(err);
+          }
+          full_description_version.id_record=id_rc;
+          full_description_version.version=doc.fullDescriptionVersion.length+1;
+          var ver = full_description_version.version;
+          full_description_version.save(function(err){
+            if(err){
+              res.send(err);
+            }
+            res.json({ message: 'Save FullDescriptionVersion', element: 'FullDescription', version : ver, _id: id_v, id_record : id_rc });
+          });
         });
-});
+      }
+    }else{
+      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+    }
+  }
+    );
+  }else{
+    res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
 
-router.get('/get/:element_id', function(req, res) {
 
-    HierarchyVersion.findOne({ '_id' : req.params.element_id }).exec(function (err, doc){
-		if(err)
-  			res.send(err);
-  		base_elements_models.BaseElementsVersion.findOne({ '_id' : req.params.element_id }).populate('baseElements').exec(function (err, docver){
-			if(err)
-  				res.send(err);
-  			docver.baseElements=doc;
-  			res.json(docver);
-		});
-	});
-});
+exports.getVersion = function(req, res) {
+  var id_rc=req.params.id_record;
+  var ver=req.params.version;;
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('fullDescriptionVersion').exec(function (err, record) {
+    if(record){
+      if (err){
+        res.send(err);
+      };
+      var len=record.fullDescriptionVersion.length;
+      if(ver<=len && ver>0){
+        res.json(record.fullDescriptionVersion[ver-1]);
+      }else{
+        res.json({message: "The number of version is not valid"});
+      }
+    }else{
+      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+    }
+  });
+};
 
-module.exports = router;
+
+
