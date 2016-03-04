@@ -11,12 +11,12 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 var LifeCycleAtomized = new Schema ({
 	measurementOrFact : MeasurementOrFact,
 	ancillaryData : AncillaryData
-},{ strict: false, versionKey: false });
+},{ versionKey: false });
 
 var LifeCycle = Element.extend({
 	lifeCycleAtomized : LifeCycleAtomized,
 	lifeCycleUnstructured : String
-},{ strict: false, versionKey: false });
+},{ versionKey: false });
 
 var LifeCycleVersion = ElementVersion.extend({
 	lifeCycle : LifeCycle
