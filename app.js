@@ -23,17 +23,12 @@ var life_cycle = require('./routes/lifeCycleRoutes');
 var molecular_data = require('./routes/molecularData');
 var migratory = require('./routes/migratory');
 var ecological_significance = require('./routes/ecologicalSignificance');
-//var environmental_envelope = require('./routes/environmentalEnvelope');
+var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
-<<<<<<< HEAD
 var habitats = require('./routes/habitats');
 var distribution = require('./routes/distribution');
 var territory = require('./routes/territory');
 var population_biology = require('./routes/populationBiology');
-=======
-//var habitats = require('./routes/habitats');
-//var distribution = require('./routes/distribution');
->>>>>>> 2b1c14051ccefe5b19f07e49e56dac1fef4cbb15
 
 var app = express();
 app.use(compress());
