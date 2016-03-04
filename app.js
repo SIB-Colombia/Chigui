@@ -23,6 +23,13 @@ var brief_description = require('./routes/briefDescriptionRoutes');
 var full_description = require('./routes/fullDescriptionRoutes');
 var associated_party = require('./routes/associatedPartyRoutes');
 var life_cycle = require('./routes/lifeCycleRoutes');
+var molecular_data = require('./routes/molecularData');
+var migratory = require('./routes/migratory');
+var ecological_significance = require('./routes/ecologicalSignificance');
+var environmental_envelope = require('./routes/environmentalEnvelope');
+var invasiveness = require('./routes/invasiveness');
+var habitats = require('./routes/habitats');
+var distribution = require('./routes/distribution');
 
 var app = express();
 app.use(compress());
@@ -65,8 +72,20 @@ app.post('/fichas/:id_record/identification_keys/', identification_keys.postVers
 app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
 app.post('/fichas/:id_record/life_cycle/', life_cycle.postVersion);
 app.get('/fichas/:id_record/life_cycle/:version', life_cycle.getVersion);
-
-
+app.post('/fichas/:id_record/molecular_data/', molecular_data.postVersion);
+app.get('/fichas/:id_record/molecular_data/:version', molecular_data.getVersion);
+app.post('/fichas/:id_record/migratory/', migratory.postVersion);
+app.get('/fichas/:id_record/migratory/:version', migratory.getVersion);
+app.post('/fichas/:id_record/ecological_significance/', ecological_significance.postVersion);
+app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
+app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
+app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
+app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
+app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
+app.post('/fichas/:id_record/habitats/', habitats.postVersion);
+app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
+app.post('/fichas/:id_record/distribution/', distribution.postVersion);
+app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
 
 
 
