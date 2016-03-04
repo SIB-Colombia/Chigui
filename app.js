@@ -20,6 +20,10 @@ var common_names_atomized = require('./routes/commonNamesAtomizedRoutes');
 var identification_keys = require('./routes/identificationKeysRoutes');
 var hierarchy = require('./routes/hierarchyRoutes');
 var brief_description = require('./routes/briefDescriptionRoutes');
+var molecular_data = require('./routes/molecularData');
+var migratory = require('./routes/migratory');
+var ecological_significance = require('./routes/ecologicalSignificance');
+var environmental_envelope = require('./routes/environmentalEnvelope');
 
 var app = express();
 app.use(compress());
@@ -56,6 +60,15 @@ app.post('/fichas/:id_record/brief_description/', brief_description.postVersion)
 app.get('/fichas/:id_record/brief_description/:version', brief_description.getVersion);
 app.post('/fichas/:id_record/identification_keys/', identification_keys.postVersion);
 app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
+app.post('/fichas/:id_record/molecular_data/', molecular_data.postVersion);
+app.get('/fichas/:id_record/molecular_data/:version', molecular_data.getVersion);
+app.post('/fichas/:id_record/migratory/', migratory.postVersion);
+app.get('/fichas/:id_record/migratory/:version', migratory.getVersion);
+app.post('/fichas/:id_record/ecological_significance/', ecological_significance.postVersion);
+app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
+app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
+app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
+
 
 
 
