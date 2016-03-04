@@ -27,6 +27,8 @@ var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
 var habitats = require('./routes/habitats');
 var distribution = require('./routes/distribution');
+var territory = require('./routes/territory');
+var population_biology = require('./routes/populationBiology');
 
 var app = express();
 app.use(compress());
@@ -77,8 +79,10 @@ app.post('/fichas/:id_record/habitats/', habitats.postVersion);
 app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
 app.post('/fichas/:id_record/distribution/', distribution.postVersion);
 app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
-
-
+app.post('/fichas/:id_record/territory/', territory.postVersion);
+app.get('/fichas/:id_record/territory/:version', territory.getVersion);
+app.post('/fichas/:id_record/population_biology/', population_biology.postVersion);
+app.get('/fichas/:id_record/population_biology/:version', population_biology.getVersion);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
