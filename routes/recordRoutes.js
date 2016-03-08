@@ -12,7 +12,7 @@ var exports = module.exports = {}
 exports.getRecord = function(req, res) {
 	var id_rc=req.params.id_record;
 	var ver=req.params.version;;
-	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('reproductionVersion').exec(function (err, record) {
+	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion').exec(function (err, record) {
 	console.log(record);
     if(record){
   		if (err){
