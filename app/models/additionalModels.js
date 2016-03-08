@@ -106,7 +106,8 @@ var RecordVersion = new Schema({
 	fullDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'FullDescriptionVersion' }],
 	identificationKeysVersion : [{ type: Schema.Types.ObjectId, ref: 'IdentificationKeysVersion' }],
 	lifeFormVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeFormVersion' }],
-	lifeCycleVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeCycleVersion' }]
+	lifeCycleVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeCycleVersion' }],
+	reproductionVersion : [{ type: Schema.Types.ObjectId, ref: 'ReproductionVersion' }]
 
 }, { collection: 'Records' });
 

@@ -9,6 +9,7 @@ var cors = require('cors');
 
 
 //------
+var record = require('./routes/recordRoutes');
 var synonyms_atomized = require('./routes/synonymsAtomizedRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
@@ -20,15 +21,16 @@ var full_description = require('./routes/fullDescriptionRoutes');
 var associated_party = require('./routes/associatedPartyRoutes');
 var base_elements = require('./routes/baseElementsRoutes');
 var life_cycle = require('./routes/lifeCycleRoutes');
+var reproduction = require('./routes/reproductionRoutes');
 var molecular_data = require('./routes/molecularData');
 var migratory = require('./routes/migratory');
 var ecological_significance = require('./routes/ecologicalSignificance');
-var environmental_envelope = require('./routes/environmentalEnvelope');
+//var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
-var habitats = require('./routes/habitats');
-var distribution = require('./routes/distribution');
-var territory = require('./routes/territory');
-var population_biology = require('./routes/populationBiology');
+//var habitats = require('./routes/habitats');
+//var distribution = require('./routes/distribution');
+//var territory = require('./routes/territory');
+//var population_biology = require('./routes/populationBiology');
 
 var app = express();
 app.use(compress());
@@ -48,6 +50,7 @@ app.use(logger('dev'));
 
 app.use(cors());
 
+app.get('/fichas/:id_record/', record.getRecord);
 
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
 app.get('/fichas/:id_record/associated_party/:version', associated_party.getVersion);
@@ -68,24 +71,35 @@ app.post('/fichas/:id_record/identification_keys/', identification_keys.postVers
 app.get('/fichas/:id_record/identification_keys/:version', identification_keys.getVersion);
 app.post('/fichas/:id_record/life_cycle/', life_cycle.postVersion);
 app.get('/fichas/:id_record/life_cycle/:version', life_cycle.getVersion);
+app.post('/fichas/:id_record/reproduction/', reproduction.postVersion);
+app.get('/fichas/:id_record/reproduction/:version', reproduction.getVersion);
 app.post('/fichas/:id_record/molecular_data/', molecular_data.postVersion);
 app.get('/fichas/:id_record/molecular_data/:version', molecular_data.getVersion);
 app.post('/fichas/:id_record/migratory/', migratory.postVersion);
 app.get('/fichas/:id_record/migratory/:version', migratory.getVersion);
 app.post('/fichas/:id_record/ecological_significance/', ecological_significance.postVersion);
 app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
+/*
 app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
 app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
+*/
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
+/*
 app.post('/fichas/:id_record/habitats/', habitats.postVersion);
 app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
+
 app.post('/fichas/:id_record/distribution/', distribution.postVersion);
 app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
+
 app.post('/fichas/:id_record/territory/', territory.postVersion);
 app.get('/fichas/:id_record/territory/:version', territory.getVersion);
+
 app.post('/fichas/:id_record/population_biology/', population_biology.postVersion);
 app.get('/fichas/:id_record/population_biology/:version', population_biology.getVersion);
+*/
+
+
 app.post('/fichas/:id_record/base_elements/', base_elements.postVersion);
 app.get('/fichas/:id_record/base_elements/:version', base_elements.getVersion);
 

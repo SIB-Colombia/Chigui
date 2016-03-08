@@ -2,21 +2,33 @@ var express = require('express');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var taxon_objects = require('../app/models/taxonRecordName.js');
+var IdentificationKeysVersion = require('../app/models/identificationKeys.js');
 var add_objects = require('../app/models/additionalModels.js');
+var RecordVersion = require('mongoose').model('RecordVersion').schema;
 var cors = require;
 
-/* POST */
-router.post('/', function(req, res) {
-  var test=req.body.hierarchy;
-  var fic= new add_objects.RecordVersion(req.body);
-  fic.save(function(err) {
-            if (err)
-                res.send(err);
+var exports = module.exports = {}
 
-            res.json({ message: 'Record created!!!!', id:fic.id });
-            console.log("Record created!!!");
-        });
-});
-
-module.exports = router;
+exports.getRecord = function(req, res) {
+	var id_rc=req.params.id_record;
+	var ver=req.params.version;;
+	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('reproductionVersion').exec(function (err, record) {
+	console.log(record);
+    if(record){
+  		if (err){
+  			res.send(err);
+  		};
+  		/*
+  		var len=record.identificationKeysVersion.length;
+  		if(ver<=len && ver>0){
+  			res.json(record.identificationKeysVersion[ver-1]);
+  		}else{
+  			res.json({message: "The number of version is not valid"});
+  		}
+  		*/
+  		res.json(record);
+    }else{
+      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+    }
+	});
+};
