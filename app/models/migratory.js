@@ -3,17 +3,10 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var MigratoryVersion = new Schema({
-	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : {type: Date, default: Date.now},
-	id_user : String,
-	version : { type: Number, min: 0 },
-	migratory : {type: Schema.Types.ObjectId, ref: 'Migratory'}
-},{ collection: 'MigratoryVersion' });
-
-var migratoryAtomized = Element.extend({
+var MigratoryAtomized = Element.extend({
 	causes : String,
 	patterns : String,
 	routes : String,
@@ -21,12 +14,15 @@ var migratoryAtomized = Element.extend({
 });
 
 var Migratory = Element.extend({
-	migratoryAtomized : [migratoryAtomized],
+	migratoryAtomized : [MigratoryAtomized],
 	migratoryUnstructured : String,
 	additionalInformation : String,
 	dataObject : String,
-	id_version : { type: Schema.Types.ObjectId, ref: 'MigratoryVersion' }
-},{collection: 'Migratory'});
+},{collection: 'migratory'});
+
+var MigratoryVersion = ElementVersion.extend({
+	migratory : Migratory
+},{ collection: 'MigratoryVersion' });
 
 module.exports = {
 	             	MigratoryVersion: mongoose.model('MigratoryVersion', MigratoryVersion ),

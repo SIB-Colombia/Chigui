@@ -3,17 +3,10 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var InvasivenessVersion = new Schema({
-	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : {type: Date, default: Date.now},
-	id_user : String,
-	version : { type: Number, min: 0 },
-	invasiveness : {type: Schema.Types.ObjectId, ref: 'Invasiveness'}
-},{ collection: 'InvasivenessVersion' });
-
-var invasivenessAtomized = Element.extend({
+var InvasivenessAtomized = Element.extend({
 	origin : String,
 	presence : String,
 	persistence : String,
@@ -44,10 +37,13 @@ var invasivenessAtomized = Element.extend({
 });
 
 var Invasiveness = Element.extend({
-	invasivenessAtomized : [invasivenessAtomized],
-	invasivenessUnstructured : String,
-	id_version : { type: Schema.Types.ObjectId, ref: 'InvasivenessVersion' }
-},{collection: 'Invasiveness'});
+	invasivenessAtomized : [InvasivenessAtomized],
+	invasivenessUnstructured : String
+},{collection: 'invasiveness'});
+
+var InvasivenessVersion = ElementVersion.extend({
+	invasiveness : Invasiveness
+},{ collection: 'InvasivenessVersion' });
 
 module.exports = {
 	             	InvasivenessVersion: mongoose.model('InvasivenessVersion', InvasivenessVersion ),

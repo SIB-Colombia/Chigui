@@ -3,17 +3,10 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var PopulationBiologyVersion = new Schema({
-	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : {type: Date, default: Date.now},
-	id_user : String,
-	version : { type: Number, min: 0 },
-	populationBiology : {type: Schema.Types.ObjectId, ref: 'PopulationBiology'}
-},{ collection: 'TerritoryVersion' });
-
-var populationBiologyAtomized = Element.extend({
+var PopulationBiologyAtomized = Element.extend({
 	region : {
 		measurementValue : String
 	},
@@ -71,9 +64,13 @@ var populationBiologyAtomized = Element.extend({
 });
 
 var PopulationBiology = Element.extend({
-	populationBiologyAtomized: [populationBiologyAtomized],
+	populationBiologyAtomized: [PopulationBiologyAtomized],
 	populationBiologyUnstructured : String
-},{collection: 'PopulationBiology'});
+},{collection: 'populationBiology'});
+
+var PopulationBiologyVersion = ElementVersion.extend({
+	populationBiology : PopulationBiology
+},{ collection: 'PopulationBiologyVersion' });
 
 module.exports = {
 	             	PopulationBiologyVersion: mongoose.model('PopulationBiologyVersion', PopulationBiologyVersion ),

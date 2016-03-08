@@ -3,15 +3,8 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
-
-var TerritoryVersion = new Schema({
-	record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
-	created : {type: Date, default: Date.now},
-	id_user : String,
-	version : { type: Number, min: 0 },
-	territory : {type: Schema.Types.ObjectId, ref: 'Territory'}
-},{ collection: 'TerritoryVersion' });
 
 var Territory = Element.extend({
 	territoryAtomized: {
@@ -19,7 +12,11 @@ var Territory = Element.extend({
 		areaOfOccupancy : String
 	},
 	territoryUnstructured : String
-},{collection: 'Territory'});
+},{collection: 'territory'});
+
+var TerritoryVersion = ElementVersion.extend({
+	territory : Territory
+},{ collection: 'TerritoryVersion' });
 
 module.exports = {
 	             	TerritoryVersion: mongoose.model('TerritoryVersion', TerritoryVersion ),
