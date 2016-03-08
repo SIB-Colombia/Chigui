@@ -3,6 +3,7 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
@@ -14,11 +15,11 @@ var AnnualCyclesAtomized = new Schema ({
 },{ strict: false, versionKey: false });
 
 var AnnualCycles = Element.extend({
-	annualCyclesAtomized : AnnualCyclesAtomized,
+	annualCyclesAtomized : [AnnualCyclesAtomized],
 	annualCyclesUnstructured : String
 },{ strict: false, versionKey: false });
 
-var AnnualCyclesVersion = new ElementVersion.extend({
+var AnnualCyclesVersion = ElementVersion.extend({
 	annualCycles : AnnualCycles
 },{ collection: 'AnnualCyclesVersion', versionKey: false });
 

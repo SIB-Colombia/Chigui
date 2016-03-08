@@ -11,8 +11,8 @@ var exports = module.exports = {};
 exports.postVersion = function(req, res) {
   var taxon_record_name_version  = req.body; 
   taxon_record_name_version._id = mongoose.Types.ObjectId();
-
   taxon_record_name_version.created=Date();
+  var eleValue = taxon_record_name_version.taxonRecordName;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
 
   var id_v = taxon_record_name_version._id;
@@ -24,9 +24,9 @@ exports.postVersion = function(req, res) {
   console.log("ID Ficha: "+id_rc);
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
+    if(typeof  eleValue!=="undefined" && eleValue!=""){
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
-      console.log("El conteo: "+count);
       if(count==0){
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }else{
@@ -49,6 +49,9 @@ exports.postVersion = function(req, res) {
         res.json({message: "Empty Database"});
       }
    });
+   }else{
+    res.json({message: "Empty data in version of the element"});
+   } 
   }else{
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -60,6 +63,7 @@ exports.postRecord = function(req, res) {
 
   taxon_record_name_version.id_record=mongoose.Types.ObjectId();
   taxon_record_name_version.created=Date();
+  var eleValue = taxon_record_name_version.taxonRecordName;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
 
   var id_v = taxon_record_name_version._id;
@@ -68,8 +72,8 @@ exports.postRecord = function(req, res) {
   var ob_ids= new Array();
   ob_ids.push(id_v);
 
-    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
-    console.log("El conteo: "+count);
+  if(typeof  eleValue!=="undefined" && eleValue!=""){
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){
     if(count==0){
       add_objects.RecordVersion.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
         if(err){
@@ -88,6 +92,9 @@ exports.postRecord = function(req, res) {
       res.json({message: "Already exists a Record(Ficha) with id: "+id_rc });
     }
   });
+  }else{
+    res.json({message: "Empty data in version of the element"});
+  }
 }
 
 exports.getVersion = function(req, res) {
@@ -98,6 +105,7 @@ exports.getVersion = function(req, res) {
   add_objects.RecordVersion.findOne({ _id : id_rc }).populate('taxonRecordNameVersion').exec(function (err, record) {
     if(record){
       if (err){
+        
         res.send(err);
       };
       var len=record.taxonRecordNameVersion.length;

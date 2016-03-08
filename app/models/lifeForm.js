@@ -3,6 +3,7 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
@@ -10,14 +11,14 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 var LifeFormAtomized = new Schema ({
 	measurementOrFact : MeasurementOrFact,
 	ancillaryData : AncillaryData
-},{ strict: false, versionKey: false });
+},{ versionKey: false });
 
 var LifeForm = Element.extend({
-	lifeFormAtomized : LifeFormAtomized,
+	lifeFormAtomized : [LifeFormAtomized],
 	lifeFormUnstructured : String
-},{ strict: false, versionKey: false });
+},{ versionKey: false });
 
-var LifeFormVersion = new ElementVersion.extend({
+var LifeFormVersion = ElementVersion.extend({
 	lifeForm : LifeForm
 },{ collection: 'LifeFormVersion', versionKey: false });
 
