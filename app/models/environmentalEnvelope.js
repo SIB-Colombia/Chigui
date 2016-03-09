@@ -20,7 +20,4 @@ var EnvironmentalEnvelopeVersion = ElementVersion.extend({
 	environmentalEnvelope : EnvironmentalEnvelope
 },{ collection: 'EnvironmentalEnvelopeVersion' });
 
-module.exports = {
-	             	EnvironmentalEnvelopeVersion: mongoose.model('EnvironmentalEnvelopeVersion', EnvironmentalEnvelopeVersion ),
-	             	EnvironmentalEnvelope: mongoose.model('EnvironmentalEnvelope', EnvironmentalEnvelope )
-	             };
+module.exports = mongoose.model('EnvironmentalEnvelopeVersion', EnvironmentalEnvelopeVersion );

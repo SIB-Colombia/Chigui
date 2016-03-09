@@ -20,7 +20,4 @@ var EcologicalSignificanceVersion = ElementVersion.extend({
 	ecologicalSignificance : EcologicalSignificance
 },{ collection: 'EcologicalSignificanceVersion' });
 
-module.exports = {
-	             	EcologicalSignificanceVersion: mongoose.model('EcologicalSignificanceVersion', EcologicalSignificanceVersion ),
-	             	EcologicalSignificance: mongoose.model('EcologicalSignificance', EcologicalSignificance )
-	             };
+module.exports = mongoose.model('EcologicalSignificanceVersion', EcologicalSignificanceVersion );

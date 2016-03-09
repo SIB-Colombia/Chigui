@@ -45,7 +45,4 @@ var InvasivenessVersion = ElementVersion.extend({
 	invasiveness : Invasiveness
 },{ collection: 'InvasivenessVersion' });
 
-module.exports = {
-	             	InvasivenessVersion: mongoose.model('InvasivenessVersion', InvasivenessVersion ),
-	             	Invasiveness: mongoose.model('Invasiveness', Invasiveness )
-	             };
+module.exports = mongoose.model('InvasivenessVersion', InvasivenessVersion );
