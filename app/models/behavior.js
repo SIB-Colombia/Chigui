@@ -4,24 +4,22 @@ var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
 var ElementVersion = require('mongoose').model('ElementVersion').schema;
+var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var DispersalAtomized = new Schema ({
-	purpose : String,
-	type : String,
-	structureDispersed : String,
-	distance : String,
+var BehaviorAtomized = new Schema ({
+	measurementOrFact : MeasurementOrFact,
 	ancillaryData : AncillaryData
 },{ versionKey: false });
 
-var Dispersal = Element.extend({
-	dispersalAtomized : DispersalAtomized,
-	dispersalUnstructured : String
+var Behavior = Element.extend({
+	behaviorAtomized : BehaviorAtomized,
+	behaviorUnstructured : String
 },{ versionKey: false });
 
-var DispersalVersion = ElementVersion.extend({
-	dispersal : Dispersal
-},{ collection: 'DispersalVersion', versionKey: false });
+var BehaviorVersion = ElementVersion.extend({
+	behavior : Behavior
+},{ collection: 'BehaviorVersion', versionKey: false });
 
-module.exports = mongoose.model('DispersalVersion', DispersalVersion );
+module.exports = mongoose.model('BehaviorVersion', BehaviorVersion )

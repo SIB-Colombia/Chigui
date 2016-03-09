@@ -12,7 +12,7 @@ var exports = module.exports = {}
 exports.getRecord = function(req, res) {
 	var id_rc=req.params.id_record;
 	var ver=req.params.version;
-	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion').exec(function (err, record) {
+	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
 	//console.log(record);
     if(record){
   		if (err){
@@ -37,7 +37,7 @@ exports.getRecordLast = function(req, res) {
   var id_rc=req.params.id_record;
   var ver=req.params.version;
   var lastRec={};
-  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion').exec(function (err, record) {
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -53,8 +53,12 @@ exports.getRecordLast = function(req, res) {
       */
       var lenComNameAt=record.commonNamesAtomizedVersion.length;
       var lenSyAt=record.synonymsAtomizedVersion.length;
+      var lenTaxRecNam=record.taxonRecordNameVersion.length;
+      var lenInt=record.interactionsVersion.length;
       lastRec.commonNamesAtomized=record.commonNamesAtomizedVersion[lenComNameAt-1];
       lastRec.synonymsAtomized=record.synonymsAtomizedVersion[lenSyAt-1];
+      lastRec.taxonRecordNameVersion=record.taxonRecordNameVersion[lenTaxRecNam-1];
+      lastRec.interactionsVersion=record.interactionsVersion[lenInt-1];
       console.log(lastRec);
       res.json(lastRec);
     }else{
