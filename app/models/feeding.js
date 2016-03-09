@@ -3,6 +3,7 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
@@ -13,11 +14,11 @@ var FeedingAtomized = new Schema ({
 },{ strict: false, versionKey: false });
 
 var Feeding = Element.extend({
-	feedingAtomized : FeedingAtomized,
+	feedingAtomized : [FeedingAtomized],
 	feedingUnstructured : String
 },{ strict: false, versionKey: false });
 
-var FeedingVersion = new ElementVersion.extend({
+var FeedingVersion = ElementVersion.extend({
 	feeding : Feeding
 },{ collection: 'FeedingVersion', versionKey: false });
 

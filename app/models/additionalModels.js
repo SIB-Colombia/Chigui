@@ -103,6 +103,7 @@ var RecordVersion = new Schema({
 	commonNamesAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'CommonNamesAtomizedVersion' }],
 	hierarchyVersion : [{ type: Schema.Types.ObjectId, ref: 'HierarchyVersion' }],
 	briefDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'BriefDescriptionVersion' }],
+	abstractVersion : [{ type: Schema.Types.ObjectId, ref: 'AbstractVersion' }],
 	fullDescriptionVersion : [{ type: Schema.Types.ObjectId, ref: 'FullDescriptionVersion' }],
 	identificationKeysVersion : [{ type: Schema.Types.ObjectId, ref: 'IdentificationKeysVersion' }],
 	lifeFormVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeFormVersion' }],
@@ -113,7 +114,12 @@ var RecordVersion = new Schema({
 	migratoryVersion : [{ type: Schema.Types.ObjectId, ref: 'MigratoryVersion' }],
 	ecologicalSignificanceVersion : [{ type: Schema.Types.ObjectId, ref: 'EcologicalSignificanceVersion' }],
 	environmentalEnvelopeVersion : [{ type: Schema.Types.ObjectId, ref: 'EnvironmentalEnvelopeVersion' }],
-	invasivenessVersion : [{ type: Schema.Types.ObjectId, ref: 'invasivenessVersion' }]
+	invasivenessVersion : [{ type: Schema.Types.ObjectId, ref: 'invasivenessVersion' }],
+	feedingVersion : [{ type: Schema.Types.ObjectId, ref: 'FeedingVersion' }],
+	dispersalVersion : [{ type: Schema.Types.ObjectId, ref: 'DispersalVersion' }],
+	behaviorVersion : [{ type: Schema.Types.ObjectId, ref: 'BehaviorVersion' }],
+	interactionsVersion : [{ type: Schema.Types.ObjectId, ref: 'InteractionsVersion' }]
+
 
 }, { collection: 'Records' });
 
