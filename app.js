@@ -59,6 +59,7 @@ app.use(cors());
 
 //app.get('/fichas/:id_record/', record.getRecord);
 app.get('/fichas/:id_record/', record.getRecordLast);
+app.get('/record/:id_record/', record.getRecord);
 
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
 app.get('/fichas/:id_record/associated_party/:version', associated_party.getVersion);
