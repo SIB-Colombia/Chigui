@@ -109,7 +109,8 @@ var RecordVersion = new Schema({
 	lifeCycleVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeCycleVersion' }],
 	reproductionVersion : [{ type: Schema.Types.ObjectId, ref: 'ReproductionVersion' }],
 	annualCyclesVersion : [{ type: Schema.Types.ObjectId, ref: 'AnnualCyclesVersion' }],
-	feedingVersion : [{ type: Schema.Types.ObjectId, ref: 'FeedingVersion' }]
+	feedingVersion : [{ type: Schema.Types.ObjectId, ref: 'FeedingVersion' }],
+	dispersalVersion : [{ type: Schema.Types.ObjectId, ref: 'DispersalVersion' }]
 
 }, { collection: 'Records' });
 

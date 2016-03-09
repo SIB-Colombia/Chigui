@@ -3,6 +3,7 @@ var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
+var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
@@ -19,7 +20,7 @@ var Dispersal = Element.extend({
 	dispersalUnstructured : String
 },{ strict: false, versionKey: false });
 
-var DispersalVersion = new ElementVersion.extend({
+var DispersalVersion = ElementVersion.extend({
 	dispersal : Dispersal
 },{ collection: 'DispersalVersion', versionKey: false });
 

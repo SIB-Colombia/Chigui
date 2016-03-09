@@ -25,6 +25,7 @@ var life_cycle = require('./routes/lifeCycleRoutes');
 var reproduction = require('./routes/reproductionRoutes'); 
 var annual_cycles = require('./routes/annualCyclesRoutes');
 var feeding = require('./routes/feedingRoutes');
+var dispersal = require('./routes/dispersalRoutes');
 var molecular_data = require('./routes/molecularData');
 var migratory = require('./routes/migratory');
 var ecological_significance = require('./routes/ecologicalSignificance');
@@ -53,7 +54,8 @@ app.use(logger('dev'));
 
 app.use(cors());
 
-app.get('/fichas/:id_record/', record.getRecord);
+//app.get('/fichas/:id_record/', record.getRecord);
+app.get('/fichas/:id_record/', record.getRecordLast);
 
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
 app.get('/fichas/:id_record/associated_party/:version', associated_party.getVersion);
@@ -82,6 +84,8 @@ app.post('/fichas/:id_record/annual_cycles/', annual_cycles.postVersion);
 app.get('/fichas/:id_record/annual_cycles/:version', annual_cycles.getVersion);
 app.post('/fichas/:id_record/feeding/', feeding.postVersion);
 app.get('/fichas/:id_record/feeding/:version', feeding.getVersion);
+app.post('/fichas/:id_record/dispersal/', dispersal.postVersion);
+app.get('/fichas/:id_record/dispersal/:version', dispersal.getVersion);
 app.post('/fichas/:id_record/molecular_data/', molecular_data.postVersion);
 app.get('/fichas/:id_record/molecular_data/:version', molecular_data.getVersion);
 app.post('/fichas/:id_record/migratory/', migratory.postVersion);

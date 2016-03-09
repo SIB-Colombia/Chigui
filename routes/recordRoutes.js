@@ -12,7 +12,7 @@ var exports = module.exports = {}
 exports.getRecord = function(req, res) {
 	var id_rc=req.params.id_record;
 	var ver=req.params.version;
-	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion').exec(function (err, record) {
+	add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion').exec(function (err, record) {
 	//console.log(record);
     if(record){
   		if (err){
@@ -33,11 +33,11 @@ exports.getRecord = function(req, res) {
 	});
 };
 
-exports.getRecordList = function(req, res) {
+exports.getRecordLast = function(req, res) {
   var id_rc=req.params.id_record;
   var ver=req.params.version;
   var lastRec={};
-  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion').exec(function (err, record) {
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -51,7 +51,12 @@ exports.getRecordList = function(req, res) {
         res.json({message: "The number of version is not valid"});
       }
       */
-      res.json(record);
+      var lenComNameAt=record.commonNamesAtomizedVersion.length;
+      var lenSyAt=record.synonymsAtomizedVersion.length;
+      lastRec.commonNamesAtomized=record.commonNamesAtomizedVersion[lenComNameAt-1];
+      lastRec.synonymsAtomized=record.synonymsAtomizedVersion[lenSyAt-1];
+      console.log(lastRec);
+      res.json(lastRec);
     }else{
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
