@@ -35,7 +35,7 @@ var ecological_significance = require('./routes/ecologicalSignificance');
 var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
 var habitats = require('./routes/habitats');
-//var distribution = require('./routes/distribution');
+var distribution = require('./routes/distribution');
 var territory = require('./routes/territory');
 var population_biology = require('./routes/populationBiology');
 
@@ -117,11 +117,10 @@ app.get('/fichas/:id_record/territory/:version', territory.getVersion);
 app.post('/fichas/:id_record/population_biology/', population_biology.postVersion);
 app.get('/fichas/:id_record/population_biology/:version', population_biology.getVersion);
 
-/*
+
 app.post('/fichas/:id_record/distribution/', distribution.postVersion);
 app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
 /*
-
 
 
 */

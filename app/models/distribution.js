@@ -28,7 +28,7 @@ var Distribution = Element.extend({
 	distributionUnstructured : String
 },{collection: 'distribution'});
 
-var DistributionVersion = new ElementVersion.extend({
+var DistributionVersion = ElementVersion.extend({
 	distribution : [Distribution]
 },{ collection: 'DistributionVersion' });
 
