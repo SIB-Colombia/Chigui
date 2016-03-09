@@ -18,7 +18,4 @@ var TerritoryVersion = ElementVersion.extend({
 	territory : Territory
 },{ collection: 'TerritoryVersion' });
 
-module.exports = {
-	             	TerritoryVersion: mongoose.model('TerritoryVersion', TerritoryVersion ),
-	             	Territory: mongoose.model('Territory', Territory )
-	             };
+module.exports = mongoose.model('TerritoryVersion', TerritoryVersion );

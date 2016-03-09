@@ -118,9 +118,11 @@ var RecordVersion = new Schema({
 	feedingVersion : [{ type: Schema.Types.ObjectId, ref: 'FeedingVersion' }],
 	dispersalVersion : [{ type: Schema.Types.ObjectId, ref: 'DispersalVersion' }],
 	behaviorVersion : [{ type: Schema.Types.ObjectId, ref: 'BehaviorVersion' }],
-	interactionsVersion : [{ type: Schema.Types.ObjectId, ref: 'InteractionsVersion' }]
-
-
+	interactionsVersion : [{ type: Schema.Types.ObjectId, ref: 'InteractionsVersion' }],
+	habitatsVersion : [{ type: Schema.Types.ObjectId, ref: 'HabitatsVersion' }],
+	distributionVersion : [{ type: Schema.Types.ObjectId, ref: 'DistributionVersion' }],
+	territoryVersion : [{ type: Schema.Types.ObjectId, ref: 'TerritoryVersion' }],
+	populationBiologyVersion : [{ type: Schema.Types.ObjectId, ref: 'PopulationBiologyVersion' }]
 }, { collection: 'Records' });
 
 var MeasurementOrFact = new Schema({

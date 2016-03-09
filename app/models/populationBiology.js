@@ -72,7 +72,4 @@ var PopulationBiologyVersion = ElementVersion.extend({
 	populationBiology : PopulationBiology
 },{ collection: 'PopulationBiologyVersion' });
 
-module.exports = {
-	             	PopulationBiologyVersion: mongoose.model('PopulationBiologyVersion', PopulationBiologyVersion ),
-	             	PopulationBiology: mongoose.model('PopulationBiology', PopulationBiology )
-	             };
+module.exports = mongoose.model('PopulationBiologyVersion', PopulationBiologyVersion );

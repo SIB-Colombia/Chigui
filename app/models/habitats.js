@@ -12,16 +12,13 @@ var HabitatAtomized = Element.extend({
 	relatedTo : String
 });
 
-var Habitat = Element.extend({
+var Habitats = Element.extend({
 	habitatAtomized : [HabitatAtomized],
 	habitatUnstructured : String
-},{collection: 'habitat'});
+},{collection: 'habitats'});
 
-var HabitatVersion = ElementVersion.extend({
-	habitat : Habitat
-},{ collection: 'HabitatVersion' });
+var HabitatsVersion = ElementVersion.extend({
+	habitats : Habitats
+},{ collection: 'HabitatsVersion' });
 
-module.exports = {
-	             	HabitatVersion: mongoose.model('HabitatVersion', HabitatVersion ),
-	             	Habitat: mongoose.model('Habitat', Habitat )
-	             };
+module.exports = mongoose.model('HabitatsVersion', HabitatsVersion );

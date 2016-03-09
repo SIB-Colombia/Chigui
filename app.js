@@ -34,10 +34,10 @@ var migratory = require('./routes/migratory');
 var ecological_significance = require('./routes/ecologicalSignificance');
 var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
-//var habitats = require('./routes/habitats');
+var habitats = require('./routes/habitats');
 //var distribution = require('./routes/distribution');
-//var territory = require('./routes/territory');
-//var population_biology = require('./routes/populationBiology');
+var territory = require('./routes/territory');
+var population_biology = require('./routes/populationBiology');
 
 var app = express();
 app.use(compress());
@@ -106,18 +106,23 @@ app.get('/fichas/:id_record/environmental_envelope/:version', environmental_enve
 
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
-/*
+
 app.post('/fichas/:id_record/habitats/', habitats.postVersion);
 app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
-
-app.post('/fichas/:id_record/distribution/', distribution.postVersion);
-app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
 
 app.post('/fichas/:id_record/territory/', territory.postVersion);
 app.get('/fichas/:id_record/territory/:version', territory.getVersion);
 
 app.post('/fichas/:id_record/population_biology/', population_biology.postVersion);
 app.get('/fichas/:id_record/population_biology/:version', population_biology.getVersion);
+
+/*
+app.post('/fichas/:id_record/distribution/', distribution.postVersion);
+app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
+/*
+
+
+
 */
 
 

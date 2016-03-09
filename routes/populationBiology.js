@@ -71,3 +71,4 @@ exports.postVersion = function(req, res) {
   }else{
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
+}

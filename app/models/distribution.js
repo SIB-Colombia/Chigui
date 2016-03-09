@@ -25,15 +25,11 @@ var Distribution = Element.extend({
 		endDate: {type: Date, default: Date.now()}
 	},
 	distributionAtomized : [distributionAtomized],
-	distributionUnstructured : String,
-	id_version : { type: Schema.Types.ObjectId, ref: 'DistributionVersion' }
-},{collection: 'Distribution'});
+	distributionUnstructured : String
+},{collection: 'distribution'});
 
 var DistributionVersion = new ElementVersion.extend({
 	distribution : [Distribution]
 },{ collection: 'DistributionVersion' });
 
-module.exports = {
-	             	DistributionVersion: mongoose.model('DistributionVersion', DistributionVersion ),
-	             	Distribution: mongoose.model('Distribution', Distribution )
-	             };
+module.exports = mongoose.model('DistributionVersion', DistributionVersion );
