@@ -27,7 +27,7 @@ var annual_cycles = require('./routes/annualCyclesRoutes');
 var molecular_data = require('./routes/molecularData');
 var migratory = require('./routes/migratory');
 var ecological_significance = require('./routes/ecologicalSignificance');
-//var environmental_envelope = require('./routes/environmentalEnvelope');
+var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
 //var habitats = require('./routes/habitats');
 //var distribution = require('./routes/distribution');
@@ -85,10 +85,9 @@ app.post('/fichas/:id_record/migratory/', migratory.postVersion);
 app.get('/fichas/:id_record/migratory/:version', migratory.getVersion);
 app.post('/fichas/:id_record/ecological_significance/', ecological_significance.postVersion);
 app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
-/*
 app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
 app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
-*/
+
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
 /*

@@ -24,7 +24,4 @@ var MigratoryVersion = ElementVersion.extend({
 	migratory : Migratory
 },{ collection: 'MigratoryVersion' });
 
-module.exports = {
-	             	MigratoryVersion: mongoose.model('MigratoryVersion', MigratoryVersion ),
-	             	Migratory: mongoose.model('Migratory', Migratory )
-	             };
+module.exports = mongoose.model('MigratoryVersion', MigratoryVersion );

@@ -108,7 +108,12 @@ var RecordVersion = new Schema({
 	lifeFormVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeFormVersion' }],
 	lifeCycleVersion : [{ type: Schema.Types.ObjectId, ref: 'LifeCycleVersion' }],
 	reproductionVersion : [{ type: Schema.Types.ObjectId, ref: 'ReproductionVersion' }],
-	annualCyclesVersion : [{ type: Schema.Types.ObjectId, ref: 'AnnualCyclesVersion' }]
+	annualCyclesVersion : [{ type: Schema.Types.ObjectId, ref: 'AnnualCyclesVersion' }],
+	molecularDataVersion : [{ type: Schema.Types.ObjectId, ref: 'MolecularDataVersion' }],
+	migratoryVersion : [{ type: Schema.Types.ObjectId, ref: 'MigratoryVersion' }],
+	ecologicalSignificanceVersion : [{ type: Schema.Types.ObjectId, ref: 'EcologicalSignificanceVersion' }],
+	environmentalEnvelopeVersion : [{ type: Schema.Types.ObjectId, ref: 'EnvironmentalEnvelopeVersion' }],
+	invasivenessVersion : [{ type: Schema.Types.ObjectId, ref: 'invasivenessVersion' }]
 
 }, { collection: 'Records' });
 

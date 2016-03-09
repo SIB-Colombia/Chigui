@@ -21,7 +21,4 @@ var MolecularDataVersion = ElementVersion.extend({
 	molecularData : MolecularData
 },{ collection: 'MolecularDataVersion' });
 
-module.exports = {
-	             	MolecularDataVersion: mongoose.model('MolecularDataVersion', MolecularDataVersion ),
-	             	MolecularData: mongoose.model('MolecularData', MolecularData )
-	             };
+module.exports = mongoose.model('MolecularDataVersion', MolecularDataVersion );
