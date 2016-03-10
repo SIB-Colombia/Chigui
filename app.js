@@ -44,6 +44,7 @@ var threat_status = require('./routes/threatStatus');
 var legislation = require('./routes/legislation');
 var uses_management_and_conservation = require('./routes/usesManagementAndConservation');
 var ancillary_data = require('./routes/ancillaryData');
+var references = require('./routes/referencesRoutes');
 var endemic_atomized = require('./routes/endemicAtomized');
 
 var app = express();
@@ -143,6 +144,8 @@ app.post('/fichas/:id_record/uses_management_and_conservation/', uses_management
 app.get('/fichas/:id_record/uses_management_and_conservation/:version', uses_management_and_conservation.getVersion);
 app.post('/fichas/:id_record/ancillary_data/', ancillary_data.postVersion);
 app.get('/fichas/:id_record/ancillary_data/:version', ancillary_data.getVersion);
+app.post('/fichas/:id_record/references/', references.postVersion);
+app.get('/fichas/:id_record/references/:version', references.getVersion);
 app.post('/fichas/:id_record/endemic_atomized/', endemic_atomized.postVersion);
 app.get('/fichas/:id_record/endemic_atomized/:version', endemic_atomized.getVersion);
 

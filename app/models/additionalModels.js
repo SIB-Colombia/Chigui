@@ -128,6 +128,7 @@ var RecordVersion = new Schema({
 	threatStatusVersion : [{ type: Schema.Types.ObjectId, ref: 'ThreatStatusVersion' }],
 	legislationVersion : [{ type: Schema.Types.ObjectId, ref: 'LegislationVersion' }],
 	usesManagementAndConservationVersion : [{ type: Schema.Types.ObjectId, ref: 'UsesManagementAndConservationVersion' }],
+	referencesVersion : [{ type: Schema.Types.ObjectId, ref: 'ReferencesVersion' }],
 	ancillaryDataVersion : [{ type: Schema.Types.ObjectId, ref: 'AncillaryDataVersion' }],
 	endemicAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'EndemicAtomizedVersion' }]
 }, { collection: 'Records' });
