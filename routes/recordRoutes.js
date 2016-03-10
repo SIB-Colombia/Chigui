@@ -82,31 +82,151 @@ exports.getRecordLast = function(req, res) {
       var lenAncDat = record.ancillaryDataVersion.length;
       */
 
+      //console.log(record.associatedPartyVersion);
+    if(typeof record.associatedPartyVersion[lenAsPar-1]!=="undefined"){
       lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
+    }else{
+      lastRec.associatedParty="";
+    }
+    if(typeof record.baseElementsVersion[lenBasEl-1]!=="undefined"){
       lastRec.baseElements=record.baseElementsVersion[lenBasEl-1].baseElements;
+    }else{
+      lastRec.baseElements="";
+    }
+    if(typeof record.commonNamesAtomizedVersion[lenComNameAt-1]!=="undefined"){
       lastRec.commonNamesAtomized=record.commonNamesAtomizedVersion[lenComNameAt-1].commonNamesAtomized;
+    }else{
+      lastRec.commonNamesAtomized="";
+    }
+
+    if(typeof record.synonymsAtomizedVersion[lenSyAt-1]!=="undefined"){
       lastRec.synonymsAtomized=record.synonymsAtomizedVersion[lenSyAt-1].synonymsAtomized;
+    }else{
+      lastRec.synonymsAtomized="";
+    }
+
+    if(typeof record.taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
       lastRec.taxonRecordName=record.taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+    }else{
+      lastRec.taxonRecordName="";
+    }
+
+    if(typeof record.lifeCycleVersion[lenLifCyc-1]!=="undefined"){
       lastRec.lifeCycle=record.lifeCycleVersion[lenLifCyc-1].lifeCycle;
+    }else{
+      lastRec.lifeCycle="";
+    }
+
+    if(typeof record.lifeFormVersion[lenLifFor-1]!=="undefined"){
       lastRec.lifeForm=record.lifeFormVersion[lenLifFor-1].lifeForm;
+    }else{
+      lastRec.lifeForm="";
+    }
+
+    if(typeof record.identificationKeysVersion[lenIdeKey-1]!=="undefined"){
       lastRec.identificationKeys=record.identificationKeysVersion[lenIdeKey-1].identificationKeys;
+    }else{
+      lastRec.identificationKeys="";
+    }
+
+    if(typeof record.fullDescriptionVersion[lenFulDes-1]!=="undefined"){
       lastRec.fullDescription=record.fullDescriptionVersion[lenFulDes-1].fullDescription;
+    }else{
+      lastRec.fullDescription="";
+    }
+
+    if(typeof record.briefDescriptionVersion[lenBrfDes-1]!=="undefined"){
       lastRec.briefDescription=record.briefDescriptionVersion[lenBrfDes-1].briefDescription;
+    }else{
+      lastRec.briefDescription="";
+    }
+
+    if(typeof record.abstractVersion[lenAbs-1]!=="undefined"){
       lastRec.abstract=record.abstractVersion[lenAbs-1].abstract;
+    }else{
+      lastRec.abstract="";
+    }
+
+    if(typeof record.hierarchyVersion[lenHie-1]!=="undefined"){
       lastRec.hierarchy=record.hierarchyVersion[lenHie-1].hierarchy;
+    }else{
+      lastRec.hierarchy="";
+    }
+
+    if(typeof record.reproductionVersion[lenRep-1]!=="undefined"){
       lastRec.reproduction=record.reproductionVersion[lenRep-1].reproduction;
+    }else{
+      lastRec.reproduction="";
+    }
+
+    if(typeof record.annualCyclesVersion[lenAnnCyc-1]!=="undefined"){
       lastRec.annualCycles=record.annualCyclesVersion[lenAnnCyc-1].annualCycles;
+    }else{
+      lastRec.annualCycles="";
+    }
+
+    if(typeof record.feedingVersion[lenFed-1]!=="undefined"){
       lastRec.feeding=record.feedingVersion[lenFed-1].feeding;
+    }else{
+      lastRec.feeding="";
+    }
+
+    if(typeof record.dispersalVersion[lenDis-1]!=="undefined"){
       lastRec.dispersal=record.dispersalVersion[lenDis-1].dispersal;
+    }else{
+      lastRec.dispersal="";
+    }
+
+    if(typeof record.behaviorVersion[lenBeh-1]!=="undefined"){
       lastRec.behavior=record.behaviorVersion[lenBeh-1].behavior;
+    }else{
+      lastRec.behavior="";
+    }
+
+    if(typeof record.interactionsVersion[lenInt-1]!=="undefined"){
       lastRec.interactions=record.interactionsVersion[lenInt-1].interactions;
-    //
+    }else{
+      lastRec.interactions="";
+    }
+
+    if(typeof record.molecularDataVersion[lenMolDat-1]!=="undefined"){
       lastRec.molecularData=record.molecularDataVersion[lenMolDat-1].molecularData;
+    }else{
+      lastRec.molecularData="";
+    }
+
+    if(typeof record.migratoryVersion[lenMig-1]!=="undefined"){
       lastRec.migratory=record.migratoryVersion[lenMig-1].migratory;
+    }else{
+      lastRec.migratory="";
+    }
+
+    if(typeof record.habitatsVersion[lenHab-1]!=="undefined"){
       lastRec.habitats=record.habitatsVersion[lenHab-1].habitats;
+    }else{
+      lastRec.habitats="";
+    }
+
+    if(typeof record.distributionVersion[lenDistr-1]!=="undefined"){
       lastRec.distribution=record.distributionVersion[lenDistr-1].distribution;
+    }else{
+      lastRec.distribution="";
+    }
+
+    if(typeof record.territoryVersion[lenTerr-1]!=="undefined"){
       lastRec.territory=record.territoryVersion[lenTerr-1].territory;
+    }else{
+      lastRec.territory="";
+    }
+
+    if(typeof record.populationBiologyVersion[lenPopBio-1]!=="undefined"){
       lastRec.populationBiology=record.populationBiologyVersion[lenPopBio-1].populationBiology;
+    }else{
+      lastRec.populationBiology="";
+    }
+ 
+      
+      
     //
     /*
       lastRec.threatStatus=record.threatStatusVersion[lenThrSta-1].threatStatus;
