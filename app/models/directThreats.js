@@ -19,7 +19,4 @@ var DirectThreatsVersion = ElementVersion.extend({
 	directThreats : {DirectThreats}
 },{ collection: 'DirectThreatsVersion' });
 
-module.exports = {
-	             	DirectThreatsVersion: mongoose.model('DirectThreatsVersion', DirectThreatsVersion ),
-	             	DirectThreats: mongoose.model('DirectThreats', DirectThreats )
-	             };
+module.exports = mongoose.model('DirectThreatsVersion', DirectThreatsVersion );

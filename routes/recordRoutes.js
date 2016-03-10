@@ -34,7 +34,7 @@ exports.getRecordLast = function(req, res) {
   var ver=req.params.version;
   var lastRec={};
   //add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion').exec(function (err, record) {
+    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -78,10 +78,13 @@ exports.getRecordLast = function(req, res) {
       var lenThrSta = record.threatStatusVersion.length; 
       var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
+      var lenDirThr = record.directThreatsVersion.length;
+
+      console.log("dir: "+record.directThreatsVersion);
     //
       /*
       
-      var lenDirThr = record.directThreatsVersion.length; 
+       
       var lenLegs = record.legislationVersion.length; 
       var lenUseAt = record.usesAtomizedVersion.length; 
       var lenManCon = record.managementAndConservationVersion.length; 
@@ -258,17 +261,19 @@ exports.getRecordLast = function(req, res) {
     }else{
       lastRec.usesManagementAndConservation="";
     }
-      
-      
-    //
-    /*
-    
 
     if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
       lastRec.directThreats=record.directThreatsVersion[lenDirThr-1].directThreats;
     }else{
       lastRec.directThreats="";
     }
+      
+      
+    //
+    /*
+    
+
+    
 
     
 

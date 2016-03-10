@@ -2,19 +2,19 @@ var express = require('express');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var DispersalVersion = require('../app/models/dispersal.js');
+var DirectThreatsVersion = require('../app/models/directThreats.js');
 var add_objects = require('../app/models/additionalModels.js');
 var cors = require;
 
 exports.postVersion = function(req, res) {
-  var dispersal_version  = req.body; 
-  //console.log(dispersal_version);
-  dispersal_version._id = mongoose.Types.ObjectId();
-  dispersal_version.created=Date();
-  var eleValue = dispersal_version.dispersal;
-  dispersal_version = new DispersalVersion(dispersal_version);
+  var direct_threats_version  = req.body; 
+  //console.log(direct_threats_version);
+  direct_threats_version._id = mongoose.Types.ObjectId();
+  direct_threats_version.created=Date();
+  var eleValue = direct_threats_version.directThreats;
+  direct_threats_version = new DirectThreatsVersion(direct_threats_version);
 
-  var id_v = dispersal_version._id;
+  var id_v = direct_threats_version._id;
   var id_rc = req.params.id_record;
 
   var ob_ids= new Array();
@@ -27,18 +27,18 @@ exports.postVersion = function(req, res) {
       if(count==0){
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }else{
-       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "dispersalVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "directThreatsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
               res.send(err);
           }
-          dispersal_version.id_record=id_rc;
-          dispersal_version.version=doc.dispersalVersion.length+1;
-          var ver = dispersal_version.version;
-          dispersal_version.save(function(err){
+          direct_threats_version.id_record=id_rc;
+          direct_threats_version.version=doc.directThreatsVersion.length+1;
+          var ver = direct_threats_version.version;
+          direct_threats_version.save(function(err){
             if(err){
              res.send(err);
             }
-            res.json({ message: 'Save DispersalVersion', element: 'dispersal', version : ver, _id: id_v, id_record : id_rc });
+            res.json({ message: 'Save DirectThreatsVersion', element: 'directThreats', version : ver, _id: id_v, id_record : id_rc });
          });
         });
       }
@@ -59,15 +59,15 @@ exports.getVersion = function(req, res) {
   var ver=req.params.version;
   console.log(id_rc);
   console.log(ver);
-  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('dispersalVersion').exec(function (err, record) {
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('directThreatsVersion').exec(function (err, record) {
     if(record){
       if (err){
         
         res.send(err);
       };
-      var len=record.dispersalVersion.length;
+      var len=record.directThreatsVersion.length;
       if(ver<=len && ver>0){
-        res.json(record.dispersalVersion[ver-1]);
+        res.json(record.directThreatsVersion[ver-1]);
       }else{
         res.json({message: "The number of version is not valid"});
       }
