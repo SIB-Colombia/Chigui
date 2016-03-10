@@ -10,6 +10,7 @@ var cors = require('cors');
 
 //------
 var record = require('./routes/recordRoutes');
+var more_information = require('./routes/moreInformationRoutes');
 var synonyms_atomized = require('./routes/synonymsAtomizedRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
 var taxon_record_name = require('./routes/taxonRecordNameRoutes');
@@ -64,6 +65,8 @@ app.post('/fichas/', taxon_record_name.postRecord);
 app.get('/lista/', record.getRecordList);
 app.get('/record/:id_record/', record.getRecord);
 
+app.post('/fichas/:id_record/more_information/', more_information.postVersion);
+app.get('/fichas/:id_record/more_information/:version', more_information.getVersion);
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
 app.get('/fichas/:id_record/associated_party/:version', associated_party.getVersion);
 app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);

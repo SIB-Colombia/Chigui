@@ -34,7 +34,7 @@ exports.getRecordLast = function(req, res) {
   var ver=req.params.version;
   var lastRec={};
   //add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion').exec(function (err, record) {
+    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -74,6 +74,10 @@ exports.getRecordLast = function(req, res) {
       var lenDistr = record.distributionVersion.length; 
       var lenTerr = record.territoryVersion.length; 
       var lenPopBio = record.populationBiologyVersion.length; 
+      var lenMorInf = record.moreInformationVersion.length; 
+      //console.log("MORINfo: "+record.moreInformationVersion);
+      //console.log("MORINfo: "+record.moreInformationVersion.length);
+      console.log("MORINfo: "+record.moreInformationVersion[lenMorInf-1]);
     //
       /*
       var lenThrSta = record.threatStatusVersion.length; 
@@ -229,6 +233,12 @@ exports.getRecordLast = function(req, res) {
       lastRec.populationBiology=record.populationBiologyVersion[lenPopBio-1].populationBiology;
     }else{
       lastRec.populationBiology="";
+    }
+
+    if(typeof record.moreInformationVersion[lenMorInf-1]!=="undefined"){
+      lastRec.moreInformation=record.moreInformationVersion[lenMorInf-1].moreInformation;
+    }else{
+      lastRec.moreInformation="";
     }
  
       
