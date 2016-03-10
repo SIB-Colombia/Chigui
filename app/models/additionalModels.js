@@ -122,7 +122,10 @@ var RecordVersion = new Schema({
 	habitatsVersion : [{ type: Schema.Types.ObjectId, ref: 'HabitatsVersion' }],
 	distributionVersion : [{ type: Schema.Types.ObjectId, ref: 'DistributionVersion' }],
 	territoryVersion : [{ type: Schema.Types.ObjectId, ref: 'TerritoryVersion' }],
-	populationBiologyVersion : [{ type: Schema.Types.ObjectId, ref: 'PopulationBiologyVersion' }]
+	populationBiologyVersion : [{ type: Schema.Types.ObjectId, ref: 'PopulationBiologyVersion' }],
+	threatStatusVersion : [{ type: Schema.Types.ObjectId, ref: 'ThreatStatusVersion' }],
+	legislationVersion : [{ type: Schema.Types.ObjectId, ref: 'LegislationVersion' }],
+	usesManagementAndConservationVersion : [{ type: Schema.Types.ObjectId, ref: 'UsesManagementAndConservationVersion' }]
 }, { collection: 'Records' });
 
 var MeasurementOrFact = new Schema({

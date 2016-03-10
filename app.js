@@ -38,6 +38,9 @@ var habitats = require('./routes/habitats');
 var distribution = require('./routes/distribution');
 var territory = require('./routes/territory');
 var population_biology = require('./routes/populationBiology');
+var threat_status = require('./routes/threatStatus');
+var legislation = require('./routes/legislation');
+var uses_management_and_conservation = require('./routes/usesManagementAndConservation');
 
 var app = express();
 app.use(compress());
@@ -120,10 +123,13 @@ app.get('/fichas/:id_record/population_biology/:version', population_biology.get
 
 app.post('/fichas/:id_record/distribution/', distribution.postVersion);
 app.get('/fichas/:id_record/distribution/:version', distribution.getVersion);
-/*
 
-
-*/
+app.post('/fichas/:id_record/threat_status/', threat_status.postVersion);
+app.get('/fichas/:id_record/threat_status/:version', threat_status.getVersion);
+app.post('/fichas/:id_record/legislation/', legislation.postVersion);
+app.get('/fichas/:id_record/legislation/:version', legislation.getVersion);
+app.post('/fichas/:id_record/uses_management_and_conservation/', uses_management_and_conservation.postVersion);
+app.get('/fichas/:id_record/uses_management_and_conservation/:version', uses_management_and_conservation.getVersion);
 
 
 app.post('/fichas/:id_record/base_elements/', base_elements.postVersion);

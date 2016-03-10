@@ -11,7 +11,7 @@ var threatStatusAtomized = Element.extend({
 		measurementType : String,
 		measurementAccuracy : String,
 		measurementUnit : String,
-		measurementDeterminedDate : Date.now(),
+		measurementDeterminedDate : Date,
 		measurementDeterminedBy : [String],
 		measurementMethod: String,
 		measurementRemarks : String,
@@ -32,13 +32,10 @@ var threatStatusAtomized = Element.extend({
 var ThreatStatus = Element.extend({
 	threatStatusAtomized : threatStatusAtomized,
 	threatStatusUnstructured : String
-},{collection: 'ThreatStatus'});
+},{collection: 'threatStatus'});
 
 var ThreatStatusVersion = ElementVersion.extend({
 	threatStatus : [ThreatStatus]
 },{ collection: 'ThreatStatusVersion' });
 
-module.exports = {
-	             	ThreatStatusVersion: mongoose.model('ThreatStatusVersion', ThreatStatusVersion ),
-	             	ThreatStatus: mongoose.model('ThreatStatus', ThreatStatus )
-	             };
+module.exports =  mongoose.model('ThreatStatusVersion', ThreatStatusVersion );

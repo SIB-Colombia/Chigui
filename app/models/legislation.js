@@ -24,13 +24,10 @@ var LegislationAtomized = Element.extend({
 var Legislation = Element.extend({
 	legislationAtomized : [LegislationAtomized],
 	legislationUnstructured : String
-},{collection: 'Legislation'});
+},{collection: 'legislation'});
 
 var LegislationVersion = ElementVersion.extend({
 	legislation : {Legislation}
 },{ collection: 'LegislationVersion' });
 
-module.exports = {
-	             	LegislationVersion: mongoose.model('LegislationVersion', LegislationVersion ),
-	             	Legislation: mongoose.model('Legislation', Legislation )
-	             };
+module.exports = mongoose.model('LegislationVersion', LegislationVersion );
