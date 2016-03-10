@@ -34,7 +34,7 @@ exports.getRecordLast = function(req, res) {
   var ver=req.params.version;
   var lastRec={};
   //add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion').exec(function (err, record) {
+    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -75,13 +75,16 @@ exports.getRecordLast = function(req, res) {
       var lenTerr = record.territoryVersion.length; 
       var lenPopBio = record.populationBiologyVersion.length; 
       var lenMorInf = record.moreInformationVersion.length; 
-      //console.log("MORINfo: "+record.moreInformationVersion);
-      //console.log("MORINfo: "+record.moreInformationVersion.length);
-      console.log("MORINfo: "+record.moreInformationVersion[lenMorInf-1]);
+      var lenThrSta = record.threatStatusVersion.length; 
+      var lenLegs = record.legislationVersion.length;
+      var lenUseCon = record.usesManagementAndConservationVersion.length;
+      var lenDirThr = record.directThreatsVersion.length;
+
+      console.log("dir: "+record.directThreatsVersion);
     //
       /*
-      var lenThrSta = record.threatStatusVersion.length; 
-      var lenDirThr = record.directThreatsVersion.length; 
+      
+       
       var lenLegs = record.legislationVersion.length; 
       var lenUseAt = record.usesAtomizedVersion.length; 
       var lenManCon = record.managementAndConservationVersion.length; 
@@ -240,15 +243,23 @@ exports.getRecordLast = function(req, res) {
     }else{
       lastRec.moreInformation="";
     }
- 
-      
-      
-    //
-    /*
+
     if(typeof record.threatStatusVersion[lenThrSta-1]!=="undefined"){
       lastRec.threatStatus=record.threatStatusVersion[lenThrSta-1].threatStatus;
     }else{
       lastRec.threatStatus="";
+    }
+ 
+    if(typeof record.legislationVersion[lenLegs-1]!=="undefined"){
+      lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
+    }else{
+      lastRec.legislation="";
+    }
+
+    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]!=="undefined"){
+      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1].usesManagementAndConservation;
+    }else{
+      lastRec.usesManagementAndConservation="";
     }
 
     if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
@@ -256,12 +267,15 @@ exports.getRecordLast = function(req, res) {
     }else{
       lastRec.directThreats="";
     }
+      
+      
+    //
+    /*
+    
 
-    if(typeof record.legislationVersion[lenLegs-1]!=="undefined"){
-      lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
-    }else{
-      lastRec.legislation="";
-    }
+    
+
+    
 
     if(typeof record.usesAtomizedVersion[lenUseAt-1]!=="undefined"){
       lastRec.usesAtomized=record.usesAtomizedVersion[lenUseAt-1].usesAtomized;

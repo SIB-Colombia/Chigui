@@ -9,7 +9,7 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var DispersalAtomized = new Schema ({
 	purpose : String,
-	type : String,
+	type : { type: String },
 	structureDispersed : String,
 	distance : String,
 	ancillaryData : AncillaryData
