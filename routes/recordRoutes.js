@@ -1,11 +1,15 @@
 var express = require('express');
+var mongoosePaginate = require('mongoose-paginate');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var IdentificationKeysVersion = require('../app/models/identificationKeys.js');
+var TaxonRecordNameVersion = require('../app/models/taxonRecordName.js');
+var AssociatedPartyVersion = require('../app/models/associatedParty.js');
 var add_objects = require('../app/models/additionalModels.js');
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 var cors = require;
+
+RecordVersion.plugin(mongoosePaginate);
 
 var exports = module.exports = {}
 
@@ -88,6 +92,7 @@ exports.getRecordLast = function(req, res) {
     }else{
       lastRec.associatedParty="";
     }
+
     if(typeof record.baseElementsVersion[lenBasEl-1]!=="undefined"){
       lastRec.baseElements=record.baseElementsVersion[lenBasEl-1].baseElements;
     }else{
@@ -229,15 +234,62 @@ exports.getRecordLast = function(req, res) {
       
     //
     /*
+    if(typeof record.threatStatusVersion[lenThrSta-1]!=="undefined"){
       lastRec.threatStatus=record.threatStatusVersion[lenThrSta-1].threatStatus;
+    }else{
+      lastRec.threatStatus="";
+    }
+
+    if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
       lastRec.directThreats=record.directThreatsVersion[lenDirThr-1].directThreats;
+    }else{
+      lastRec.directThreats="";
+    }
+
+    if(typeof record.legislationVersion[lenLegs-1]!=="undefined"){
       lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
+    }else{
+      lastRec.legislation="";
+    }
+
+    if(typeof record.usesAtomizedVersion[lenUseAt-1]!=="undefined"){
       lastRec.usesAtomized=record.usesAtomizedVersion[lenUseAt-1].usesAtomized;
-      lastRec.managementAndConservation=record.managementAndConservationVersion[lenManCon-1].managementAndConservation;
+    }else{
+      lastRec.usesAtomized="";
+    }
+
+    if(typeof record.managementAndConservationVersion[lenManCon-1]!=="undefined"){
+      lastRec.managementAndConservation = record.managementAndConservationVersion[lenManCon-1].managementAndConservation;
+    }else{
+      lastRec.managementAndConservation ="";
+    }
+
+    if(typeof record.measurementOrFactVersion[lenMeaFac-1]!=="undefined"){
       lastRec.measurementOrFact=record.measurementOrFactVersion[lenMeaFac-1].measurementOrFact;
+    }else{
+      lastRec.measurementOrFact ="";
+    }
+
+    if(typeof record.referencesVersion[lenRefe-1]!=="undefined"){
       lastRec.references=record.referencesVersion[lenRefe-1].references;
+    }else{
+      lastRec.references ="";
+    }
+
+    if(typeof record.detailAtomizedVersion[lenDetAt-1]!=="undefined"){
       lastRec.detailAtomized=record.detailAtomizedVersion[lenDetAt-1].detailAtomized;
+    }else{
+      lastRec.detailAtomized ="";
+    }
+
+    if(typeof record.ancillaryDataVersion[lenAncDat-1]!=="undefined"){
       lastRec.ancillaryData=record.ancillaryDataVersion[lenAncDat-1].ancillaryData;
+    }else{
+      lastRec.ancillaryData ="";
+    }
+      
+      
+      
       */
       //console.log(lastRec);
       res.json(lastRec);
@@ -245,4 +297,79 @@ exports.getRecordLast = function(req, res) {
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   });
+};
+
+ 
+exports.getRecordList = function(req, res) {
+  //var response={};
+  var lastRec={};
+  var response=[];
+  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
+  var skip = req.query.skip;
+  var limit = req.query.limit ;
+  if(typeof skip ==="undefined" || typeof limit ==="undefined" || skip.length==0 || limit.length==0){
+    query.exec(function (err, data) {
+        if (err) 
+          res.send(err);
+        if(data.length==0){
+          res.json({"message" : "No data in the database"});
+        }else{
+          /*
+          var creation_date="";
+          for(i=0;i<data.length;i++){
+            if(typeof  data[i]._doc.creation_date==="undefined"){
+              creation_date=data[i]._id.getTimestamp();
+              data[i]._doc.creation_date =creation_date.toString();
+            }
+          }
+          */
+          var lenData=data.length;
+          var lenTaxRecNam=0;
+          var lenAsPar=0;
+          for (i = 0; i < lenData ; i++) {
+            lastRec.creation_date=data[i]._id.getTimestamp();
+            lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+            lenAsPar=data[i].associatedPartyVersion.length;
+            if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+              lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+            }else{
+              lastRec.associatedParty="";
+            }
+  
+            if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+              lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+            }else{
+              lastRec.taxonRecordName="";
+            }
+
+            response.push(lastRec);
+            lastRec={};
+          }
+          console.log(data.length);
+          console.log("Resultado: "+data);
+          res.json(response);
+      }
+    });
+  }else{
+    query=add_objects.RecordVersion.find({ skip: 10, limit: 5 }).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
+    query.exec(function (err, data) {
+        if (err) 
+          res.send(err);
+        if(data.length==0){
+          res.json({"message" : "No data in the database"});
+        }else{
+          var creation_date="";
+          for(i=0;i<data.length;i++){
+            if(typeof  data[i]._doc.creation_date==="undefined"){
+              creation_date=data[i]._id.getTimestamp();
+              data[i]._doc.creation_date =creation_date.toString();
+            }
+          }
+          console.log(data.length);
+          console.log("Resultado: "+data);
+          res.json(data);
+      }
+    });
+  }
+  
 };
