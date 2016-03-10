@@ -34,7 +34,7 @@ exports.getRecordLast = function(req, res) {
   var ver=req.params.version;
   var lastRec={};
   //add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion').exec(function (err, record) {
+    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion ancillaryDataVersion endemicAtomizedVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -79,11 +79,13 @@ exports.getRecordLast = function(req, res) {
       var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
       var lenDirThr = record.directThreatsVersion.length;
+      var lenAncDat = record.ancillaryDataVersion.length;
+      var lenEndAt = record.endemicAtomizedVersion.length;
 
       console.log("dir: "+record.directThreatsVersion);
     //
       /*
-      
+      var lenEndAt = record.endemicAtomizedVersion.length;
        
       var lenLegs = record.legislationVersion.length; 
       var lenUseAt = record.usesAtomizedVersion.length; 
@@ -91,7 +93,7 @@ exports.getRecordLast = function(req, res) {
       var lenMeaFac = record.measurementOrFactVersion.length; 
       var lenRefe = record.referencesVersion.length; 
       var lenDetAt = record.detailAtomizedVersion.length; 
-      var lenAncDat = record.ancillaryDataVersion.length;
+      
       */
 
       //console.log(record.associatedPartyVersion);
@@ -267,10 +269,25 @@ exports.getRecordLast = function(req, res) {
     }else{
       lastRec.directThreats="";
     }
+
+    if(typeof record.ancillaryDataVersion[lenAncDat-1]!=="undefined"){
+      lastRec.ancillaryData=record.ancillaryDataVersion[lenAncDat-1].ancillaryData;
+    }else{
+      lastRec.ancillaryData ="";
+    }
+
+    if(typeof record.endemicAtomizedVersion[lenEndAt-1]!=="undefined"){
+      lastRec.endemicAtomized=record.endemicAtomizedVersion[lenEndAt-1].endemicAtomized;
+    }else{
+      lastRec.endemicAtomized ="";
+    }
+
+
       
       
     //
     /*
+    
     
 
     
@@ -307,11 +324,7 @@ exports.getRecordLast = function(req, res) {
       lastRec.detailAtomized ="";
     }
 
-    if(typeof record.ancillaryDataVersion[lenAncDat-1]!=="undefined"){
-      lastRec.ancillaryData=record.ancillaryDataVersion[lenAncDat-1].ancillaryData;
-    }else{
-      lastRec.ancillaryData ="";
-    }
+    
       
       
       
