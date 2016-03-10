@@ -48,6 +48,7 @@ exports.getRecordLast = function(req, res) {
         res.json({message: "The number of version is not valid"});
       }
       */
+      lastRec._id=record._id;
       var lenAsPar=record.associatedPartyVersion.length;
       var lenBasEl=record.baseElementsVersion.length;
       var lenComNameAt=record.commonNamesAtomizedVersion.length;
@@ -323,10 +324,12 @@ exports.getRecordList = function(req, res) {
             }
           }
           */
+          if(data){
           var lenData=data.length;
           var lenTaxRecNam=0;
           var lenAsPar=0;
           for (i = 0; i < lenData ; i++) {
+            lastRec._id=data[i]._id;
             lastRec.creation_date=data[i]._id.getTimestamp();
             lenTaxRecNam=data[i].taxonRecordNameVersion.length;
             lenAsPar=data[i].associatedPartyVersion.length;
@@ -348,6 +351,9 @@ exports.getRecordList = function(req, res) {
           console.log(data.length);
           console.log("Resultado: "+data);
           res.json(response);
+        }else{
+          res.json({"message" : "No data in the database"});
+        }
       }
     });
   }else{
