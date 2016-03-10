@@ -42,6 +42,8 @@ var population_biology = require('./routes/populationBiology');
 var threat_status = require('./routes/threatStatus');
 var legislation = require('./routes/legislation');
 var uses_management_and_conservation = require('./routes/usesManagementAndConservation');
+var ancillary_data = require('./routes/ancillaryData');
+var endemic_atomized = require('./routes/endemicAtomized');
 
 var app = express();
 app.use(compress());
@@ -136,7 +138,10 @@ app.post('/fichas/:id_record/legislation/', legislation.postVersion);
 app.get('/fichas/:id_record/legislation/:version', legislation.getVersion);
 app.post('/fichas/:id_record/uses_management_and_conservation/', uses_management_and_conservation.postVersion);
 app.get('/fichas/:id_record/uses_management_and_conservation/:version', uses_management_and_conservation.getVersion);
-
+app.post('/fichas/:id_record/ancillary_data/', ancillary_data.postVersion);
+app.get('/fichas/:id_record/ancillary_data/:version', ancillary_data.getVersion);
+app.post('/fichas/:id_record/endemic_atomized/', endemic_atomized.postVersion);
+app.get('/fichas/:id_record/endemic_atomized/:version', endemic_atomized.getVersion);
 
 app.post('/fichas/:id_record/base_elements/', base_elements.postVersion);
 app.get('/fichas/:id_record/base_elements/:version', base_elements.getVersion);

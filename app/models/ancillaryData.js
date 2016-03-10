@@ -4,15 +4,11 @@ var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Element = require('mongoose').model('Element').schema;
 var ElementVersion = require('mongoose').model('ElementVersion').schema;
+var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var EndemicAtomized = Element.extend({
-	endemicTo: [String],
-	endemicIn : String,
-},{collection: 'endemicAtomized'});
+var AncillaryDataVersion = ElementVersion.extend({
+	ancillaryData : [AncillaryData]
+}, { collection: 'AncillaryDataVersion'});
 
-var EndemicAtomizedVersion = ElementVersion.extend({
-	endemicAtomized : EndemicAtomized
-},{ collection: 'EndemicAtomizedVersion' });
-
-module.exports = mongoose.model('EndemicAtomizedVersion', EndemicAtomizedVersion );
+module.exports = mongoose.model( 'AncillaryDataVersion', AncillaryDataVersion );

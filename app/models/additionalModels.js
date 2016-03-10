@@ -126,7 +126,9 @@ var RecordVersion = new Schema({
 	populationBiologyVersion : [{ type: Schema.Types.ObjectId, ref: 'PopulationBiologyVersion' }],
 	threatStatusVersion : [{ type: Schema.Types.ObjectId, ref: 'ThreatStatusVersion' }],
 	legislationVersion : [{ type: Schema.Types.ObjectId, ref: 'LegislationVersion' }],
-	usesManagementAndConservationVersion : [{ type: Schema.Types.ObjectId, ref: 'UsesManagementAndConservationVersion' }]
+	usesManagementAndConservationVersion : [{ type: Schema.Types.ObjectId, ref: 'UsesManagementAndConservationVersion' }],
+	ancillaryDataVersion : [{ type: Schema.Types.ObjectId, ref: 'ancillaryDataVersion' }],
+	endemicAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'endemicAtomizedVersion' }]
 }, { collection: 'Records' });
 
 var MeasurementOrFact = new Schema({
