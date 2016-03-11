@@ -12,7 +12,7 @@ var EndemicAtomized = Element.extend({
 },{collection: 'endemicAtomized'});
 
 var EndemicAtomizedVersion = ElementVersion.extend({
-	endemicAtomized : EndemicAtomized
+	endemicAtomized : [EndemicAtomized]
 },{ collection: 'EndemicAtomizedVersion' });
 
 module.exports = mongoose.model('EndemicAtomizedVersion', EndemicAtomizedVersion );

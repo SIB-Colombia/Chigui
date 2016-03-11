@@ -6,12 +6,13 @@ var Element = require('mongoose').model('Element').schema;
 var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
+var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
 
 var DispersalAtomized = new Schema ({
 	purpose : String,
 	type : { type: String },
 	structureDispersed : String,
-	distance : String,
+	distance : MeasurementOrFact,
 	ancillaryData : AncillaryData
 },{ versionKey: false });
 
