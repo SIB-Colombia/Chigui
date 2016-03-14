@@ -12,8 +12,8 @@ exports.postVersion = function(req, res) {
   var associated_party_version  = req.body; 
   //console.log(associated_party_version);
   associated_party_version._id = mongoose.Types.ObjectId();
-
   associated_party_version.created=Date();
+  //var eleValue = associated_party_version.associatedParty;
   associated_party_version = new AssociatedPartyVersion(associated_party_version);
 
   var id_v = associated_party_version._id;
@@ -23,11 +23,13 @@ exports.postVersion = function(req, res) {
   ob_ids.push(id_v);
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
+    if(typeof  eleValue!=="undefined" && eleValue!=""){ 
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
       if(count==0){
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }else{
+        //add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{ safe: true, upsert: true }).populate('moreInformationVersion').exec(function (err, record) { 
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "associatedPartyVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
               res.send(err);
@@ -43,12 +45,18 @@ exports.postVersion = function(req, res) {
           });
         });
       }
-    }else{
-      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }else{
+        res.status(406);
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }
     }
-  }
     );
+   }else{
+    res.status(406);
+    res.json({message: "Empty data in version of the element"});
+   } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }
