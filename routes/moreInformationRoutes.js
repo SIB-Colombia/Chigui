@@ -21,10 +21,6 @@ exports.postVersion = function(req, res) {
   ob_ids.push(id_v);
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
-    console.log(eleValue);
-    console.log(typeof  eleValue!=="undefined" && eleValue!="");
-    console.log(typeof  eleValue!=="undefined");
-    console.log(eleValue!="");
     if(typeof  eleValue!=="undefined" && eleValue!=""){ 
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
@@ -38,22 +34,31 @@ exports.postVersion = function(req, res) {
           more_information_version.id_record=id_rc;
           more_information_version.version=record.moreInformationVersion.length+1;
           var len = record.moreInformationVersion.length;
-          var prev = record.moreInformationVersion[len-1].moreInformation;
-          var next = more_information_version.moreInformation;
-
-          if(!compare.isEqual(prev,next)){
-            more_information_version.id_record=id_rc;
-            more_information_version.version=record.moreInformationVersion.length+1;
-            var ver = more_information_version.version;
+          if(len==0){
             more_information_version.save(function(err){
               if(err){
                 res.send(err);
               }
-              res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
-            });
+                res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
+              });
           }else{
-            res.status(406);
-            res.json({ message: 'The data in moreInformation is equal to last version of this element in the database' });
+            var prev = record.moreInformationVersion[len-1].moreInformation;
+            var next = more_information_version.moreInformation;
+
+            if(!compare.isEqual(prev,next)){
+              more_information_version.id_record=id_rc;
+              more_information_version.version=record.moreInformationVersion.length+1;
+              var ver = more_information_version.version;
+              more_information_version.save(function(err){
+              if(err){
+                res.send(err);
+              }
+                res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
+              });
+            }else{
+              res.status(406);
+              res.json({ message: 'The data in moreInformation is equal to last version of this element in the database' });
+            }
           }
        }); 
       }

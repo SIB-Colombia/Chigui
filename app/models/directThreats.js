@@ -11,12 +11,17 @@ var DirectThreatsAtomized = Element.extend({
 });
 
 var DirectThreats = Element.extend({
-	directThreatsAtomized : {DirectThreatsAtomized},
+	directThreatsAtomized : [DirectThreatsAtomized],
 	directThreatsUnstructured : String
 },{collection: 'DirectThreats'});
 
 var DirectThreatsVersion = ElementVersion.extend({
-	directThreats : {DirectThreats}
+	directThreats : { type : DirectThreats, required: true }
 },{ collection: 'DirectThreatsVersion' });
+
+/*
+DirectThreatsVersion.path('directThreats').required(true);
+DirectThreats.path('directThreatsAtomized').required(true);
+*/
 
 module.exports = mongoose.model('DirectThreatsVersion', DirectThreatsVersion );

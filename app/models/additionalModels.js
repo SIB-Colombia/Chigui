@@ -139,8 +139,8 @@ var MeasurementOrFact = new Schema({
 	measurementValue : String,
 	measurementAccuracy : String,
 	measurementUnit : String,
-	measurementDetermineDate : String,
-	measurementDetermineBy: [String],
+	measurementDeterminedDate : String,
+	measurementDeterminedBy: [String],
 	measurementMethod : String,
 	measurementRemarks : String,
 	realtedTo : String

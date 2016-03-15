@@ -4,6 +4,7 @@ var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
 var DirectThreatsVersion = require('../app/models/directThreats.js');
 var add_objects = require('../app/models/additionalModels.js');
+var compare = require('../app/utils/directThreatsCompare.js');
 var cors = require;
 
 exports.postVersion = function(req, res) {
@@ -24,24 +25,44 @@ exports.postVersion = function(req, res) {
     if(typeof  eleValue!=="undefined" && eleValue!=""){
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
-      if(count==0){
-        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
-      }else{
-       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "directThreatsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
-          if (err){
-              res.send(err);
-          }
-          direct_threats_version.id_record=id_rc;
-          direct_threats_version.version=doc.directThreatsVersion.length+1;
-          var ver = direct_threats_version.version;
-          direct_threats_version.save(function(err){
-            if(err){
-             res.send(err);
+        if(count==0){
+          res.json({ message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+        }else{
+          add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "directThreatsVersion": id_v } },{ safe: true, upsert: true }).populate('directThreatsVersion').exec(function (err, record) { 
+            if (err){
+                res.send(err);
             }
-            res.json({ message: 'Save DirectThreatsVersion', element: 'directThreats', version : ver, _id: id_v, id_record : id_rc });
-         });
-        });
-      }
+            direct_threats_version.id_record=id_rc;
+            direct_threats_version.version=record.directThreatsVersion.length+1;
+            var len = record.directThreatsVersion.length;
+            if(len==0){
+              direct_threats_version.save(function(err){
+                  if(err){
+                    res.send(err);
+                  }
+                  res.json({ message: 'Save DirectThreatsVersion', element: 'directThreats', version : ver, _id: id_v, id_record : id_rc });
+              });
+            }else{
+              var prev = record.directThreatsVersion[len-1].directThreats;
+              var next = direct_threats_version.directThreats;
+
+              if(!compare.isEqual(prev,next)){
+                direct_threats_version.id_record=id_rc;
+                direct_threats_version.version=record.directThreatsVersion.length+1;
+                var ver = direct_threats_version.version;
+                direct_threats_version.save(function(err){
+                  if(err){
+                    res.send(err);
+                  }
+                  res.json({ message: 'Save DirectThreatsVersion', element: 'directThreats', version : ver, _id: id_v, id_record : id_rc });
+                });
+              }else{
+                res.status(406);
+                res.json({ message: 'The data in directThreats is equal to last version of this element in the database' });
+              }
+            }
+          });
+        }
       }else{
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }
