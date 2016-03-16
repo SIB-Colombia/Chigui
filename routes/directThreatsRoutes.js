@@ -64,13 +64,16 @@ exports.postVersion = function(req, res) {
           });
         }
       }else{
+        res.status(406);
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }
    });
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

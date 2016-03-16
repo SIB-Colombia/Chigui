@@ -12,8 +12,8 @@ exports.postVersion = function(req, res) {
   var base_elements_version  = req.body; 
   //console.log(base_elements_version);
   base_elements_version._id = mongoose.Types.ObjectId();
-
   base_elements_version.created=Date();
+  var eleValue = base_elements_version.baseElements;
   base_elements_version = new BaseElementsVersion(base_elements_version);
 
   var id_v = base_elements_version._id;
@@ -23,6 +23,7 @@ exports.postVersion = function(req, res) {
   ob_ids.push(id_v);
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
+    if(typeof  eleValue!=="undefined" && eleValue!=""){
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
       if(count==0){
@@ -43,11 +44,14 @@ exports.postVersion = function(req, res) {
           });
         });
       }
-    }else{
-      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }else{
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }
     }
-  }
     );
+    }else{
+      res.json({message: "Empty data in version of the element"});
+    }
   }else{
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
