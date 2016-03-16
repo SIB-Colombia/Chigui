@@ -27,7 +27,7 @@ var Legislation = Element.extend({
 },{collection: 'legislation'});
 
 var LegislationVersion = ElementVersion.extend({
-	legislation : {Legislation}
+	legislation : Legislation
 },{ collection: 'LegislationVersion' });
 
 module.exports = mongoose.model('LegislationVersion', LegislationVersion );

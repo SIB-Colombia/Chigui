@@ -16,7 +16,7 @@ var DirectThreats = Element.extend({
 },{collection: 'DirectThreats'});
 
 var DirectThreatsVersion = ElementVersion.extend({
-	directThreats : { type : DirectThreats, required: true }
+	directThreats : DirectThreats
 },{ collection: 'DirectThreatsVersion' });
 
 /*

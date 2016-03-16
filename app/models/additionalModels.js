@@ -143,7 +143,7 @@ var MeasurementOrFact = new Schema({
 	measurementDeterminedBy: [String],
 	measurementMethod : String,
 	measurementRemarks : String,
-	realtedTo : String
+	relatedTo : String
 },{ collection : 'measurementOrFact'});
 
 

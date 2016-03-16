@@ -51,7 +51,7 @@ var UsesManagementAndConservation = Element.extend({
 },{collection: 'UsesManagementAndConservation'});
 
 var UsesManagementAndConservationVersion = ElementVersion.extend({
-	usesManagementAndConservation : {UsesManagementAndConservation}
+	usesManagementAndConservation : UsesManagementAndConservation
 },{ collection: 'UsesManagementAndConservationVersion' });
 
 module.exports = mongoose.model('UsesManagementAndConservationVersion', UsesManagementAndConservationVersion );
