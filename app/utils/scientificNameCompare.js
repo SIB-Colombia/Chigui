@@ -1,9 +1,9 @@
 exports.isEqual = function(prev,next){
 	var res = true;
-	console.log(prev);
-	console.log(next);
 
-	if(prev.attributes.id!=next.attributes.id){return false};
+	//si son igual, el if da false
+	//buscar la que siendo iguales da true
+	if(prev.attributes.id!=next.attributes.id){console.log("here");return false};
 	if(prev.attributes.isAnamorphic!=next.attributes.isAnamorphic){return false};
 	if(prev.attributes.nomenclaturalCode!=next.attributes.nomenclaturalCode){return false};
 
@@ -20,9 +20,13 @@ exports.isEqual = function(prev,next){
 
 	if(prev.canonicalAuthorship.simple!=next.canonicalAuthorship.simple){return false};
 	if(prev.canonicalAuthorship.authorship.simple!=next.canonicalAuthorship.authorship.simple){return false};
+	console.log(prev.canonicalAuthorship.authorship.year);
+	console.log(next.canonicalAuthorship.authorship.year);
+	console.log(prev.canonicalAuthorship.authorship.year.length==next.canonicalAuthorship.authorship.year.length);
 	if(prev.canonicalAuthorship.authorship.year.length==next.canonicalAuthorship.authorship.year.length){
 		for(var i=0;i<prev.canonicalAuthorship.authorship.year.length;i++){
-			if(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]){return false}
+			console.log(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]);
+			if(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]){console.log("Here");return false}
 		}
 	}else{
 		return false;
@@ -35,7 +39,7 @@ exports.isEqual = function(prev,next){
 		return false;
 	}
 
-	if(prev.specialAuthorship.basionymAuthorship.simple!=next.basionymAuthorship.simple){return false};
+	if(prev.specialAuthorship.basionymAuthorship.simple!=next.specialAuthorship.basionymAuthorship.simple){return false};
 	if(prev.specialAuthorship.basionymAuthorship.year.length==next.specialAuthorship.basionymAuthorship.year.length){
 		for(var i=0;i<prev.specialAuthorship.basionymAuthorship.year.length;i++){
 			if(prev.specialAuthorship.basionymAuthorship.year[i]!=next.specialAuthorship.basionymAuthorship.year[i]){return false}
@@ -50,9 +54,14 @@ exports.isEqual = function(prev,next){
 	}else{
 		return false;
 	}
-	if(prev.specialAuthorship.combinationAuthorship.length==next.specialAuthorship.combinationAuthorship.length){
-		for(var i=0;i<prev.specialAuthorship.combinationAuthorship.length;i++){
-			if(prev.specialAuthorship.combinationAuthorship[i]!=next.specialAuthorship.combinationAuthorship[i]){return false}
+	//****
+	if(typeof  prev.specialAuthorship.combinationAuthorship!=="undefined" && typeof  next.specialAuthorship.combinationAuthorship){
+		if(prev.specialAuthorship.combinationAuthorship.length==next.specialAuthorship.combinationAuthorship.length){
+			for(var i=0;i<prev.specialAuthorship.combinationAuthorship.length;i++){
+				if(prev.specialAuthorship.combinationAuthorship[i]!=next.specialAuthorship.combinationAuthorship[i]){return false}
+			}
+		}else{
+			return false;
 		}
 	}else{
 		return false;
