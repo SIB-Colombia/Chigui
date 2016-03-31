@@ -55,9 +55,12 @@ exports.postVersion = function(req, res) {
                 var ver = taxon_record_name_version.version;
                 taxon_record_name_version.save(function(err){
                   if(err){
-                    res.send(err);
+                    console.log(err)
+                    res.status(406);
+                    res.json(err);
+                  }else{
+                    res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
                   }
-                  res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
                 });
               }else{
                 res.status(406);
@@ -104,9 +107,12 @@ exports.postRecord = function(req, res) {
 
         taxon_record_name_version.save(function(err){
           if(err){
-            res.send(err);
+            console.log(err)
+            res.status(406);
+            res.json(err);
+          }else{
+            res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
           }
-          res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
         });
       });
     }else{

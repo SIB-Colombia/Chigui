@@ -1,9 +1,8 @@
 exports.isEqual = function(prev,next){
 	var res = true;
 
-	//si son igual, el if da false
-	//buscar la que siendo iguales da true
-	if(prev.attributes.id!=next.attributes.id){console.log("here");return false};
+	//Si la version previa del valor y la version siguiente son diferentes se retorna false y se termina la función, lo cual permite guardar el elemento
+	if(prev.attributes.id!=next.attributes.id){return false};
 	if(prev.attributes.isAnamorphic!=next.attributes.isAnamorphic){return false};
 	if(prev.attributes.nomenclaturalCode!=next.attributes.nomenclaturalCode){return false};
 
@@ -20,13 +19,9 @@ exports.isEqual = function(prev,next){
 
 	if(prev.canonicalAuthorship.simple!=next.canonicalAuthorship.simple){return false};
 	if(prev.canonicalAuthorship.authorship.simple!=next.canonicalAuthorship.authorship.simple){return false};
-	console.log(prev.canonicalAuthorship.authorship.year);
-	console.log(next.canonicalAuthorship.authorship.year);
-	console.log(prev.canonicalAuthorship.authorship.year.length==next.canonicalAuthorship.authorship.year.length);
 	if(prev.canonicalAuthorship.authorship.year.length==next.canonicalAuthorship.authorship.year.length){
 		for(var i=0;i<prev.canonicalAuthorship.authorship.year.length;i++){
-			console.log(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]);
-			if(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]){console.log("Here");return false}
+			if(prev.canonicalAuthorship.authorship.year[i]!=next.canonicalAuthorship.authorship.year[i]){return false}
 		}
 	}else{
 		return false;
@@ -42,7 +37,8 @@ exports.isEqual = function(prev,next){
 	if(prev.specialAuthorship.basionymAuthorship.simple!=next.specialAuthorship.basionymAuthorship.simple){return false};
 	if(prev.specialAuthorship.basionymAuthorship.year.length==next.specialAuthorship.basionymAuthorship.year.length){
 		for(var i=0;i<prev.specialAuthorship.basionymAuthorship.year.length;i++){
-			if(prev.specialAuthorship.basionymAuthorship.year[i]!=next.specialAuthorship.basionymAuthorship.year[i]){return false}
+			//console.log(prev.specialAuthorship.basionymAuthorship.year[i]+""!=next.specialAuthorship.basionymAuthorship.year[i]+"");
+			if(prev.specialAuthorship.basionymAuthorship.year[i]+""!=next.specialAuthorship.basionymAuthorship.year[i]+""){return false}
 		}
 	}else{
 		return false;
@@ -51,11 +47,13 @@ exports.isEqual = function(prev,next){
 		for(var i=0;i<prev.specialAuthorship.basionymAuthorship.authors.length;i++){
 			if(prev.specialAuthorship.basionymAuthorship.authors[i]!=next.specialAuthorship.basionymAuthorship.authors[i]){return false}
 		}
-	}else{
+	}else{ 
 		return false;
 	}
+
 	//****
-	if(typeof  prev.specialAuthorship.combinationAuthorship!=="undefined" && typeof  next.specialAuthorship.combinationAuthorship){
+	
+	if(typeof  prev.specialAuthorship.combinationAuthorship!=="undefined" && typeof  next.specialAuthorship.combinationAuthorship!=="undefined"){
 		if(prev.specialAuthorship.combinationAuthorship.length==next.specialAuthorship.combinationAuthorship.length){
 			for(var i=0;i<prev.specialAuthorship.combinationAuthorship.length;i++){
 				if(prev.specialAuthorship.combinationAuthorship[i]!=next.specialAuthorship.combinationAuthorship[i]){return false}
@@ -82,13 +80,18 @@ exports.isEqual = function(prev,next){
 	}else{
 		return false;
 	}
-	if(prev.typificacion.typeVoucherEntity.lectotypePublicationVouche.length==next.typificacion.typeVoucherEntity.lectotypePublicationVouche.length){
-		for(var i=0;i<prev.typificacion.typeVoucherEntity.lectotypePublicationVouche.length;i++){
-			if(prev.typificacion.typeVoucherEntity.lectotypePublicationVouche[i]!=next.typificacion.typeVoucherEntity.lectotypePublicationVouche[i]){return false}
+	if(typeof  prev.typificacion.typeVoucherEntity.lectotypePublicationVoucher!=="undefined" && typeof  next.typificacion.typeVoucherEntity.lectotypePublicationVoucher!=="undefined"){
+		if(prev.typificacion.typeVoucherEntity.lectotypePublicationVoucher.length==next.typificacion.typeVoucherEntity.lectotypePublicationVoucher.length){
+			for(var i=0;i<prev.typificacion.typeVoucherEntity.lectotypePublicationVoucher.length;i++){
+				if(prev.typificacion.typeVoucherEntity.lectotypePublicationVoucher[i]!=next.typificacion.typeVoucherEntity.lectotypePublicationVoucher[i]){return false}
+			}
+		}else{ 
+			return false;
 		}
 	}else{
 		return false;
 	}
+
 	if(prev.typificacion.typeVoucherEntity.lectotypeMicroReferenceVoucher.length==next.typificacion.typeVoucherEntity.lectotypeMicroReferenceVoucher.length){
 		for(var i=0;i<prev.typificacion.typeVoucherEntity.lectotypeMicroReferenceVoucher.length;i++){
 			if(prev.typificacion.typeVoucherEntity.lectotypeMicroReferenceVoucher[i]!=next.typificacion.typeVoucherEntity.lectotypeMicroReferenceVoucher[i]){return false}
