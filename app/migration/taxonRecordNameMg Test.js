@@ -24,6 +24,8 @@ exports.postRecord = function(connection, RecordModel, element, id_record) {
   var ob_ids= new Array();
   ob_ids.push(id_v);
 
+  
+
   if(typeof  eleValue!=="undefined" && eleValue!=""){
       RecordModel.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
         if(err){

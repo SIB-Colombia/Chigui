@@ -32,7 +32,7 @@ function moveDocuments(){
 
 	var RecordModel = conTemp.model('Record', recordSchema);
 
-	var newRecordSchema = add_objects.RecordVersion.schema;
+	 var newRecordSchema = add_objects.RecordVersion.schema;
   	var texSchema = TaxonRecordNameVersion.schema;
   	var moreInformationSchema = MoreInformationVersion.schema;
 

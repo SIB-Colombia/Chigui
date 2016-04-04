@@ -131,7 +131,7 @@ var RecordVersion = new Schema({
 	referencesVersion : [{ type: Schema.Types.ObjectId, ref: 'ReferencesVersion' }],
 	ancillaryDataVersion : [{ type: Schema.Types.ObjectId, ref: 'AncillaryDataVersion' }],
 	endemicAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'EndemicAtomizedVersion' }]
-}, { collection: 'Records' });
+}, { collection: 'RecordVersion' });
 
 var MeasurementOrFact = new Schema({
 	measurementID : String,

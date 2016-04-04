@@ -21,6 +21,7 @@
     "nodemon": "latest",
     "serve-favicon": "~2.3.0",
     "mongoose-paginate": "latest",
-    "mongoose-pagination" : "latest"
+    "mongoose-pagination" : "latest",
+    "async" : "latest"
   }
 }
