@@ -51,7 +51,7 @@ function moveDocuments(){
       }
       */
       console.log(data[0]._id);
-      taxon_record_name.postRecord(conTemp, data[0]._doc.taxonRecordName, data[0]._id);
+      //taxon_record_name.postRecord(conTemp, data[0]._doc.taxonRecordName, data[0]._id);
       callback();
     },
     function(callback){ conTemp=mongoose.disconnect();},
