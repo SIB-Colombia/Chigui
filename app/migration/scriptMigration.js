@@ -1,4 +1,3 @@
-var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var async = require('async');
 var TaxonRecordNameVersion = require('../models/taxonRecordName.js');
@@ -18,6 +17,23 @@ var ReproductionVersion = require('../models/reproduction.js');
 var AnnualCyclesVersion = require('../models/annualCycles.js');
 var MolecularDataVersion = require('../models/molecularData.js');
 var MigratoryVersion = require('../models/migratory.js');
+var EcologicalSignificanceVersion = require('../models/ecologicalSignificance.js');
+var EnvironmentalEnvelopeVersion = require('../models/environmentalEnvelope.js');
+var InvasivenessVersion = require('../models/invasiveness.js');
+var FeedingVersion = require('../models/feeding.js');
+var DispersalVersion = require('../models/dispersal.js');
+var BehaviorVersion = require('../models/behavior.js');
+var InteractionsVersion = require('../models/interactions.js');
+var HabitatsVersion = require('../models/habitats.js');
+var DistributionVersion = require('../models/distribution.js');
+var TerritoryVersion = require('../models/territory.js');
+var PopulationBiologyVersion = require('../models/populationBiology.js');
+var ThreatStatusVersion = require('../models/threatStatus.js');
+var LegislationVersion = require('../models/legislation.js');
+var UsesManagementAndConservationVersion = require('../models/usesManagementAndConservation.js');
+var ReferencesVersion = require('../models/references.js');
+var AncillaryDataVersion = require('../models/ancillaryData.js');
+var EndemicAtomizedVersion = require('../models/endemicAtomized.js');
 var add_objects = require('../models/additionalModels.js');
 var direct_threats = require('../migration/directThreatsMg.js');
 var Schema = mongoose.Schema;
@@ -29,33 +45,12 @@ var Schema = mongoose.Schema;
       console.log('connection error', err);
     } else {
       console.log('connection successful');
-      console.log(Object.keys(editorDb));
-      console.log(editorDb.collections);
-      console.log(editorDb.otherDbs);
-      console.log(editorDb._hasOpened);
-      console.log(editorDb._listening);
-      var recordSchema = new Schema({name:String}, { strict: false, collection: 'records' });
-      var RecordModel = editorDb.model('records', recordSchema);
+      var recordSchema = new Schema({name:String}, { strict: false, versionKey: false });
+      var RecordModel = editorDb.model('Record', recordSchema);
 
       async.waterfall([
         function(callback){ 
-          
-          //RecordModel.find({}).exec(callback);
-          MongoClient.connect('mongodb://localhost:27017/editorDb', function (err, db) {
-            if (err) {
-              console.log(err);
-            } 
-            else {
-                db.collection('Records').find().toArray(function(err, data) {
-                console.log(data.length);
-                console.log(Object.keys(db));
-                console.log(db.databaseName);
-                
-                //db.close();
-                callback(null, data);
-              });
-            }
-          });
+          RecordModel.find({}).exec(callback);
         },
         function(data,callback){ 
           var dataN = data;
@@ -308,7 +303,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving synonymsAtomized***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -338,6 +333,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "synonymsAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving synonymsAtomized Error!: "+err);
+                        callback();
                       }else{
                         synonyms_atomized_version.id_record=id_rc;
                         synonyms_atomized_version.version=doc.synonymsAtomizedVersion.length+1;
@@ -345,6 +341,7 @@ var Schema = mongoose.Schema;
                         synonyms_atomized_version.save(function(err){
                           if(err){
                             console.log("Saving synonymsAtomized Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save SynonymsAtomizedVersion', element: 'synonymsAtomized', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -369,7 +366,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving commonNamesAtomized***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -404,6 +401,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "commonNamesAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving commonNamesAtomized Error!: "+err);
+                        callback();
                       }else{
                         common_names_atomized.id_record=id_rc;
                         common_names_atomized.version=doc.commonNamesAtomizedVersion.length+1;
@@ -411,6 +409,7 @@ var Schema = mongoose.Schema;
                         common_names_atomized.save(function(err){
                           if(err){
                             console.log("Saving commonNamesAtomized Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save CommonNamesAtomizedVersion', element: 'commonNamesAtomized', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -435,7 +434,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving hierarchy***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -465,6 +464,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "hierarchyVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving hierarchy Error!: "+err);
+                        callback();
                       }else{
                         hierarchy_version.id_record=id_rc;
                         hierarchy_version.version=doc.hierarchyVersion.length+1;
@@ -472,6 +472,7 @@ var Schema = mongoose.Schema;
                         hierarchy_version.save(function(err){
                           if(err){
                             console.log("Saving hierarchy Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save HierarchyVersion', element: 'hierarchy', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -496,7 +497,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving briefDescription***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -526,6 +527,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "briefDescriptionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving briefDescription Error!: "+err);
+                        callback();
                       }else{
                         brief_description_version.id_record=id_rc;
                         brief_description_version.version=doc.briefDescriptionVersion.length+1;
@@ -533,6 +535,7 @@ var Schema = mongoose.Schema;
                         brief_description_version.save(function(err){
                           if(err){
                             console.log("Saving briefDescription Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save BriefDescriptionVersion', element: 'briefDescription', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -557,7 +560,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving abstract***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -587,6 +590,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "abstractVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving abstract Error!: "+err);
+                        callback();
                       }else{
                         abstract_version.id_record=id_rc;
                         abstract_version.version=doc.abstractVersion.length+1;
@@ -594,6 +598,7 @@ var Schema = mongoose.Schema;
                         abstract_version.save(function(err){
                           if(err){
                             console.log("Saving abstract Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save AbstractVersion', element: 'abstract', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -618,7 +623,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving fullDescription***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -648,6 +653,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "fullDescriptionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving fullDescription Error!: "+err);
+                        callback();
                       }else{
                         full_description_version.id_record=id_rc;
                         full_description_version.version=doc.fullDescriptionVersion.length+1;
@@ -655,6 +661,7 @@ var Schema = mongoose.Schema;
                         full_description_version.save(function(err){
                           if(err){
                             console.log("Saving fullDescription Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save FullDescriptionVersion', element: 'fullDescription', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -679,7 +686,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving identificationKeys***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -709,6 +716,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "identificationKeysVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving identificationKeys Error!: "+err);
+                        callback();
                       }else{
                         identification_keys_version.id_record=id_rc;
                         identification_keys_version.version=doc.identificationKeysVersion.length+1;
@@ -716,6 +724,7 @@ var Schema = mongoose.Schema;
                         identification_keys_version.save(function(err){
                           if(err){
                             console.log("Saving identificationKeys Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save IdentificationKeysVersion', element: 'identificationKeys', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -740,7 +749,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving lifeForm***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -770,6 +779,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "lifeFormVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving lifeForm Error!: "+err);
+                        callback();
                       }else{
                         life_form_version.id_record=id_rc;
                         life_form_version.version=doc.lifeFormVersion.length+1;
@@ -777,6 +787,7 @@ var Schema = mongoose.Schema;
                         life_form_version.save(function(err){
                           if(err){
                             console.log("Saving lifeForm Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save LifeFormVersion', element: 'lifeForm', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -801,7 +812,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving lifeCycle***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -831,6 +842,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "lifeCycleVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving lifeCycle Error!: "+err);
+                        callback();
                       }else{
                         life_cycle_version.id_record=id_rc;
                         life_cycle_version.version=doc.lifeCycleVersion.length+1;
@@ -838,6 +850,7 @@ var Schema = mongoose.Schema;
                         life_cycle_version.save(function(err){
                           if(err){
                             console.log("Saving lifeCycle Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save LifeCycleVersion', element: 'lifeCycle', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -862,7 +875,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving reproduction***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -892,6 +905,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "reproductionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving reproduction Error!: "+err);
+                        callback();
                       }else{
                         reproduction_version.id_record=id_rc;
                         reproduction_version.version=doc.reproductionVersion.length+1;
@@ -899,6 +913,7 @@ var Schema = mongoose.Schema;
                         reproduction_version.save(function(err){
                           if(err){
                             console.log("Saving reproduction Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save ReproductionVersion', element: 'reproduction', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -923,7 +938,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving annualCycles***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -938,12 +953,7 @@ var Schema = mongoose.Schema;
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               annual_cycles_version.annualCycles=elementTemp;
             }else{
-              elementTemp=record._doc.annualCycle;
-              elementTemp.annualCyclesAtomized=elementTemp.annualCycleAtomized;
-              delete elementTemp.annualCycleAtomized;
-              elementTemp.annualCyclesUnstructured=elementTemp.annualCycleUnstructured;
-              delete elementTemp.annualCycleUnstructured;
-              annual_cycles_version.annualCycles=elementTemp;
+              annual_cycles_version.annualCycles=record._doc.annualCycle;
             }
             annual_cycles_version._id = mongoose.Types.ObjectId();
             annual_cycles_version.id_record=record._id;
@@ -963,6 +973,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "annualCyclesVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving annualCycles Error!: "+err);
+                        callback();
                       }else{
                         annual_cycles_version.id_record=id_rc;
                         annual_cycles_version.version=doc.annualCyclesVersion.length+1;
@@ -970,6 +981,7 @@ var Schema = mongoose.Schema;
                         annual_cycles_version.save(function(err){
                           if(err){
                             console.log("Saving annualCycles Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save AnnualCyclesVersion', element: 'annualCycles', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -994,7 +1006,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving molecularData***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -1024,6 +1036,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "molecularDataVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving molecularData Error!: "+err);
+                        callback();
                       }else{
                         molecular_data_version.id_record=id_rc;
                         molecular_data_version.version=doc.molecularDataVersion.length+1;
@@ -1031,6 +1044,7 @@ var Schema = mongoose.Schema;
                         molecular_data_version.save(function(err){
                           if(err){
                             console.log("Saving molecularData Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save MolecularDataVersion', element: 'molecularData', version : ver, _id: id_v, id_record : id_rc });
                             callback();
@@ -1113,6 +1127,1082 @@ var Schema = mongoose.Schema;
                 console.log('A record failed to process');
               } else {
                 console.log('All record for saving migratory have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving ecologicalSignificance***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var ecologicalSignificanceSchema = EcologicalSignificanceVersion.schema;
+          var EcologicalSignificanceVersionModel = catalogoDb.model('EcologicalSignificanceVersion', ecologicalSignificanceSchema );
+          var ecological_significance_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var ecological_significance_version = {}; 
+            ecological_significance_version.ecologicalSignificance = record._doc.ecologicalSignificance;
+            ecological_significance_version._id = mongoose.Types.ObjectId();
+            ecological_significance_version.id_record=record._id;
+            ecological_significance_version.created=record._id.getTimestamp(); //***
+            ecological_significance_version.state="accepted";
+            ecological_significance_version.element="ecologicalSignificance";
+            ecological_significance_version = new EcologicalSignificanceVersionModel(ecological_significance_version);
+            var id_v = ecological_significance_version._id;
+            var id_rc = ecological_significance_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  ecological_significance_version.ecologicalSignificance!=="undefined" && ecological_significance_version.ecologicalSignificance!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "ecologicalSignificanceVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving ecologicalSignificance Error!: "+err);
+                        callback();
+                      }else{
+                        ecological_significance_version.id_record=id_rc;
+                        ecological_significance_version.version=doc.ecologicalSignificanceVersion.length+1;
+                        var ver = ecological_significance_version.version;
+                        ecological_significance_version.save(function(err){
+                          if(err){
+                            console.log("Saving ecologicalSignificance Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save EcologicalSignificanceVersion', element: 'ecologicalSignificance', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element ecologicalSignificance, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving ecologicalSignificance have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving environmentalEnvelope***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var environmentalEnvelopeSchema = EnvironmentalEnvelopeVersion.schema;
+          var EnvironmentalEnvelopeVersionModel = catalogoDb.model('EnvironmentalEnvelopeVersion', environmentalEnvelopeSchema );
+          var environmental_envelope_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var environmental_envelope_version = {}; 
+            environmental_envelope_version.environmentalEnvelope = record._doc.environmentalEnvelope;
+            environmental_envelope_version._id = mongoose.Types.ObjectId();
+            environmental_envelope_version.id_record=record._id;
+            environmental_envelope_version.created=record._id.getTimestamp(); //***
+      environmental_envelope_version.state="accepted";
+      environmental_envelope_version.element="environmentalEnvelope";
+            environmental_envelope_version = new EnvironmentalEnvelopeVersionModel(environmental_envelope_version);
+            var id_v = environmental_envelope_version._id;
+            var id_rc = environmental_envelope_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  environmental_envelope_version.environmentalEnvelope!=="undefined" && environmental_envelope_version.environmentalEnvelope!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "environmentalEnvelopeVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving environmentalEnvelope Error!: "+err);
+            callback();
+                      }else{
+                        environmental_envelope_version.id_record=id_rc;
+                        environmental_envelope_version.version=doc.environmentalEnvelopeVersion.length+1;
+                        var ver = environmental_envelope_version.version;
+                        environmental_envelope_version.save(function(err){
+                          if(err){
+                            console.log("Saving environmentalEnvelope Error!: "+err);
+              callback();
+                          }else{
+                            console.log({ message: 'Save EnvironmentalEnvelopeVersion', element: 'environmentalEnvelope', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element environmentalEnvelope, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving environmentalEnvelope have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving invasiveness***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var invasivenessSchema = InvasivenessVersion.schema;
+          var InvasivenessVersionModel = catalogoDb.model('InvasivenessVersion', invasivenessSchema );
+          var invasiveness_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var invasiveness_version = {}; 
+            invasiveness_version.invasiveness = record._doc.invasiveness;
+            invasiveness_version._id = mongoose.Types.ObjectId();
+            invasiveness_version.id_record=record._id;
+            invasiveness_version.created=record._id.getTimestamp(); //***
+            invasiveness_version.state="accepted";
+            invasiveness_version.element="invasiveness";
+            invasiveness_version = new InvasivenessVersionModel(invasiveness_version);
+            var id_v = invasiveness_version._id;
+            var id_rc = invasiveness_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  invasiveness_version.invasiveness!=="undefined" && invasiveness_version.invasiveness!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "invasivenessVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving invasiveness Error!: "+err);
+                        callback();
+                      }else{
+                        invasiveness_version.id_record=id_rc;
+                        invasiveness_version.version=doc.invasivenessVersion.length+1;
+                        var ver = invasiveness_version.version;
+                        invasiveness_version.save(function(err){
+                          if(err){
+                            console.log("Saving invasiveness Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save InvasivenessVersion', element: 'invasiveness', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element invasiveness, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving invasiveness have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving feeding***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var feedingSchema = FeedingVersion.schema;
+          var FeedingVersionModel = catalogoDb.model('FeedingVersion', feedingSchema );
+          var feeding_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var feeding_version = {}; 
+            feeding_version.feeding = record._doc.feeding;
+            feeding_version._id = mongoose.Types.ObjectId();
+            feeding_version.id_record=record._id;
+            feeding_version.created=record._id.getTimestamp(); //***
+            feeding_version.state="accepted";
+            feeding_version.element="feeding";
+            feeding_version = new FeedingVersionModel(feeding_version);
+            var id_v = feeding_version._id;
+            var id_rc = feeding_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  feeding_version.feeding!=="undefined" && feeding_version.feeding!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "feedingVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving feeding Error!: "+err);
+                        callback();
+                      }else{
+                        feeding_version.id_record=id_rc;
+                        feeding_version.version=doc.feedingVersion.length+1;
+                        var ver = feeding_version.version;
+                        feeding_version.save(function(err){
+                          if(err){
+                            console.log("Saving feeding Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save FeedingVersion', element: 'feeding', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element feeding, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving feeding have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving dispersal***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var dispersalSchema = DispersalVersion.schema;
+          var DispersalVersionModel = catalogoDb.model('DispersalVersion', dispersalSchema );
+          var dispersal_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var dispersal_version = {}; 
+            dispersal_version.dispersal = record._doc.dispersal;
+            dispersal_version._id = mongoose.Types.ObjectId();
+            dispersal_version.id_record=record._id;
+            dispersal_version.created=record._id.getTimestamp(); //***
+            dispersal_version.state="accepted";
+            dispersal_version.element="dispersal";
+            dispersal_version = new DispersalVersionModel(dispersal_version);
+            var id_v = dispersal_version._id;
+            var id_rc = dispersal_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  dispersal_version.dispersal!=="undefined" && dispersal_version.dispersal!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "dispersalVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving dispersal Error!: "+err);
+                        callback();
+                      }else{
+                        dispersal_version.id_record=id_rc;
+                        dispersal_version.version=doc.dispersalVersion.length+1;
+                        var ver = dispersal_version.version;
+                        dispersal_version.save(function(err){
+                          if(err){
+                            console.log("Saving dispersal Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save DispersalVersion', element: 'dispersal', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element dispersal, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving dispersal have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving behavior***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var behaviorSchema = BehaviorVersion.schema;
+          var BehaviorVersionModel = catalogoDb.model('BehaviorVersion', behaviorSchema );
+          var behavior_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var behavior_version = {}; 
+            behavior_version.behavior = record._doc.behavior;
+            behavior_version._id = mongoose.Types.ObjectId();
+            behavior_version.id_record=record._id;
+            behavior_version.created=record._id.getTimestamp(); //***
+            behavior_version.state="accepted";
+            behavior_version.element="behavior";
+            behavior_version = new BehaviorVersionModel(behavior_version);
+            var id_v = behavior_version._id;
+            var id_rc = behavior_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  behavior_version.behavior!=="undefined" && behavior_version.behavior!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "behaviorVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving behavior Error!: "+err);
+                        callback();
+                      }else{
+                        behavior_version.id_record=id_rc;
+                        behavior_version.version=doc.behaviorVersion.length+1;
+                        var ver = behavior_version.version;
+                        behavior_version.save(function(err){
+                          if(err){
+                            console.log("Saving behavior Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save BehaviorVersion', element: 'behavior', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element behavior, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving behavior have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving interactions***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var interactionsSchema = InteractionsVersion.schema;
+          var InteractionsVersionModel = catalogoDb.model('InteractionsVersion', interactionsSchema );
+          var interactions_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var interactions_version = {}; 
+            interactions_version.interactions = record._doc.interactions;
+            interactions_version._id = mongoose.Types.ObjectId();
+            interactions_version.id_record=record._id;
+            interactions_version.created=record._id.getTimestamp(); //***
+            interactions_version.state="accepted";
+            interactions_version.element="interactions";
+            interactions_version = new InteractionsVersionModel(interactions_version);
+            var id_v = interactions_version._id;
+            var id_rc = interactions_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  interactions_version.interactions!=="undefined" && interactions_version.interactions!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "interactionsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving interactions Error!: "+err);
+                        callback();
+                      }else{
+                        interactions_version.id_record=id_rc;
+                        interactions_version.version=doc.interactionsVersion.length+1;
+                        var ver = interactions_version.version;
+                        interactions_version.save(function(err){
+                          if(err){
+                            console.log("Saving interactions Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save InteractionsVersion', element: 'interactions', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element interactions, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving interactions have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving habitats***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var habitatsSchema = HabitatsVersion.schema;
+          var HabitatsVersionModel = catalogoDb.model('HabitatsVersion', habitatsSchema );
+          var habitats_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var habitats_version = {}; 
+            var elementTemp = record._doc.habitats;
+            if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
+              habitats_version.habitats=elementTemp;
+            }else{
+              habitats_version.habitats=record._doc.habitat;
+            }
+            habitats_version._id = mongoose.Types.ObjectId();
+            habitats_version.id_record=record._id;
+            habitats_version.created=record._id.getTimestamp(); //***
+            habitats_version.state="accepted";
+            habitats_version.element="habitats";
+            habitats_version = new HabitatsVersionModel(habitats_version);
+            var id_v = habitats_version._id;
+            var id_rc = habitats_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  habitats_version.habitats!=="undefined" && habitats_version.habitats!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "habitatsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving habitats Error!: "+err);
+                        callback();
+                      }else{
+                        habitats_version.id_record=id_rc;
+                        habitats_version.version=doc.habitatsVersion.length+1;
+                        var ver = habitats_version.version;
+                        habitats_version.save(function(err){
+                          if(err){
+                            console.log("Saving habitats Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save HabitatsVersion', element: 'habitats', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element habitats, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving habitats have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving distribution***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var distributionSchema = DistributionVersion.schema;
+          var DistributionVersionModel = catalogoDb.model('DistributionVersion', distributionSchema );
+          var distribution_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var distribution_version = {}; 
+            distribution_version.distribution = record._doc.distribution;
+            distribution_version._id = mongoose.Types.ObjectId();
+            distribution_version.id_record=record._id;
+            distribution_version.created=record._id.getTimestamp(); //***
+            distribution_version.state="accepted";
+            distribution_version.element="distribution";
+            distribution_version = new DistributionVersionModel(distribution_version);
+            var id_v = distribution_version._id;
+            var id_rc = distribution_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  distribution_version.distribution!=="undefined" && distribution_version.distribution!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "distributionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving distribution Error!: "+err);
+                      callback();
+                      }else{
+                        distribution_version.id_record=id_rc;
+                        distribution_version.version=doc.distributionVersion.length+1;
+                        var ver = distribution_version.version;
+                        distribution_version.save(function(err){
+                          if(err){
+                            console.log("Saving distribution Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save DistributionVersion', element: 'distribution', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element distribution, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving distribution have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving territory***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var territorySchema = TerritoryVersion.schema;
+          var TerritoryVersionModel = catalogoDb.model('TerritoryVersion', territorySchema );
+          var territory_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var territory_version = {}; 
+            territory_version.territory = record._doc.territory;
+            territory_version._id = mongoose.Types.ObjectId();
+            territory_version.id_record=record._id;
+            territory_version.created=record._id.getTimestamp(); //***
+      territory_version.state="accepted";
+      territory_version.element="territory";
+            territory_version = new TerritoryVersionModel(territory_version);
+            var id_v = territory_version._id;
+            var id_rc = territory_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  territory_version.territory!=="undefined" && territory_version.territory!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "territoryVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving territory Error!: "+err);
+                        callback();
+                      }else{
+                        territory_version.id_record=id_rc;
+                        territory_version.version=doc.territoryVersion.length+1;
+                        var ver = territory_version.version;
+                        territory_version.save(function(err){
+                          if(err){
+                            console.log("Saving territory Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save TerritoryVersion', element: 'territory', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element territory, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving territory have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving populationBiology***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var populationBiologySchema = PopulationBiologyVersion.schema;
+          var PopulationBiologyVersionModel = catalogoDb.model('PopulationBiologyVersion', populationBiologySchema );
+          var population_biology_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var population_biology_version = {}; 
+            population_biology_version.populationBiology = record._doc.populationBiology;
+            population_biology_version._id = mongoose.Types.ObjectId();
+            population_biology_version.id_record=record._id;
+            population_biology_version.created=record._id.getTimestamp(); //***
+            population_biology_version.state="accepted";
+            population_biology_version.element="populationBiology";
+            population_biology_version = new PopulationBiologyVersionModel(population_biology_version);
+            var id_v = population_biology_version._id;
+            var id_rc = population_biology_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  population_biology_version.populationBiology!=="undefined" && population_biology_version.populationBiology!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "populationBiologyVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving populationBiology Error!: "+err);
+                        callback();
+                      }else{
+                        population_biology_version.id_record=id_rc;
+                        population_biology_version.version=doc.populationBiologyVersion.length+1;
+                        var ver = population_biology_version.version;
+                        population_biology_version.save(function(err){
+                          if(err){
+                            console.log("Saving populationBiology Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save PopulationBiologyVersion', element: 'populationBiology', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element populationBiology, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving populationBiology have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving threatStatus***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var threatStatusSchema = ThreatStatusVersion.schema;
+          var ThreatStatusVersionModel = catalogoDb.model('ThreatStatusVersion', threatStatusSchema );
+          var threat_status_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var threat_status_version = {}; 
+            threat_status_version.threatStatus = record._doc.threatStatus;
+            threat_status_version._id = mongoose.Types.ObjectId();
+            threat_status_version.id_record=record._id;
+            threat_status_version.created=record._id.getTimestamp(); //***
+            threat_status_version.state="accepted";
+            threat_status_version.element="threatStatus";
+            threat_status_version = new ThreatStatusVersionModel(threat_status_version);
+            var id_v = threat_status_version._id;
+            var id_rc = threat_status_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  threat_status_version.threatStatus!=="undefined" && threat_status_version.threatStatus!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "threatStatusVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving threatStatus Error!: "+err);
+                        callback();
+                      }else{
+                        threat_status_version.id_record=id_rc;
+                        threat_status_version.version=doc.threatStatusVersion.length+1;
+                        var ver = threat_status_version.version;
+                        threat_status_version.save(function(err){
+                          if(err){
+                            console.log("Saving threatStatus Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save ThreatStatusVersion', element: 'threatStatus', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element threatStatus, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving threatStatus have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving legislation***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var legislationSchema = LegislationVersion.schema;
+          var LegislationVersionModel = catalogoDb.model('LegislationVersion', legislationSchema );
+          var legislation_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var legislation_version = {}; 
+            legislation_version.legislation = record._doc.legislation;
+            legislation_version._id = mongoose.Types.ObjectId();
+            legislation_version.id_record=record._id;
+            legislation_version.created=record._id.getTimestamp(); //***
+      legislation_version.state="accepted";
+      legislation_version.element="legislation";
+            legislation_version = new LegislationVersionModel(legislation_version);
+            var id_v = legislation_version._id;
+            var id_rc = legislation_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  legislation_version.legislation!=="undefined" && legislation_version.legislation!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "legislationVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving legislation Error!: "+err);
+                        callback();
+                      }else{
+                        legislation_version.id_record=id_rc;
+                        legislation_version.version=doc.legislationVersion.length+1;
+                        var ver = legislation_version.version;
+                        legislation_version.save(function(err){
+                          if(err){
+                            console.log("Saving legislation Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save LegislationVersion', element: 'legislation', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element legislation, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving legislation have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving usesManagementAndConservation***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var usesManagementAndConservationSchema = UsesManagementAndConservationVersion.schema;
+          var UsesManagementAndConservationVersionModel = catalogoDb.model('UsesManagementAndConservationVersion', usesManagementAndConservationSchema );
+          var uses_management_and_conservation_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var uses_management_and_conservation_version = {}; 
+            uses_management_and_conservation_version.usesManagementAndConservation = record._doc.usesManagementAndConservation;
+            uses_management_and_conservation_version._id = mongoose.Types.ObjectId();
+            uses_management_and_conservation_version.id_record=record._id;
+            uses_management_and_conservation_version.created=record._id.getTimestamp(); //***
+            uses_management_and_conservation_version.state="accepted";
+            uses_management_and_conservation_version.element="usesManagementAndConservation";
+            uses_management_and_conservation_version = new UsesManagementAndConservationVersionModel(uses_management_and_conservation_version);
+            var id_v = uses_management_and_conservation_version._id;
+            var id_rc = uses_management_and_conservation_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  uses_management_and_conservation_version.usesManagementAndConservation!=="undefined" && uses_management_and_conservation_version.usesManagementAndConservation!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "usesManagementAndConservationVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving usesManagementAndConservation Error!: "+err);
+                        callback();
+                      }else{
+                        uses_management_and_conservation_version.id_record=id_rc;
+                        uses_management_and_conservation_version.version=doc.usesManagementAndConservationVersion.length+1;
+                        var ver = uses_management_and_conservation_version.version;
+                        uses_management_and_conservation_version.save(function(err){
+                          if(err){
+                            console.log("Saving usesManagementAndConservation Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save UsesManagementAndConservationVersion', element: 'usesManagementAndConservation', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element usesManagementAndConservation, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving usesManagementAndConservation have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving references***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var referencesSchema = ReferencesVersion.schema;
+          var ReferencesVersionModel = catalogoDb.model('ReferencesVersion', referencesSchema );
+          var references_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var references_version = {}; 
+            references_version.references = record._doc.references;
+            references_version._id = mongoose.Types.ObjectId();
+            references_version.id_record=record._id;
+            references_version.created=record._id.getTimestamp(); //***
+            references_version.state="accepted";
+            references_version.element="references";
+            references_version = new ReferencesVersionModel(references_version);
+            var id_v = references_version._id;
+            var id_rc = references_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  references_version.references!=="undefined" && references_version.references!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "referencesVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving references Error!: "+err);
+                        callback();
+                      }else{
+                        references_version.id_record=id_rc;
+                        references_version.version=doc.referencesVersion.length+1;
+                        var ver = references_version.version;
+                        references_version.save(function(err){
+                          if(err){
+                            console.log("Saving references Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save ReferencesVersion', element: 'references', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element references, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving references have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving ancillaryData***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var ancillaryDataSchema = AncillaryDataVersion.schema;
+          var AncillaryDataVersionModel = catalogoDb.model('AncillaryDataVersion', ancillaryDataSchema );
+          var ancillary_data_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var ancillary_data_version = {}; 
+            ancillary_data_version.ancillaryData = record._doc.ancillaryData;
+            ancillary_data_version._id = mongoose.Types.ObjectId();
+            ancillary_data_version.id_record=record._id;
+            ancillary_data_version.created=record._id.getTimestamp(); //***
+            ancillary_data_version.state="accepted";
+            ancillary_data_version.element="ancillaryData";
+            ancillary_data_version = new AncillaryDataVersionModel(ancillary_data_version);
+            var id_v = ancillary_data_version._id;
+            var id_rc = ancillary_data_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  ancillary_data_version.ancillaryData!=="undefined" && ancillary_data_version.ancillaryData!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "ancillaryDataVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving ancillaryData Error!: "+err);
+                        callback();
+                      }else{
+                        ancillary_data_version.id_record=id_rc;
+                        ancillary_data_version.version=doc.ancillaryDataVersion.length+1;
+                        var ver = ancillary_data_version.version;
+                        ancillary_data_version.save(function(err){
+                          if(err){
+                            console.log("Saving ancillaryData Error!: "+err);
+                            callback();
+                          }else{
+                            console.log({ message: 'Save AncillaryDataVersion', element: 'ancillaryData', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element ancillaryData, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving ancillaryData have been processed successfully');
+                callback(null, dataN, catalogoDb);
+              }
+          });
+        },
+        function(data, catalogoDb,callback){ 
+          console.log("***Saving endemicAtomized***");
+          var dataN = data;
+          var newRecordSchema = add_objects.RecordVersion.schema;
+          var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
+
+          var endemicAtomizedSchema = EndemicAtomizedVersion.schema;
+          var EndemicAtomizedVersionModel = catalogoDb.model('EndemicAtomizedVersion', endemicAtomizedSchema );
+          var endemic_atomized_version = {}; 
+          var ob_ids= new Array();
+          async.eachSeries(data, function(record, callback) {
+            var endemic_atomized_version = {}; 
+            endemic_atomized_version.endemicAtomized = record._doc.endemicAtomized;
+            endemic_atomized_version._id = mongoose.Types.ObjectId();
+            endemic_atomized_version.id_record=record._id;
+            endemic_atomized_version.created=record._id.getTimestamp(); //***
+      endemic_atomized_version.state="accepted";
+      endemic_atomized_version.element="endemicAtomized";
+            endemic_atomized_version = new EndemicAtomizedVersionModel(endemic_atomized_version);
+            var id_v = endemic_atomized_version._id;
+            var id_rc = endemic_atomized_version.id_record;
+            ob_ids.push(id_v);
+            if(typeof  endemic_atomized_version.endemicAtomized!=="undefined" && endemic_atomized_version.endemicAtomized!=""){
+              newRecordModel.count({ _id : id_rc }, function (err, count){
+                if(typeof count!=="undefined"){
+                  if(count==0){
+                    console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+                  }else{
+                    newRecordModel.findByIdAndUpdate( id_rc, { $push: { "endemicAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      if (err){
+                        console.log("Saving endemicAtomized Error!: "+err);
+            callback();
+                      }else{
+                        endemic_atomized_version.id_record=id_rc;
+                        endemic_atomized_version.version=doc.endemicAtomizedVersion.length+1;
+                        var ver = endemic_atomized_version.version;
+                        endemic_atomized_version.save(function(err){
+                          if(err){
+                            console.log("Saving endemicAtomized Error!: "+err);
+              callback();
+                          }else{
+                            console.log({ message: 'Save EndemicAtomizedVersion', element: 'endemicAtomized', version : ver, _id: id_v, id_record : id_rc });
+                            callback();
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }else{
+              console.log({message: "Empty data in version of the element endemicAtomized, id_record: "+id_rc});
+              callback();
+            }
+          },function(err){
+              if( err ) {
+                console.log('A record failed to process');
+              } else {
+                console.log('All record for saving endemicAtomized have been processed successfully');
                 callback(null, dataN, catalogoDb);
               }
           });

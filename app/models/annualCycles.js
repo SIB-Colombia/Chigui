@@ -7,7 +7,7 @@ var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-var AnnualCyclesAtomized = new Schema ({
+var AnnualCycleAtomized = new Schema ({
 	event : String,
 	startTimeInterval : String,
 	endTimeInterval : String,
@@ -15,8 +15,8 @@ var AnnualCyclesAtomized = new Schema ({
 },{ strict: false, versionKey: false });
 
 var AnnualCycles = Element.extend({
-	annualCyclesAtomized : [AnnualCyclesAtomized],
-	annualCyclesUnstructured : String
+	annualCycleAtomized : [AnnualCycleAtomized],
+	annualCycleUnstructured : String
 },{ strict: false, versionKey: false });
 
 var AnnualCyclesVersion = ElementVersion.extend({
