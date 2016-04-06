@@ -1,3 +1,4 @@
+var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var async = require('async');
 var TaxonRecordNameVersion = require('../models/taxonRecordName.js');
@@ -28,12 +29,33 @@ var Schema = mongoose.Schema;
       console.log('connection error', err);
     } else {
       console.log('connection successful');
-      var recordSchema = new Schema({name:String}, { strict: false, versionKey: false });
-      var RecordModel = editorDb.model('Record', recordSchema);
+      console.log(Object.keys(editorDb));
+      console.log(editorDb.collections);
+      console.log(editorDb.otherDbs);
+      console.log(editorDb._hasOpened);
+      console.log(editorDb._listening);
+      var recordSchema = new Schema({name:String}, { strict: false, collection: 'records' });
+      var RecordModel = editorDb.model('records', recordSchema);
 
       async.waterfall([
         function(callback){ 
-          RecordModel.find({}).exec(callback);
+          
+          //RecordModel.find({}).exec(callback);
+          MongoClient.connect('mongodb://localhost:27017/editorDb', function (err, db) {
+            if (err) {
+              console.log(err);
+            } 
+            else {
+                db.collection('Records').find().toArray(function(err, data) {
+                console.log(data.length);
+                console.log(Object.keys(db));
+                console.log(db.databaseName);
+                
+                //db.close();
+                callback(null, data);
+              });
+            }
+          });
         },
         function(data,callback){ 
           var dataN = data;
@@ -223,7 +245,7 @@ var Schema = mongoose.Schema;
           });
         },
         function(data, catalogoDb,callback){ 
-          console.log(data.length);
+          console.log("***Saving associatedParty***");
           var dataN = data;
           var newRecordSchema = add_objects.RecordVersion.schema;
           var newRecordModel = catalogoDb.model('RecordVersion', newRecordSchema );
@@ -253,6 +275,7 @@ var Schema = mongoose.Schema;
                     newRecordModel.findByIdAndUpdate( id_rc, { $push: { "associatedPartyVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
                       if (err){
                         console.log("Saving associatedParty Error!: "+err);
+                        callback();
                       }else{
                         associated_party_version.id_record=id_rc;
                         associated_party_version.version=doc.associatedPartyVersion.length+1;
@@ -260,6 +283,7 @@ var Schema = mongoose.Schema;
                         associated_party_version.save(function(err){
                           if(err){
                             console.log("Saving associatedParty Error!: "+err);
+                            callback();
                           }else{
                             console.log({ message: 'Save AssociatedPartyVersion', element: 'associatedParty', version : ver, _id: id_v, id_record : id_rc });
                             callback();
