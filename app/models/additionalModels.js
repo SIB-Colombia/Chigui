@@ -91,7 +91,9 @@ var ElementVersion = new Schema ({
 	id_record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
 	created : { type: Date, default: Date.now },
 	id_user : String,
-	version : { type: Number, min: 0 }
+	version : { type: Number, min: 0 },
+	state : String,
+	element : String
 });
 
 var RecordVersion = new Schema({
