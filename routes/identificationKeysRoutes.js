@@ -10,10 +10,11 @@ var exports = module.exports = {}
 
 exports.postVersion = function(req, res) {
   var identification_keys_version  = req.body; 
-  //console.log(identification_keys_version);
   identification_keys_version._id = mongoose.Types.ObjectId();
 
   identification_keys_version.created=Date();
+  identification_keys_version.state="accepted";
+  identification_keys_version.element="identificationKeys";
   identification_keys_version = new IdentificationKeysVersion(identification_keys_version);
 
   var id_v = identification_keys_version._id;
@@ -30,25 +31,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "identificationKeysVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            identification_keys_version.id_record=id_rc;
+            identification_keys_version.version=doc.identificationKeysVersion.length+1;
+            var ver = identification_keys_version.version;
+            identification_keys_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save IdentificationKeysVersion', element: 'IdentificationKeys', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          identification_keys_version.id_record=id_rc;
-          identification_keys_version.version=doc.identificationKeysVersion.length+1;
-          var ver = identification_keys_version.version;
-          identification_keys_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save IdentificationKeysVersion', element: 'IdentificationKeys', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

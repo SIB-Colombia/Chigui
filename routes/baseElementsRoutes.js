@@ -39,8 +39,9 @@ exports.postVersion = function(req, res) {
           base_elements_version.save(function(err){
             if(err){
               res.send(err);
+            }else{
+              res.json({ message: 'Save BaseElementsVersion', element: 'BaseElements', version : ver, _id: id_v, id_record : id_rc });
             }
-            res.json({ message: 'Save BaseElementsVersion', element: 'BaseElements', version : ver, _id: id_v, id_record : id_rc });
           });
         });
       }

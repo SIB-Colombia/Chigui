@@ -10,6 +10,8 @@ exports.postVersion = function(req, res) {
   var feeding_version  = req.body; 
   feeding_version._id = mongoose.Types.ObjectId();
   feeding_version.created=Date();
+  feeding_version.state="accepted";
+  feeding_version.element="feeding";
   var eleValue = feeding_version.feeding;
   feeding_version = new FeedingVersion(feeding_version);
 
@@ -28,17 +30,21 @@ exports.postVersion = function(req, res) {
       }else{
        add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "feedingVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            feeding_version.id_record=id_rc;
+            feeding_version.version=doc.feedingVersion.length+1;
+            var ver = feeding_version.version;
+            feeding_version.save(function(err){
+              if(err){
+               res.status(406);
+               res.send(err);
+              }else{
+                res.json({ message: 'Save FeedingVersion', element: 'feeding', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          feeding_version.id_record=id_rc;
-          feeding_version.version=doc.feedingVersion.length+1;
-          var ver = feeding_version.version;
-          feeding_version.save(function(err){
-            if(err){
-             res.send(err);
-            }
-            res.json({ message: 'Save FeedingVersion', element: 'feeding', version : ver, _id: id_v, id_record : id_rc });
-         });
         });
       }
       }else{
@@ -46,9 +52,11 @@ exports.postVersion = function(req, res) {
       }
    });
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

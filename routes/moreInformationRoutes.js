@@ -4,13 +4,15 @@ var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
 var MoreInformationVersion = require('../app/models/moreInformation.js');
 var add_objects = require('../app/models/additionalModels.js');
-var compare = require('../app/utils/moreInformationCompare.js');
 var cors = require;
 
 exports.postVersion = function(req, res) {
   var more_information_version  = req.body; 
+  //console.log(more_information_version);
   more_information_version._id = mongoose.Types.ObjectId();
   more_information_version.created=Date();
+  more_information_version.state="accepted";
+  more_information_version.element="moreInformation";
   var eleValue = more_information_version.moreInformation;
   more_information_version = new MoreInformationVersion(more_information_version);
 
@@ -21,46 +23,28 @@ exports.postVersion = function(req, res) {
   ob_ids.push(id_v);
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
-    if(typeof  eleValue!=="undefined" && eleValue!=""){ 
+    if(typeof  eleValue!=="undefined" && eleValue!=""){
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
       if(typeof count!=="undefined"){
       if(count==0){
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
-      }else{ 
-       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{ safe: true, upsert: true }).populate('moreInformationVersion').exec(function (err, record) { 
-        if (err){
+      }else{
+       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+          if (err){
+              res.status(406);
               res.send(err);
           }
           more_information_version.id_record=id_rc;
-          more_information_version.version=record.moreInformationVersion.length+1;
-          var len = record.moreInformationVersion.length;
-          if(len==0){
-            more_information_version.save(function(err){
-              if(err){
-                res.send(err);
-              }
-                res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
-              });
-          }else{
-            var prev = record.moreInformationVersion[len-1].moreInformation;
-            var next = more_information_version.moreInformation;
-
-            if(!compare.isEqual(prev,next)){
-              more_information_version.id_record=id_rc;
-              more_information_version.version=record.moreInformationVersion.length+1;
-              var ver = more_information_version.version;
-              more_information_version.save(function(err){
-              if(err){
-                res.send(err);
-              }
-                res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
-              });
-            }else{
+          more_information_version.version=doc.moreInformationVersion.length+1;
+          var ver = more_information_version.version;
+          more_information_version.save(function(err){
+            if(err){
               res.status(406);
-              res.json({ message: 'The data in moreInformation is equal to last version of this element in the database' });
+              res.send(err);
             }
-          }
-       }); 
+            res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
+         });
+        });
       }
       }else{
         res.status(406);

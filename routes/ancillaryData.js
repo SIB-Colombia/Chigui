@@ -10,10 +10,11 @@ var exports = module.exports = {}
 
 exports.postVersion = function(req, res) {
   var ancillary_data_version  = req.body; 
-  //console.log(associated_party_version);
   ancillary_data_version._id = mongoose.Types.ObjectId();
 
   ancillary_data_version.created=Date();
+  ancillary_data_version.state="accepted";
+  ancillary_data_version.element="ancillaryData";
   ancillary_data_version = new AncillaryDataVersion(ancillary_data_version);
 
   var id_v = ancillary_data_version._id;
@@ -30,25 +31,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "ancillaryDataVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            ancillary_data_version.id_record=id_rc;
+            ancillary_data_version.version=doc.ancillaryDataVersion.length+1;
+            var ver = ancillary_data_version.version;
+            ancillary_data_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save AncillaryDataVersion', element: 'AncillaryData', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          ancillary_data_version.id_record=id_rc;
-          ancillary_data_version.version=doc.ancillaryDataVersion.length+1;
-          var ver = ancillary_data_version.version;
-          ancillary_data_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save AncillaryDataVersion', element: 'AncillaryData', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

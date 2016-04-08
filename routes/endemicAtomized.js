@@ -30,10 +30,11 @@ exports.getVersion = function(req, res) {
 
 exports.postVersion = function(req, res) {
   var endemic_atomized_version  = req.body; 
-  //console.log(identification_keys_version);
   endemic_atomized_version._id = mongoose.Types.ObjectId();
 
   endemic_atomized_version.created=Date();
+  endemic_atomized_version.state="accepted";
+  endemic_atomized_version.element="endemicAtomized";
   endemic_atomized_version = new EndemicAtomizedVersion(endemic_atomized_version);
 
   var id_v = endemic_atomized_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "endemicAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            endemic_atomized_version.id_record=id_rc;
+            endemic_atomized_version.version=doc.endemicAtomizedVersion.length+1;
+            var ver = endemic_atomized_version.version;
+            endemic_atomized_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save EndemicAtomizedVersion', element: 'endemicAtomized', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          endemic_atomized_version.id_record=id_rc;
-          endemic_atomized_version.version=doc.endemicAtomizedVersion.length+1;
-          var ver = endemic_atomized_version.version;
-          endemic_atomized_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save EndemicAtomizedVersion', element: 'endemicAtomized', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

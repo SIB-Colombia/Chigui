@@ -14,6 +14,8 @@ exports.postVersion = function(req, res) {
   life_cycle_version._id = mongoose.Types.ObjectId();
 
   life_cycle_version.created=Date();
+  life_cycle_version.state="accepted";
+  life_cycle_version.element="lifeCycle";
   life_cycle_version = new LifeCycleVersion(life_cycle_version);
 
   var id_v = life_cycle_version._id;
@@ -30,25 +32,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "lifeCycleVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            life_cycle_version.id_record=id_rc;
+            life_cycle_version.version=doc.lifeCycleVersion.length+1;
+            var ver = life_cycle_version.version;
+            life_cycle_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save LifeCycleVersion', element: 'LifeCycle', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          life_cycle_version.id_record=id_rc;
-          life_cycle_version.version=doc.lifeCycleVersion.length+1;
-          var ver = life_cycle_version.version;
-          life_cycle_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save LifeCycleVersion', element: 'LifeCycle', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

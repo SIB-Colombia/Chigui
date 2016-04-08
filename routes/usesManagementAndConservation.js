@@ -30,10 +30,11 @@ exports.getVersion = function(req, res) {
 
 exports.postVersion = function(req, res) {
   var uses_management_and_conservation_version  = req.body; 
-  //console.log(identification_keys_version);
   uses_management_and_conservation_version._id = mongoose.Types.ObjectId();
 
   uses_management_and_conservation_version.created=Date();
+  uses_management_and_conservation_version.state="accepted";
+  uses_management_and_conservation_version.element="usesManagementAndConservation";
   uses_management_and_conservation_version = new UsesManagementAndConservationVersion(uses_management_and_conservation_version);
 
   var id_v = uses_management_and_conservation_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "usesManagementAndConservationVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            uses_management_and_conservation_version.id_record=id_rc;
+            uses_management_and_conservation_version.version=doc.usesManagementAndConservationVersion.length+1;
+            var ver = uses_management_and_conservation_version.version;
+            uses_management_and_conservation_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save UsesManagementAndConservationVersion', element: 'usesManagementAndConservationVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          uses_management_and_conservation_version.id_record=id_rc;
-          uses_management_and_conservation_version.version=doc.usesManagementAndConservationVersion.length+1;
-          var ver = uses_management_and_conservation_version.version;
-          uses_management_and_conservation_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save UsesManagementAndConservationVersion', element: 'usesManagementAndConservationVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

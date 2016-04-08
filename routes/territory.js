@@ -30,10 +30,11 @@ exports.getVersion = function(req, res) {
 
 exports.postVersion = function(req, res) {
   var territory_version  = req.body; 
-  //console.log(identification_keys_version);
   territory_version._id = mongoose.Types.ObjectId();
 
   territory_version.created=Date();
+  territory_version.state="accepted";
+  territory_version.element="territory";
   territory_version = new TerritoryVersion(territory_version);
 
   var id_v = territory_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "territoryVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            territory_version.id_record=id_rc;
+            territory_version.version=doc.territoryVersion.length+1;
+            var ver = territory_version.version;
+            territory_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save TerritoryVersion', element: 'territoryVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          territory_version.id_record=id_rc;
-          territory_version.version=doc.territoryVersion.length+1;
-          var ver = territory_version.version;
-          territory_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save TerritoryVersion', element: 'territoryVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

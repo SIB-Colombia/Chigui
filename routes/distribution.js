@@ -30,10 +30,11 @@ exports.getVersion = function(req, res) {
 
 exports.postVersion = function(req, res) {
   var distribution_version  = req.body; 
-  //console.log(identification_keys_version);
   distribution_version._id = mongoose.Types.ObjectId();
 
   distribution_version.created=Date();
+  distribution_version.state="accepted";
+  distribution_version.element="distribution";
   distribution_version = new DistributionVersion(distribution_version);
 
   var id_v = distribution_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "distributionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            distribution_version.id_record=id_rc;
+            distribution_version.version=doc.distributionVersion.length+1;
+            var ver = distribution_version.version;
+            distribution_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save DistributionVersion', element: 'distributionVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          distribution_version.id_record=id_rc;
-          distribution_version.version=doc.distributionVersion.length+1;
-          var ver = distribution_version.version;
-          distribution_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save DistributionVersion', element: 'distributionVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

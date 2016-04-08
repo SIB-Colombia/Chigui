@@ -29,11 +29,12 @@ exports.getVersion = function(req, res) {
 };
 
 exports.postVersion = function(req, res) {
-  var threat_status_version  = req.body; 
-  //console.log(identification_keys_version);
+  var threat_status_version  = req.body;
   threat_status_version._id = mongoose.Types.ObjectId();
 
   threat_status_version.created=Date();
+  threat_status_version.state="accepted";
+  threat_status_version.element="threatStatus";
   threat_status_version = new ThreatStatusVersion(threat_status_version);
 
   var id_v = threat_status_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "threatStatusVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            threat_status_version.id_record=id_rc;
+            threat_status_version.version=doc.threatStatusVersion.length+1;
+            var ver = threat_status_version.version;
+            threat_status_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save ThreatStatusVersion', element: 'threatStatusVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          threat_status_version.id_record=id_rc;
-          threat_status_version.version=doc.threatStatusVersion.length+1;
-          var ver = threat_status_version.version;
-          threat_status_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save ThreatStatusVersion', element: 'threatStatusVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

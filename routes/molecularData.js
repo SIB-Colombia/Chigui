@@ -34,6 +34,8 @@ exports.postVersion = function(req, res) {
   molecular_data_version._id = mongoose.Types.ObjectId();
 
   molecular_data_version.created=Date();
+  molecular_data_version.state="accepted";
+  molecular_data_version.element="molecularData";
   molecular_data_version = new MolecularDataVersion(molecular_data_version);
 
   var id_v = molecular_data_version._id;
@@ -50,25 +52,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "molecularDataVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            molecular_data_version.id_record=id_rc;
+            molecular_data_version.version=doc.molecularDataVersion.length+1;
+            var ver = molecular_data_version.version;
+            molecular_data_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save MolecularDataVersion', element: 'molecularData', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          molecular_data_version.id_record=id_rc;
-          molecular_data_version.version=doc.molecularDataVersion.length+1;
-          var ver = molecular_data_version.version;
-          molecular_data_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save MolecularDataVersion', element: 'molecularData', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

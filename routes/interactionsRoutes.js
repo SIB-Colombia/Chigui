@@ -11,6 +11,8 @@ exports.postVersion = function(req, res) {
   console.log(interactions_version);
   interactions_version._id = mongoose.Types.ObjectId();
   interactions_version.created=Date();
+  interactions_version.state="accepted";
+  interactions_version.element="interactions";
   var eleValue = interactions_version.interactions;
   interactions_version = new InteractionsVersion(interactions_version);
 
@@ -29,27 +31,34 @@ exports.postVersion = function(req, res) {
       }else{
        add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "interactionsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            interactions_version.id_record=id_rc;
+            interactions_version.version=doc.interactionsVersion.length+1;
+            var ver = interactions_version.version;
+            interactions_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save InteractionsVersion', element: 'interactions', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          interactions_version.id_record=id_rc;
-          interactions_version.version=doc.interactionsVersion.length+1;
-          var ver = interactions_version.version;
-          interactions_version.save(function(err){
-            if(err){
-             res.send(err);
-            }
-            res.json({ message: 'Save InteractionsVersion', element: 'interactions', version : ver, _id: id_v, id_record : id_rc });
-         });
         });
       }
       }else{
+        res.status(406);
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }
    });
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

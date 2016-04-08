@@ -14,8 +14,9 @@ exports.postVersion = function(req, res) {
   synonyms_atomized_version._id = mongoose.Types.ObjectId();
 
   synonyms_atomized_version.created=Date();
+  synonyms_atomized_version.state="accepted";
+  synonyms_atomized_version.element="synonymsAtomized";
   synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);
-
   var id_v = synonyms_atomized_version._id;
   var id_rc = req.params.id_record;
 
@@ -30,25 +31,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "synonymsAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            synonyms_atomized_version.id_record=id_rc;
+            synonyms_atomized_version.version=doc.synonymsAtomizedVersion.length+1;
+            var ver = synonyms_atomized_version.version;
+            synonyms_atomized_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save SynonymsAtomizedVersion', element: 'SynonymsAtomized', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          synonyms_atomized_version.id_record=id_rc;
-          synonyms_atomized_version.version=doc.synonymsAtomizedVersion.length+1;
-          var ver = synonyms_atomized_version.version;
-          synonyms_atomized_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save SynonymsAtomizedVersion', element: 'SynonymsAtomized', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "Empty Database"});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

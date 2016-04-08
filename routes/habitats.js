@@ -30,10 +30,11 @@ exports.getVersion = function(req, res) {
 
 exports.postVersion = function(req, res) {
   var habitats_version  = req.body; 
-  //console.log(identification_keys_version);
   habitats_version._id = mongoose.Types.ObjectId();
 
   habitats_version.created=Date();
+  habitats_version.state="accepted";
+  habitats_version.element="habitats";
   habitats_version = new HabitatsVersion(habitats_version);
 
   var id_v = habitats_version._id;
@@ -50,25 +51,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "habitatsVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            habitats_version.id_record=id_rc;
+            habitats_version.version=doc.habitatsVersion.length+1;
+            var ver = habitats_version.version;
+            habitats_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save HabitatsVersion', element: 'habitatsVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          habitats_version.id_record=id_rc;
-          habitats_version.version=doc.habitatsVersion.length+1;
-          var ver = habitats_version.version;
-          habitats_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save HabitatsVersion', element: 'habitatsVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

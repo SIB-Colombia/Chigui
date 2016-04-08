@@ -11,6 +11,8 @@ exports.postVersion = function(req, res) {
   console.log(abstract_version);
   abstract_version._id = mongoose.Types.ObjectId();
   abstract_version.created=Date();
+  abstract_version.state="accepted";
+  abstract_version.element="abstract";
   var eleValue = abstract_version.abstract;
   abstract_version = new AbstractVersion(abstract_version);
 
@@ -29,27 +31,34 @@ exports.postVersion = function(req, res) {
       }else{
        add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "abstractVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            abstract_version.id_record=id_rc;
+            abstract_version.version=doc.abstractVersion.length+1;
+            var ver = abstract_version.version;
+            abstract_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save AbstractVersion', element: 'abstract', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          abstract_version.id_record=id_rc;
-          abstract_version.version=doc.abstractVersion.length+1;
-          var ver = abstract_version.version;
-          abstract_version.save(function(err){
-            if(err){
-             res.send(err);
-            }
-            res.json({ message: 'Save AbstractVersion', element: 'abstract', version : ver, _id: id_v, id_record : id_rc });
-         });
         });
       }
       }else{
+        res.status(406);
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }
    });
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

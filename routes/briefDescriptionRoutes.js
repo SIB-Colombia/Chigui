@@ -10,10 +10,11 @@ var exports = module.exports = {}
 
 exports.postVersion = function(req, res) {
   var brief_description_version  = req.body; 
-  //console.log(brief_description_version);
   brief_description_version._id = mongoose.Types.ObjectId();
 
   brief_description_version.created=Date();
+  brief_description_version.state="accepted";
+  brief_description_version.element="briefDescription";
   brief_description_version = new BriefDescriptionVersion(brief_description_version);
 
   var id_v = brief_description_version._id;
@@ -30,25 +31,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "briefDescriptionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            brief_description_version.id_record=id_rc;
+            brief_description_version.version=doc.briefDescriptionVersion.length+1;
+            var ver = brief_description_version.version;
+            brief_description_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Saved BriefDescriptionVersion', element: 'BriefDescription', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          brief_description_version.id_record=id_rc;
-          brief_description_version.version=doc.briefDescriptionVersion.length+1;
-          var ver = brief_description_version.version;
-          brief_description_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Saved BriefDescriptionVersion', element: 'BriefDescription', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

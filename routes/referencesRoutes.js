@@ -8,9 +8,10 @@ var cors = require;
 
 exports.postVersion = function(req, res) {
   var references_version  = req.body; 
-  //console.log(references_version);
   references_version._id = mongoose.Types.ObjectId();
   references_version.created=Date();
+  references_version.state="accepted";
+  references_version.element="references";
   var eleValue = references_version.references;
   references_version = new ReferencesVersion(references_version);
 
@@ -29,27 +30,34 @@ exports.postVersion = function(req, res) {
       }else{
        add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "referencesVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            references_version.id_record=id_rc;
+            references_version.version=doc.referencesVersion.length+1;
+            var ver = references_version.version;
+            references_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save ReferencesVersion', element: 'references', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          references_version.id_record=id_rc;
-          references_version.version=doc.referencesVersion.length+1;
-          var ver = references_version.version;
-          references_version.save(function(err){
-            if(err){
-             res.send(err);
-            }
-            res.json({ message: 'Save ReferencesVersion', element: 'references', version : ver, _id: id_v, id_record : id_rc });
-         });
         });
       }
       }else{
+        res.status(406);
         res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
       }
    });
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

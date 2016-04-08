@@ -34,6 +34,8 @@ exports.postVersion = function(req, res) {
   ecological_significance_version._id = mongoose.Types.ObjectId();
 
   ecological_significance_version.created=Date();
+  ecological_significance_version.state="accepted";
+  ecological_significance_version.element="ecologicalSignificance";
   ecological_significance_version = new EcologicalSignificanceVersion(ecological_significance_version);
 
   var id_v = ecological_significance_version._id;
@@ -50,25 +52,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "ecologicalSignificanceVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            ecological_significance_version.id_record=id_rc;
+            ecological_significance_version.version=doc.ecologicalSignificanceVersion.length+1;
+            var ver = ecological_significance_version.version;
+            ecological_significance_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save EcologicalSignificanceVersion', element: 'ecologicalSignificanceVersion', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          ecological_significance_version.id_record=id_rc;
-          ecological_significance_version.version=doc.ecologicalSignificanceVersion.length+1;
-          var ver = ecological_significance_version.version;
-          ecological_significance_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save EcologicalSignificanceVersion', element: 'ecologicalSignificanceVersion', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }

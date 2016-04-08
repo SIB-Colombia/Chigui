@@ -10,10 +10,11 @@ var exports = module.exports = {}
 
 exports.postVersion = function(req, res) {
   var reproduction_version  = req.body; 
-  //console.log(reproduction_version);
   reproduction_version._id = mongoose.Types.ObjectId();
 
   reproduction_version.created=Date();
+  reproduction_version.state="accepted";
+  reproduction_version.element="reproduction";
   reproduction_version = new ReproductionVersion(reproduction_version);
 
   var id_v = reproduction_version._id;
@@ -30,25 +31,31 @@ exports.postVersion = function(req, res) {
       }else{
         add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "reproductionVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
           if (err){
+              res.status(406);
               res.send(err);
+          }else{
+            reproduction_version.id_record=id_rc;
+            reproduction_version.version=doc.reproductionVersion.length+1;
+            var ver = reproduction_version.version;
+            reproduction_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save ReproductionVersion', element: 'Reproduction', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-          reproduction_version.id_record=id_rc;
-          reproduction_version.version=doc.reproductionVersion.length+1;
-          var ver = reproduction_version.version;
-          reproduction_version.save(function(err){
-            if(err){
-              res.send(err);
-            }
-            res.json({ message: 'Save ReproductionVersion', element: 'Reproduction', version : ver, _id: id_v, id_record : id_rc });
-          });
         });
       }
     }else{
+      res.status(406);
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   }
     );
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }
