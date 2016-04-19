@@ -35,7 +35,7 @@ var ReferencesVersion = require('../models/references.js');
 var AncillaryDataVersion = require('../models/ancillaryData.js');
 var EndemicAtomizedVersion = require('../models/endemicAtomized.js');
 var add_objects = require('../models/additionalModels.js');
-var direct_threats = require('../migration/directThreatsMg.js');
+//var direct_threats = require('../migration/directThreatsMg.js');
 var Schema = mongoose.Schema;
 
 
@@ -67,6 +67,7 @@ var Schema = mongoose.Schema;
           async.eachSeries(data, function(record, callback) {
             console.log("ID record: "+record._id);
             var taxon_record_name_version = {};
+            ob_ids= new Array();
             taxon_record_name_version.taxonRecordName = record._doc.taxonRecordName;
             taxon_record_name_version._id = mongoose.Types.ObjectId();
             taxon_record_name_version.id_record=record._id;
@@ -126,6 +127,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var direct_threats_version = {}; 
+            ob_ids= new Array();
             direct_threats_version.directThreats = record._doc.directThreats;
             direct_threats_version._id = mongoose.Types.ObjectId();
             direct_threats_version.id_record=record._id;
@@ -190,6 +192,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var more_information_version = {}; 
+            ob_ids= new Array();
             more_information_version.moreInformation = record._doc.moreInformation;
             more_information_version._id = mongoose.Types.ObjectId();
             more_information_version.id_record=record._id;
@@ -254,6 +257,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var associated_party_version = {}; 
+            ob_ids= new Array();
             associated_party_version.associatedParty = record._doc.associatedParty;
             associated_party_version._id = mongoose.Types.ObjectId();
             associated_party_version.id_record=record._id;
@@ -318,6 +322,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var synonyms_atomized_version = {}; 
+            ob_ids= new Array();
             synonyms_atomized_version.synonymsAtomized = record._doc.synonymsAtomized;
             synonyms_atomized_version._id = mongoose.Types.ObjectId();
             synonyms_atomized_version.id_record=record._id;
@@ -381,7 +386,8 @@ var Schema = mongoose.Schema;
           var common_names_atomized = {}; 
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
-            var common_names_atomized = {}; 
+            var common_names_atomized = {};
+            ob_ids= new Array(); 
             var elementTemp=record._doc.commonNamesAtomized;
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               common_names_atomized.commonNamesAtomized=elementTemp;
@@ -451,6 +457,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var hierarchy_version = {}; 
+            ob_ids= new Array();
             hierarchy_version.hierarchy = record._doc.hierarchy;
             hierarchy_version._id = mongoose.Types.ObjectId();
             hierarchy_version.id_record=record._id;
@@ -515,6 +522,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var brief_description_version = {}; 
+            ob_ids= new Array();
             brief_description_version.briefDescription = record._doc.briefDescription;
             brief_description_version._id = mongoose.Types.ObjectId();
             brief_description_version.id_record=record._id;
@@ -579,6 +587,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var abstract_version = {}; 
+            ob_ids= new Array();
             abstract_version.abstract = record._doc.abstract;
             abstract_version._id = mongoose.Types.ObjectId();
             abstract_version.id_record=record._id;
@@ -643,6 +652,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var full_description_version = {}; 
+            ob_ids= new Array();
             full_description_version.fullDescription = record._doc.fullDescription;
             full_description_version._id = mongoose.Types.ObjectId();
             full_description_version.id_record=record._id;
@@ -707,6 +717,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var identification_keys_version = {}; 
+            ob_ids= new Array();
             identification_keys_version.identificationKeys = record._doc.identificationKeys;
             identification_keys_version._id = mongoose.Types.ObjectId();
             identification_keys_version.id_record=record._id;
@@ -770,7 +781,8 @@ var Schema = mongoose.Schema;
           var life_form_version = {}; 
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
-            var life_form_version = {}; 
+            var life_form_version = {};
+            ob_ids= new Array(); 
             life_form_version.lifeForm = record._doc.lifeForm;
             life_form_version._id = mongoose.Types.ObjectId();
             life_form_version.id_record=record._id;
@@ -835,6 +847,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var life_cycle_version = {}; 
+            ob_ids= new Array();
             life_cycle_version.lifeCycle = record._doc.lifeCycle;
             life_cycle_version._id = mongoose.Types.ObjectId();
             life_cycle_version.id_record=record._id;
@@ -899,6 +912,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var reproduction_version = {}; 
+            ob_ids= new Array();
             reproduction_version.reproduction = record._doc.reproduction;
             reproduction_version._id = mongoose.Types.ObjectId();
             reproduction_version.id_record=record._id;
@@ -963,6 +977,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var annual_cycles_version = {}; 
+            ob_ids= new Array();
             var elementTemp=record._doc.annualCycles;
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               annual_cycles_version.annualCycles=elementTemp;
@@ -1032,6 +1047,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var molecular_data_version = {}; 
+            ob_ids= new Array();
             molecular_data_version.molecularData = record._doc.molecularData;
             molecular_data_version._id = mongoose.Types.ObjectId();
             molecular_data_version.id_record=record._id;
@@ -1096,6 +1112,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var migratory_version = {}; 
+            ob_ids= new Array();
             migratory_version.migratory = record._doc.migratory;
             migratory_version._id = mongoose.Types.ObjectId();
             migratory_version.id_record=record._id;
@@ -1160,6 +1177,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var ecological_significance_version = {}; 
+            ob_ids= new Array();
             ecological_significance_version.ecologicalSignificance = record._doc.ecologicalSignificance;
             ecological_significance_version._id = mongoose.Types.ObjectId();
             ecological_significance_version.id_record=record._id;
@@ -1224,6 +1242,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var environmental_envelope_version = {}; 
+            ob_ids= new Array();
             environmental_envelope_version.environmentalEnvelope = record._doc.environmentalEnvelope;
             environmental_envelope_version._id = mongoose.Types.ObjectId();
             environmental_envelope_version.id_record=record._id;
@@ -1288,6 +1307,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var invasiveness_version = {}; 
+            ob_ids= new Array();
             invasiveness_version.invasiveness = record._doc.invasiveness;
             invasiveness_version._id = mongoose.Types.ObjectId();
             invasiveness_version.id_record=record._id;
@@ -1352,6 +1372,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var feeding_version = {}; 
+            ob_ids= new Array();
             feeding_version.feeding = record._doc.feeding;
             feeding_version._id = mongoose.Types.ObjectId();
             feeding_version.id_record=record._id;
@@ -1416,6 +1437,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var dispersal_version = {}; 
+            ob_ids= new Array();
             dispersal_version.dispersal = record._doc.dispersal;
             dispersal_version._id = mongoose.Types.ObjectId();
             dispersal_version.id_record=record._id;
@@ -1481,6 +1503,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var behavior_version = {}; 
+            ob_ids= new Array();
             behavior_version.behavior = record._doc.behavior;
             behavior_version._id = mongoose.Types.ObjectId();
             behavior_version.id_record=record._id;
@@ -1545,6 +1568,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var interactions_version = {}; 
+            ob_ids= new Array();
             interactions_version.interactions = record._doc.interactions;
             interactions_version._id = mongoose.Types.ObjectId();
             interactions_version.id_record=record._id;
@@ -1608,7 +1632,8 @@ var Schema = mongoose.Schema;
           var habitats_version = {}; 
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
-            var habitats_version = {}; 
+            var habitats_version = {};
+            ob_ids= new Array(); 
             var elementTemp = record._doc.habitats;
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               habitats_version.habitats=elementTemp;
@@ -1678,6 +1703,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var distribution_version = {}; 
+            ob_ids= new Array();
             distribution_version.distribution = record._doc.distribution;
             distribution_version._id = mongoose.Types.ObjectId();
             distribution_version.id_record=record._id;
@@ -1742,6 +1768,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var territory_version = {}; 
+            ob_ids= new Array();
             territory_version.territory = record._doc.territory;
             territory_version._id = mongoose.Types.ObjectId();
             territory_version.id_record=record._id;
@@ -1806,6 +1833,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var population_biology_version = {}; 
+            ob_ids= new Array();
             population_biology_version.populationBiology = record._doc.populationBiology;
             population_biology_version._id = mongoose.Types.ObjectId();
             population_biology_version.id_record=record._id;
@@ -1870,6 +1898,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var threat_status_version = {}; 
+            ob_ids= new Array();
             threat_status_version.threatStatus = record._doc.threatStatus;
             threat_status_version._id = mongoose.Types.ObjectId();
             threat_status_version.id_record=record._id;
@@ -1934,6 +1963,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var legislation_version = {}; 
+            ob_ids= new Array();
             legislation_version.legislation = record._doc.legislation;
             legislation_version._id = mongoose.Types.ObjectId();
             legislation_version.id_record=record._id;
@@ -1998,6 +2028,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var uses_management_and_conservation_version = {}; 
+            ob_ids= new Array();
             uses_management_and_conservation_version.usesManagementAndConservation = record._doc.usesManagementAndConservation;
             uses_management_and_conservation_version._id = mongoose.Types.ObjectId();
             uses_management_and_conservation_version.id_record=record._id;
@@ -2062,6 +2093,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var references_version = {}; 
+            ob_ids= new Array();
             references_version.references = record._doc.references;
             references_version._id = mongoose.Types.ObjectId();
             references_version.id_record=record._id;
@@ -2126,6 +2158,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var ancillary_data_version = {}; 
+            ob_ids= new Array();
             ancillary_data_version.ancillaryData = record._doc.ancillaryData;
             ancillary_data_version._id = mongoose.Types.ObjectId();
             ancillary_data_version.id_record=record._id;
@@ -2190,6 +2223,7 @@ var Schema = mongoose.Schema;
           var ob_ids= new Array();
           async.eachSeries(data, function(record, callback) {
             var endemic_atomized_version = {}; 
+            ob_ids= new Array();
             endemic_atomized_version.endemicAtomized = record._doc.endemicAtomized;
             endemic_atomized_version._id = mongoose.Types.ObjectId();
             endemic_atomized_version.id_record=record._id;

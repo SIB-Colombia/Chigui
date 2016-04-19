@@ -272,9 +272,10 @@ exports.getRecordList = function(req, res) {
   //var response={};
   var lastRec={};
   var response=[];
-  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
-  var skip = req.query.skip;
-  var limit = req.query.limit ;
+  var dataObject ={};
+  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
+  var skip = parseInt(req.query.skip);
+  var limit = parseInt(req.query.limit) ;
   if(typeof skip ==="undefined" || typeof limit ==="undefined" || skip.length==0 || limit.length==0){
     query.exec(function (err, data) {
         if (err) 
@@ -315,23 +316,57 @@ exports.getRecordList = function(req, res) {
       }
     });
   }else{
-    query=add_objects.RecordVersion.find({ skip: 10, limit: 5 }).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
-    query.exec(function (err, data) {
+    if (skip === 1) {
+      skip = 0;
+    }else {
+      skip = ((skip -1)*limit) + 1;
+    };
+    //query=add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate({path: 'taxonRecordNameVersion'}).sort({ _id: -1}).limit(limit).skip(skip);
+    var totalRecords = 0;
+    add_objects.RecordVersion.find({}).count(function (err, count){
+      totalRecords = count;
+    });
+    query = add_objects.RecordVersion.find({});
+    
+    
+    query.skip(skip).limit(limit).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').exec('find', function (err, data) {
         if (err) 
           res.send(err);
         if(data.length==0){
           res.json({"message" : "No data in the database"});
         }else{
-          var creation_date="";
-          for(i=0;i<data.length;i++){
-            if(typeof  data[i]._doc.creation_date==="undefined"){
-              creation_date=data[i]._id.getTimestamp();
-              data[i]._doc.creation_date =creation_date.toString();
+          if(data){
+          var lenData=data.length;
+          var lenTaxRecNam=0;
+          var lenAsPar=0;
+          for (i = 0; i < lenData ; i++) {
+            lastRec._id=data[i]._id;
+            lastRec.creation_date=data[i]._id.getTimestamp();
+            lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+            lenAsPar=data[i].associatedPartyVersion.length;
+            if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+              lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+            }else{
+              lastRec.associatedParty="";
             }
+  
+            if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+              lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+            }else{
+              lastRec.taxonRecordName="";
+            }
+
+            response.push(lastRec);
+            lastRec={};
           }
-          console.log(data.length);
-          console.log("Resultado: "+data);
-          res.json(data);
+          dataObject.docs = response;
+          dataObject.total = totalRecords;
+          console.log(totalRecords);
+          //console.log("Resultado: "+data);
+          res.json(dataObject);
+        }else{
+          res.json({"message" : "No data in the database"});
+        }
       }
     });
   }

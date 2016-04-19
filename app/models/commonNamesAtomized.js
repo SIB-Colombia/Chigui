@@ -16,7 +16,7 @@ var Distribution = new Schema({
 
 var CommonNamesAtomized = Element.extend({
 	name : String,
-	language : [String],
+	language : String,
 	synonymStatus : String,
 	usedIn : Distribution,
 });
