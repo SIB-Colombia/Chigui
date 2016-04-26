@@ -36,34 +36,38 @@ exports.postVersion = function(req, res) {
           });
         },
         function(data,callback){ 
-          console.log("Data: " + data);
-          var lenBehavior = data.behaviorVersion.length;
-          console.log(lenBehavior);
-          if( lenBehavior !=0 ){
-            var idLast = data.behaviorVersion[lenBehavior-1];
-            behavior_version.findById(id_rc , function (err, doc){
-              if(err){
-                console.log("error");
-                callback(new Error("failed getting something:" + err.message));
-              }else{
-                var prev = doc.taxonRecordName;
-                var next = behavior_version.behavior;
-                if(!compare.isEqual(prev,next)){
-                  behavior_version.id_record=id_rc;
-                  behavior_version.version=lenBehavior+1;
-                  callback(null, behavior_version);
+          if(data){
+            console.log("Data: " + data);
+            var lenBehavior = data.behaviorVersion.length;
+            console.log(lenBehavior);
+            if( lenBehavior !=0 ){
+              var idLast = data.behaviorVersion[lenBehavior-1];
+              behavior_version.findById(id_rc , function (err, doc){
+                if(err){
+                  console.log("error");
+                  callback(new Error("failed getting something:" + err.message));
                 }else{
-                  callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
+                  var prev = doc.taxonRecordName;
+                  var next = behavior_version.behavior;
+                  if(!compare.isEqual(prev,next)){
+                    behavior_version.id_record=id_rc;
+                    behavior_version.version=lenBehavior+1;
+                    callback(null, behavior_version);
+                  }else{
+                    callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
+                  }
                 }
-              }
-            }); 
-          }else{
-            behavior_version.id_record=id_rc;
-            behavior_version.version=1;
-            callback(null, behavior_version);
-          }
-        },
-        function(behavior_version, callback){ 
+              }); 
+            }else{
+              behavior_version.id_record=id_rc;
+              behavior_version.version=1;
+              callback(null, behavior_version);
+            }
+        }else{
+          callback(new Error("wrong id"));
+        }
+      },
+      function(behavior_version, callback){ 
           console.log(behavior_version.version);
           behavior_version.save(function(err){
             if(err){
