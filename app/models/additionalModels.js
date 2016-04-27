@@ -119,7 +119,7 @@ var RecordVersion = new Schema({
 	migratoryVersion : [{ type: Schema.Types.ObjectId, ref: 'MigratoryVersion' }],
 	ecologicalSignificanceVersion : [{ type: Schema.Types.ObjectId, ref: 'EcologicalSignificanceVersion' }],
 	environmentalEnvelopeVersion : [{ type: Schema.Types.ObjectId, ref: 'EnvironmentalEnvelopeVersion' }],
-	invasivenessVersion : [{ type: Schema.Types.ObjectId, ref: 'invasivenessVersion' }],
+	invasivenessVersion : [{ type: Schema.Types.ObjectId, ref: 'InvasivenessVersion' }],
 	feedingVersion : [{ type: Schema.Types.ObjectId, ref: 'FeedingVersion' }],
 	dispersalVersion : [{ type: Schema.Types.ObjectId, ref: 'DispersalVersion' }],
 	behaviorVersion : [{ type: Schema.Types.ObjectId, ref: 'BehaviorVersion' }],

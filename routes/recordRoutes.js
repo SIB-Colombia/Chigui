@@ -86,7 +86,11 @@ exports.getRecordLast = function(req, res) {
       var lenEcol = record.ecologicalSignificanceVersion.length;
       var lenInva = record.invasivenessVersion.length;
 
+      /*
       console.log("dir: "+record.directThreatsVersion);
+      console.log("lenUses: "+ lenUseCon);
+      console.log("lenUses: "+ record.usesManagementAndConservationVersion);
+      */
     //
       /*
       var lenEndAt = record.endemicAtomizedVersion.length;
@@ -217,9 +221,17 @@ exports.getRecordLast = function(req, res) {
       lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
     }
 
-    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]!=="undefined"){
-      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1].usesManagementAndConservation;
+    
+    console.log("Here:"+ lenUseCon);
+    console.log("Arreglo:"+ record.usesManagementAndConservationVersion[lenUseCon-1]);
+    console.log("Value:"+ record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation);
+    //console.log("keys:"+ Object.keys(record.usesManagementAndConservationVersion[lenUseCon-1]));
+
+    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation!=="undefined"){
+      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation;
     }
+    
+
 
     if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
       lastRec.directThreats=record.directThreatsVersion[lenDirThr-1].directThreats;
