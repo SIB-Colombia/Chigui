@@ -1,5 +1,4 @@
 var express = require('express');
-var async = require('async');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
@@ -24,68 +23,35 @@ exports.postVersion = function(req, res) {
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
     if(typeof  eleValue!=="undefined" && eleValue!=""){
-      async.waterfall([
-        function(callback){ 
-          add_objects.RecordVersion.findById(id_rc , function (err, data){
-            if(err){
-              console.log("error");
-              callback(new Error("failed getting something:" + err.message));
-            }else{
-              callback(null, data);
-            }
-          });
-        },
-        function(data,callback){ 
-          if(data){
-            console.log("Data: " + data);
-            var lenBehavior = data.behaviorVersion.length;
-            console.log(lenBehavior);
-            if( lenBehavior !=0 ){
-              var idLast = data.behaviorVersion[lenBehavior-1];
-              behavior_version.findById(id_rc , function (err, doc){
-                if(err){
-                  console.log("error");
-                  callback(new Error("failed getting something:" + err.message));
-                }else{
-                  var prev = doc.taxonRecordName;
-                  var next = behavior_version.behavior;
-                  if(!compare.isEqual(prev,next)){
-                    behavior_version.id_record=id_rc;
-                    behavior_version.version=lenBehavior+1;
-                    callback(null, behavior_version);
-                  }else{
-                    callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
-                  }
-                }
-              }); 
-            }else{
-              behavior_version.id_record=id_rc;
-              behavior_version.version=1;
-              callback(null, behavior_version);
-            }
-        }else{
-          callback(new Error("wrong id"));
-        }
-      },
-      function(behavior_version, callback){ 
-          console.log(behavior_version.version);
-          behavior_version.save(function(err){
-            if(err){
-              callback(new Error("failed saving the element version:" + err.message));
-            }else{
-              console.log("Saving behaviorVersion");
-              callback(null, behavior_version);
-            }
-          });
-        }
-      ],function(err, result) {
-          if (err) {
-            console.log("Error: "+err);
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
+      if(typeof count!=="undefined"){
+      if(count==0){
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }else{
+       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "behaviorVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+          if (err){
+              res.status(406);
+              res.send(err);
           }else{
-            console.log('done!');
+            behavior_version.id_record=id_rc;
+            behavior_version.version=doc.behaviorVersion.length+1;
+            var ver = behavior_version.version;
+            behavior_version.save(function(err){
+              if(err){
+                res.status(406);
+                res.send(err);
+              }else{
+                res.json({ message: 'Save BehaviorVersion', element: 'behavior', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
           }
-        }
-      );
+        });
+      }
+      }else{
+        res.status(406);
+        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+      }
+   });
    }else{
     res.status(406);
     res.json({message: "Empty data in version of the element"});
