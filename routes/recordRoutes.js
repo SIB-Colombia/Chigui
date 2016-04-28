@@ -221,13 +221,8 @@ exports.getRecordLast = function(req, res) {
       lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
     }
 
-    
-    console.log("Here:"+ lenUseCon);
-    console.log("Arreglo:"+ record.usesManagementAndConservationVersion[lenUseCon-1]);
-    console.log("Value:"+ record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation);
-    //console.log("keys:"+ Object.keys(record.usesManagementAndConservationVersion[lenUseCon-1]));
 
-    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation!=="undefined"){
+    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]!=="undefined"){
       lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation;
     }
     
