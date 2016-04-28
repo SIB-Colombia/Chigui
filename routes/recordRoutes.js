@@ -34,7 +34,7 @@ exports.getRecordLast = function(req, res) {
   var ver=req.params.version;
   var lastRec={};
   //add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion').exec(function (err, record) {
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion ancillaryDataVersion endemicAtomizedVersion referencesVersion').exec(function (err, record) {
+    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion ancillaryDataVersion endemicAtomizedVersion referencesVersion environmentalEnvelopeVersion ecologicalSignificanceVersion invasivenessVersion').exec(function (err, record) {
   //console.log(record);
     if(record){
       if (err){
@@ -82,8 +82,15 @@ exports.getRecordLast = function(req, res) {
       var lenAncDat = record.ancillaryDataVersion.length;
       var lenEndAt = record.endemicAtomizedVersion.length;
       var lenRefe = record.referencesVersion.length; 
+      var lenEnv = record.environmentalEnvelopeVersion.length;
+      var lenEcol = record.ecologicalSignificanceVersion.length;
+      var lenInva = record.invasivenessVersion.length;
 
+      /*
       console.log("dir: "+record.directThreatsVersion);
+      console.log("lenUses: "+ lenUseCon);
+      console.log("lenUses: "+ record.usesManagementAndConservationVersion);
+      */
     //
       /*
       var lenEndAt = record.endemicAtomizedVersion.length;
@@ -215,9 +222,9 @@ exports.getRecordLast = function(req, res) {
     }
 
     if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]!=="undefined"){
-      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1].usesManagementAndConservation;
+      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation;
     }
-
+    
     if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
       lastRec.directThreats=record.directThreatsVersion[lenDirThr-1].directThreats;
     }
@@ -233,6 +240,19 @@ exports.getRecordLast = function(req, res) {
     if(typeof record.referencesVersion[lenRefe-1]!=="undefined"){
       lastRec.references=record.referencesVersion[lenRefe-1].references;
     } 
+
+    if(typeof record.environmentalEnvelopeVersion[lenEnv-1]!=="undefined"){
+      lastRec.environmentalEnvelope=record.environmentalEnvelopeVersion[lenEnv-1].environmentalEnvelope;
+    }
+
+    if(typeof record.ecologicalSignificanceVersion[lenEcol-1]!=="undefined"){
+      lastRec.ecologicalSignificance=record.ecologicalSignificanceVersion[lenEcol-1].ecologicalSignificance;
+    }
+
+    if(typeof record.invasivenessVersion[lenInva-1]!=="undefined"){
+      lastRec.invasiveness=record.invasivenessVersion[lenInva-1].invasiveness;
+    }
+
     //
     /*
     

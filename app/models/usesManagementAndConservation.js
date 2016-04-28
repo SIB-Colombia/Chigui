@@ -38,20 +38,26 @@ var ManagementAndConservationAtomized = Element.extend({
 	managementPlan : String,
 	actions : [Actions],
 	humanAndEnviromentalrelevanc : String
-});
+}, { strict: false, versionKey: false });
 
 var ManagementAndConservation = Element.extend({
 	managementAndConservationAtomized : [ManagementAndConservationAtomized],
 	managementAndConservationUnstructured : String
-});
+}, { strict: false, versionKey: false });
 
 var UsesManagementAndConservation = Element.extend({
 	usesAtomized : [UsesAtomized],
 	managementAndConservation : ManagementAndConservation
-},{collection: 'UsesManagementAndConservation'});
+},{collection: 'UsesManagementAndConservation', strict: false });
 
+/*
 var UsesManagementAndConservationVersion = ElementVersion.extend({
 	usesManagementAndConservation : UsesManagementAndConservation
-},{ collection: 'UsesManagementAndConservationVersion' });
+},{ collection: 'UsesManagementAndConservationVersion', strict: false });
+*/
+
+var UsesManagementAndConservationVersion = new Schema({
+	name : String
+},{ collection: 'UsesManagementAndConservationVersion', strict: false });
 
 module.exports = mongoose.model('UsesManagementAndConservationVersion', UsesManagementAndConservationVersion );

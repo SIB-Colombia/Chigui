@@ -14,7 +14,7 @@ var BehaviorAtomized = new Schema ({
 },{ versionKey: false });
 
 var Behavior = Element.extend({
-	behaviorAtomized : BehaviorAtomized,
+	behaviorAtomized : [BehaviorAtomized],
 	behaviorUnstructured : String
 },{ versionKey: false });
 
