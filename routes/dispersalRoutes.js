@@ -15,6 +15,14 @@ exports.postVersion = function(req, res) {
   var eleValue = dispersal_version.dispersal;
   dispersal_version = new DispersalVersion(dispersal_version);
 
+  console.log("distance: "+dispersal_version);
+  console.log("keys: "+Object.keys(dispersal_version));
+  console.log("doc: "+dispersal_version._doc);
+  console.log("keys: "+Object.keys(dispersal_version._doc));
+  console.log("doc: "+dispersal_version._doc.dispersal);
+  console.log("doc req: "+Object.keys(req.body));
+  console.log("doc req: "+Object.keys(req.body.dispersal));
+
   var id_v = dispersal_version._id;
   var id_rc = req.params.id_record;
 

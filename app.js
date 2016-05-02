@@ -38,12 +38,12 @@ var environmental_envelope = require('./routes/environmentalEnvelope');
 var invasiveness = require('./routes/invasiveness');
 var habitats = require('./routes/habitats');
 var distribution = require('./routes/distribution');
-var territory = require('./routes/territory');
-var population_biology = require('./routes/populationBiology');
+var territory = require('./routes/territoryRoutes');
+var population_biology = require('./routes/populationBiologyRoutes');
 var threat_status = require('./routes/threatStatus');
 var legislation = require('./routes/legislation');
 var uses_management_and_conservation = require('./routes/usesManagementAndConservation');
-var ancillary_data = require('./routes/ancillaryData');
+var ancillary_data = require('./routes/ancillaryDataRoutes');
 var references = require('./routes/referencesRoutes');
 var endemic_atomized = require('./routes/endemicAtomized');
 

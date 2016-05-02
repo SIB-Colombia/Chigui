@@ -2166,6 +2166,14 @@ var Schema = mongoose.Schema;
             ancillary_data_version.id_user="sib+ac@humboldt.org.co";
             ancillary_data_version.state="accepted";
             ancillary_data_version.element="ancillaryData";
+            for(var i=0;i<ancillary_data_version.ancillaryData.length;i++){
+              if(ancillary_data_version.ancillaryData[i].modified==""){
+                ancillary_data_version.ancillaryData[i].modified = Date();
+              }
+              if(ancillary_data_version.ancillaryData[i].created==""){
+                ancillary_data_version.ancillaryData[i].created = Date();
+              }
+            }
             ancillary_data_version = new AncillaryDataVersionModel(ancillary_data_version);
             var id_v = ancillary_data_version._id;
             var id_rc = ancillary_data_version.id_record;

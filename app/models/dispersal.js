@@ -6,7 +6,20 @@ var Element = require('mongoose').model('Element').schema;
 var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
-var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
+//var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
+
+var MeasurementOrFact = new Schema({
+	measurementID : String,
+	measurementType : String,
+	measurementValue : String,
+	measurementAccuracy : String,
+	measurementUnit : String,
+	measurementDeterminedDate : String,
+	measurementDeterminedBy: [String],
+	measurementMethod : String,
+	measurementRemarks : String,
+	relatedTo : String
+},{ collection : 'measurementOrFact', strict: false });
 
 var DispersalAtomized = new Schema ({
 	purpose : String,

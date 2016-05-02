@@ -10,7 +10,9 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var Distribution = new Schema({
 	distributionScope : { type : {type: String}, ancillaryData: [AncillaryData] },
-	temporalCoverage : { startDate : { type: Date, default: Date.now }, endDate : { type: Date, default: Date.now } }
+	temporalCoverage : { startDate : { type: Date, default: Date.now }, endDate : { type: Date, default: Date.now } },
+	distributionAtomizedBranch: [String],
+	distributionUnstructured : String
 });
 
 
@@ -19,6 +21,7 @@ var CommonNamesAtomized = Element.extend({
 	language : String,
 	synonymStatus : String,
 	usedIn : Distribution,
+	usedBy : String
 });
 
 

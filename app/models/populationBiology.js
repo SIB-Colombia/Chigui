@@ -13,10 +13,13 @@ var PopulationBiologyAtomized = Element.extend({
 	abundanceData : {
 		measurementValue : String
 	},
-	desintyData : {
+	densityData : {
 		measurementValue : String
 	},
 	patternDistribution : {
+		measurementValue : String
+	},
+	size : {
 		measurementValue : String
 	},
 	sexRatio : {
@@ -49,7 +52,7 @@ var PopulationBiologyAtomized = Element.extend({
 	emigration : {
 		measurementValue : String
 	},
-	inmigration : {
+	immigration : {
 		measurementValue : String
 	},
 	descriptionLifeStages : {
