@@ -3,7 +3,7 @@ var async = require('async');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var InvasivenessVersion = require('../app/models/invasiveness.js');
+var MigratoryVersion = require('../app/models/migratory.js');
 var add_objects = require('../app/models/additionalModels.js');
 var cors = require;
 
@@ -12,14 +12,14 @@ var exports = module.exports = {}
 exports.getVersion = function(req, res) {
   var id_rc=req.params.id_record;
   var ver=req.params.version;;
-  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('invasivenessVersion').exec(function (err, record) {
+  add_objects.RecordVersion.findOne({ _id : id_rc }).populate('migratoryVersion').exec(function (err, record) {
     if(record){
       if (err){
         res.send(err);
       };
-      var len=record.invasivenessVersion.length;
+      var len=record.migratoryVersion.length;
       if(ver<=len && ver>0){
-        res.json(record.invasivenessVersion[ver-1]);
+        res.json(record.migratoryVersion[ver-1]);
       }else{
         res.json({message: "The number of version is not valid"});
       }
@@ -30,14 +30,14 @@ exports.getVersion = function(req, res) {
 };
 
 exports.postVersion = function(req, res) {
-  var invasiveness_version  = req.body; 
-  invasiveness_version._id = mongoose.Types.ObjectId();
-  invasiveness_version.created=Date();
-  invasiveness_version.element="invasiveness";
-  var eleValue = invasiveness_version.invasiveness;
-  invasiveness_version = new InvasivenessVersion(invasiveness_version);
+  var migratory_version  = req.body; 
+  migratory_version._id = mongoose.Types.ObjectId();
+  migratory_version.created=Date();
+  migratory_version.element="migratory";
+  var eleValue = migratory_version.migratory;
+  migratory_version = new MigratoryVersion(migratory_version);
 
-  var id_v = invasiveness_version._id;
+  var id_v = migratory_version._id;
   var id_rc = req.params.id_record;
 
   var ob_ids= new Array();
@@ -60,46 +60,46 @@ exports.postVersion = function(req, res) {
         },
         function(data,callback){ 
           if(data){
-            var leninvasiveness = data.invasivenessVersion.length;
-            if( leninvasiveness !=0 ){
-              var idLast = data.invasivenessVersion[leninvasiveness-1];
-              InvasivenessVersion.findById(idLast , function (err, doc){
+            var lenmigratory = data.migratoryVersion.length;
+            if( lenmigratory !=0 ){
+              var idLast = data.migratoryVersion[lenmigratory-1];
+              MigratoryVersion.findById(idLast , function (err, doc){
                 if(err){
-                  callback(new Error("failed getting the last version of invasivenessVersion:" + err.message));
+                  callback(new Error("failed getting the last version of migratoryVersion:" + err.message));
                 }else{
-                  var prev = doc.invasiveness;
-                  var next = invasiveness_version.invasiveness;
+                  var prev = doc.migratory;
+                  var next = migratory_version.migratory;
                   //if(!compare.isEqual(prev,next)){ //TODO
                   if(true){
-                    invasiveness_version.id_record=id_rc;
-                    invasiveness_version.version=leninvasiveness+1;
-                    callback(null, invasiveness_version);
+                    migratory_version.id_record=id_rc;
+                    migratory_version.version=lenmigratory+1;
+                    callback(null, migratory_version);
                   }else{
-                    callback(new Error("The data in invasiveness is equal to last version of this element in the database"));
+                    callback(new Error("The data in migratory is equal to last version of this element in the database"));
                   }
                 }
               }); 
             }else{
-              invasiveness_version.id_record=id_rc;
-              invasiveness_version.version=1;
-              callback(null, invasiveness_version);
+              migratory_version.id_record=id_rc;
+              migratory_version.version=1;
+              callback(null, migratory_version);
             }
         }else{
           callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
         }
       },
-      function(invasiveness_version, callback){ 
-          ver = invasiveness_version.version;
-          invasiveness_version.save(function(err){
+      function(migratory_version, callback){ 
+          ver = migratory_version.version;
+          migratory_version.save(function(err){
             if(err){
               callback(new Error("failed saving the element version:" + err));
             }else{
-              callback(null, invasiveness_version);
+              callback(null, migratory_version);
             }
           });
       },
-      function(invasiveness_version, callback){ 
-          add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "invasivenessVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+      function(migratory_version, callback){ 
+          add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "migratoryVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
             if(err){
               callback(new Error("failed added id to RecordVersion:" + err.message));
             }else{
@@ -113,7 +113,7 @@ exports.postVersion = function(req, res) {
             res.status(406);
             res.json({ message: ""+err });
           }else{
-            res.json({ message: 'Save InvasivenessVersion', element: 'invasiveness', version : ver, _id: id_v, id_record : id_rc });
+            res.json({ message: 'Save MigratoryVersion', element: 'migratory', version : ver, _id: id_v, id_record : id_rc });
           }
         }
       );

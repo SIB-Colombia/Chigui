@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var common_names_atomized_version  = req.body; 
   common_names_atomized_version._id = mongoose.Types.ObjectId();
   common_names_atomized_version.created=Date();
-  common_names_atomized_version.state="accepted";
   common_names_atomized_version.element="commonNamesAtomized";
   var elementTemp=req.body.commonNamesAtomized;
   if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){

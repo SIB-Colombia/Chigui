@@ -11,7 +11,6 @@ exports.postVersion = function(req, res) {
   var direct_threats_version  = req.body; 
   direct_threats_version._id = mongoose.Types.ObjectId();
   direct_threats_version.created=Date();
-  direct_threats_version.state="accepted";
   direct_threats_version.element="directThreats";
   var eleValue = direct_threats_version.directThreats;
   direct_threats_version = new DirectThreatsVersion(direct_threats_version);

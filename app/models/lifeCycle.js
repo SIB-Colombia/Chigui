@@ -14,7 +14,7 @@ var LifeCycleAtomized = new Schema ({
 },{ versionKey: false });
 
 var LifeCycle = Element.extend({
-	lifeCycleAtomized : LifeCycleAtomized,
+	lifeCycleAtomized : [LifeCycleAtomized],
 	lifeCycleUnstructured : String
 },{ versionKey: false });
 

@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var synonyms_atomized_version  = req.body; 
   synonyms_atomized_version._id = mongoose.Types.ObjectId();
   synonyms_atomized_version.created=Date();
-  synonyms_atomized_version.state="accepted";
   synonyms_atomized_version.element="synonymsAtomized";
   var eleValue = synonyms_atomized_version.synonymsAtomized;
   synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);

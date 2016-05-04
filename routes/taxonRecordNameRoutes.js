@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var taxon_record_name_version  = req.body; 
   taxon_record_name_version._id = mongoose.Types.ObjectId();
   taxon_record_name_version.created=Date();
-  taxon_record_name_version.state="accepted";
   taxon_record_name_version.element="taxonRecordName";
   var eleValue = taxon_record_name_version.taxonRecordName;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);

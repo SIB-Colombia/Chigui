@@ -34,7 +34,6 @@ exports.postVersion = function(req, res) {
   environmental_envelope_version._id = mongoose.Types.ObjectId();
   environmental_envelope_version.created=Date();
   environmental_envelope_version.state="accepted";
-  environmental_envelope_version.element="environmentalEnvelope";
   var eleValue = environmental_envelope_version.environmentalEnvelope;
   environmental_envelope_version = new EnvironmentalEnvelopeVersion(environmental_envelope_version);
 

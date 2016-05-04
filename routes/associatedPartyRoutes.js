@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var associated_party_version  = req.body; 
   associated_party_version._id = mongoose.Types.ObjectId();
   associated_party_version.created=Date();
-  associated_party_version.state="accepted";
   associated_party_version.element="associatedParty";
   var eleValue = associated_party_version.associatedParty;
   associated_party_version = new AssociatedPartyVersion(associated_party_version);

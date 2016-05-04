@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var base_elements_version  = req.body; 
   base_elements_version._id = mongoose.Types.ObjectId();
   base_elements_version.created=Date();
-  base_elements_version.state="accepted";
   base_elements_version.element="baseElements";
   var eleValue = base_elements_version.baseElements;
   base_elements_version = new BaseElementsVersion(base_elements_version);

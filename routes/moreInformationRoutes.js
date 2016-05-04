@@ -11,7 +11,6 @@ exports.postVersion = function(req, res) {
   var more_information_version  = req.body; 
   more_information_version._id = mongoose.Types.ObjectId();
   more_information_version.created=Date();
-  more_information_version.state="accepted";
   more_information_version.element="moreInformation";
   var eleValue = more_information_version.moreInformation;
   more_information_version = new MoreInformationVersion(more_information_version);

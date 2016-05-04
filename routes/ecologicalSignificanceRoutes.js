@@ -33,7 +33,6 @@ exports.postVersion = function(req, res) {
   var ecological_significance_version  = req.body; 
   ecological_significance_version._id = mongoose.Types.ObjectId();
   ecological_significance_version.created=Date();
-  ecological_significance_version.state="accepted";
   ecological_significance_version.element="ecologicalSignificance";
   var eleValue = ecological_significance_version.ecologicalSignificance;
   ecological_significance_version = new EcologicalSignificanceVersion(ecological_significance_version);
@@ -93,7 +92,7 @@ exports.postVersion = function(req, res) {
           ver = ecological_significance_version.version;
           ecological_significance_version.save(function(err){
             if(err){
-              callback(new Error("failed saving the element version:" + err.message));
+              callback(new Error("failed saving the element version:" + err));
             }else{
               callback(null, ecological_significance_version);
             }

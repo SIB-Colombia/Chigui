@@ -8,7 +8,7 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var Territory = Element.extend({
 	territoryAtomized: {
-		extentOfOcurrence : String,
+		extentOfOccurrence : String,
 		areaOfOccupancy : String
 	},
 	territoryUnstructured : String

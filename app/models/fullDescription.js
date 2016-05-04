@@ -14,7 +14,7 @@ var FullDescriptionAtomized = new Schema ({
 },{ versionKey: false });
 
 var FullDescription = Element.extend({
-	fullDescriptionAtomized : FullDescriptionAtomized,
+	fullDescriptionAtomized : [FullDescriptionAtomized],
 	fullDescriptionUnstructured : String
 },{ versionKey: false });
 

@@ -13,7 +13,6 @@ exports.postVersion = function(req, res) {
   var hierarchy_version  = req.body; 
   hierarchy_version._id = mongoose.Types.ObjectId();
   hierarchy_version.created=Date();
-  hierarchy_version.state="accepted";
   hierarchy_version.element="hierarchy";
   var eleValue = hierarchy_version.hierarchy;
   hierarchy_version = new HierarchyVersion(hierarchy_version);
