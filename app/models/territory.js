@@ -12,10 +12,10 @@ var Territory = Element.extend({
 		areaOfOccupancy : String
 	},
 	territoryUnstructured : String
-},{collection: 'territory'});
+},{ collection: 'territory', versionKey: false });
 
 var TerritoryVersion = ElementVersion.extend({
 	territory : Territory
-},{ collection: 'TerritoryVersion' });
+},{ collection: 'TerritoryVersion', versionKey: false });
 
 module.exports = mongoose.model('TerritoryVersion', TerritoryVersion );

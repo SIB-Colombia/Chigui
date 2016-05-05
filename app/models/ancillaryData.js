@@ -9,6 +9,6 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var AncillaryDataVersion = ElementVersion.extend({
 	ancillaryData : [AncillaryData]
-}, { collection: 'AncillaryDataVersion'});
+}, { collection: 'AncillaryDataVersion', versionKey: false });
 
 module.exports = mongoose.model( 'AncillaryDataVersion', AncillaryDataVersion );

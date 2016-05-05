@@ -11,7 +11,6 @@ exports.postVersion = function(req, res) {
   var behavior_version  = req.body; 
   behavior_version._id = mongoose.Types.ObjectId();
   behavior_version.created=Date();
-  behavior_version.state="accepted";
   behavior_version.element="behavior";
   var eleValue = behavior_version.behavior;
   behavior_version = new BehaviorVersion(behavior_version);

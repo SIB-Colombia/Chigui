@@ -36,16 +36,16 @@ var migratory = require('./routes/migratoryRoutes');
 var ecological_significance = require('./routes/ecologicalSignificanceRoutes');
 var environmental_envelope = require('./routes/environmentalEnvelopeRoutes');
 var invasiveness = require('./routes/invasivenessRoutes');
-var habitats = require('./routes/habitats');
-var distribution = require('./routes/distribution');
+var habitats = require('./routes/habitatsRoutes');
+var distribution = require('./routes/distributionRoutes');
 var territory = require('./routes/territoryRoutes');
 var population_biology = require('./routes/populationBiologyRoutes');
-var threat_status = require('./routes/threatStatus');
-var legislation = require('./routes/legislation');
+var threat_status = require('./routes/threatStatusRoutes');
+var legislation = require('./routes/legislationRoutes');
 var uses_management_and_conservation = require('./routes/usesManagementAndConservationRoutes');
 var ancillary_data = require('./routes/ancillaryDataRoutes');
 var references = require('./routes/referencesRoutes');
-var endemic_atomized = require('./routes/endemicAtomized');
+var endemic_atomized = require('./routes/endemicAtomizedRoutes');
 
 var app = express();
 app.use(compress());
@@ -58,14 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-
-
-
-
-
 
 /*
 
@@ -84,7 +77,6 @@ app.post('/fichas/', taxon_record_name.postRecord);
 
 app.get('/lista/', record.getRecordList);
 app.get('/record/:id_record/', record.getRecord);
-
 app.post('/fichas/:id_record/more_information/', more_information.postVersion);
 app.get('/fichas/:id_record/more_information/:version', more_information.getVersion);
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
@@ -132,7 +124,6 @@ app.post('/fichas/:id_record/ecological_significance/', ecological_significance.
 app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
 app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
 app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
-
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
 

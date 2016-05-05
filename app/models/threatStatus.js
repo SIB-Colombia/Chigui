@@ -27,15 +27,15 @@ var threatStatusAtomized = Element.extend({
 		locality: String
 	},
 	apendiceCITES: String
-});
+}, { versionKey: false });
 
 var ThreatStatus = Element.extend({
 	threatStatusAtomized : threatStatusAtomized,
 	threatStatusUnstructured : String
-},{collection: 'threatStatus'});
+},{collection: 'threatStatus', versionKey: false});
 
 var ThreatStatusVersion = ElementVersion.extend({
 	threatStatus : [ThreatStatus]
-},{ collection: 'ThreatStatusVersion' });
+},{ collection: 'ThreatStatusVersion', versionKey: false });
 
 module.exports =  mongoose.model('ThreatStatusVersion', ThreatStatusVersion );

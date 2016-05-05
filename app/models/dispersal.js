@@ -19,13 +19,18 @@ var MeasurementOrFact = new Schema({
 	measurementMethod : String,
 	measurementRemarks : String,
 	relatedTo : String
-},{ collection : 'measurementOrFact', strict: false });
+},{ collection : 'measurementOrFact', strict: false,  versionKey: false });
+
+var Distance = new Schema({
+	measurementOrFact : MeasurementOrFact,
+	ancillaryData : AncillaryData
+},{ versionKey: false });
 
 var DispersalAtomized = new Schema ({
 	purpose : String,
 	type : { type: String },
 	structureDispersed : String,
-	distance : MeasurementOrFact,
+	distance : Distance,
 	ancillaryData : AncillaryData
 },{ versionKey: false });
 

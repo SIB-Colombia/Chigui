@@ -33,7 +33,6 @@ exports.postVersion = function(req, res) {
   var uses_management_and_conservation_version  = req.body; 
   uses_management_and_conservation_version._id = mongoose.Types.ObjectId();
   uses_management_and_conservation_version.created=Date();
-  uses_management_and_conservation_version.state="accepted";
   uses_management_and_conservation_version.element="usesManagementAndConservation";
   var eleValue = uses_management_and_conservation_version.usesManagementAndConservation;
   uses_management_and_conservation_version = new UsesManagementAndConservationVersion(uses_management_and_conservation_version);

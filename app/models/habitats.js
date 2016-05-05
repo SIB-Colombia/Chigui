@@ -10,15 +10,15 @@ var MeasurementOrFact = require('mongoose').model('MeasurementOrFact').schema;
 var HabitatAtomized = Element.extend({
 	measurementOrFact : MeasurementOrFact,
 	relatedTo : String
-});
+},{ versionKey: false });
 
 var Habitats = Element.extend({
 	habitatAtomized : [HabitatAtomized],
 	habitatUnstructured : String
-},{collection: 'habitats'});
+},{ collection: 'habitats', versionKey: false});
 
 var HabitatsVersion = ElementVersion.extend({
 	habitats : Habitats
-},{ collection: 'HabitatsVersion' });
+},{ collection: 'HabitatsVersion', versionKey: false });
 
 module.exports = mongoose.model('HabitatsVersion', HabitatsVersion );

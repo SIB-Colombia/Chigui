@@ -8,7 +8,7 @@ var ElementVersion = require('mongoose').model('ElementVersion').schema;
 
 var DistributionScope = Element.extend({
 	type : String,
-});
+}, { versionKey: false });
 
 distributionAtomized = Element.extend({
 	country : String,
@@ -16,7 +16,7 @@ distributionAtomized = Element.extend({
 	municipality: String,
 	locality : String,
 	stateProvince: String
-});
+}, { versionKey: false });
 
 var Distribution = Element.extend({
 	distributionScope: DistributionScope,
@@ -26,10 +26,10 @@ var Distribution = Element.extend({
 	},
 	distributionAtomized : [distributionAtomized],
 	distributionUnstructured : String
-},{collection: 'distribution'});
+},{collection: 'distribution', versionKey: false });
 
 var DistributionVersion = ElementVersion.extend({
 	distribution : [Distribution]
-},{ collection: 'DistributionVersion' });
+},{ collection: 'DistributionVersion', versionKey: false });
 
 module.exports = mongoose.model('DistributionVersion', DistributionVersion );
