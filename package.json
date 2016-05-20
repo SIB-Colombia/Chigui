@@ -22,6 +22,8 @@
     "serve-favicon": "~2.3.0",
     "mongoose-paginate": "latest",
     "mongoose-pagination" : "latest",
-    "async" : "latest"
+    "async" : "latest",
+    "csv" : "latest",
+    "restler" : "latest"
   }
 }
