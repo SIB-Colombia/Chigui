@@ -414,6 +414,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           			},
           			function(commonNamesAtomized, keyValue, callback){
           				console.log("Name to commonNamesAtomized: " + name);
+          				rest.get('http://api.speciesplus.net/api/v1/taxon_concepts.json?name='+ name, { headers : {'X-Authentication-Token' : 'xl3tUZ6wEEzQmqMSXra5Awtt'}}).on('complete', function(result) {
           				rest.get('http://api.speciesplus.net/api/v1/taxon_concepts.json?name='+ name, { headers : {'X-Authentication-Token' : 'xl3tUZ6wEEzQmqMSXra5Awtt'}}).on('complete', function(data) {
           					console.log("speciesplus SPECIES (commonNames) api for "+ name +JSON.stringify(data));
           					 //if(data.taxon_concepts[0].common_names!==undefined){

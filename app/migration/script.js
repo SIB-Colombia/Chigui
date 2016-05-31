@@ -27,6 +27,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     			var scNames = [];
         		var input = fs.createReadStream("/home/inaturalist/Desktop/TAX.csv");
         		console.log("Read the csv file");
+        		var parser = parse({delimiter: ','});
         		parser.on('readable', function(){
   					while(record = parser.read()){
     					scNames.push(record);
@@ -36,7 +37,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 					callback(null, scNames);
 				});
 				input.pipe(parser);
-    		}
+    		},
     		function(scNames,callback){
     			console.log("Number of scientific names to search: "+scNames.length);
     			var newRecordSchema = add_objects.RecordVersion.schema;
@@ -44,8 +45,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
           		sData=scNames.slice(1, scNames.length);
           		async.eachSeries(sData, function(line, callback) {
-          				var taxName = line[2];
-          				//var taxName ="Panthera onca";
+          				//var taxName = line[2];
+          				var taxName ="Inia geoffrensis";
           				var id_record = '';
           				console.log("Scientific name to search: "+taxName);
           				async.waterfall([
@@ -53,18 +54,19 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           						console.log("Search in the database for : " + taxName);
           						var texSchema = TaxonRecordNameVersion.schema;
           						var TaxonRecordNameVersionModel = CatalogoDb.model('TaxonRecordNameVersion', texSchema );
-          						TaxonRecordNameVersionModel.find({'taxonRecordName.scientificName.canonicalName.simple': name }, function(err, records){
+          						TaxonRecordNameVersionModel.find({'taxonRecordName.scientificName.canonicalName.simple': taxName }, function(err, records){
           							if(err){
           								console.log("Error finding scientificName in the database!: " + taxName);
 										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{	
           								console.log("Number of Records finded: " + records.length);
-          								if(records.length > 0){
+          								//if(records.length > 0){
+          								if(false){
           									//throw error to end the the function
           									try{
-          										throw new ScriptException("No results for the name: " + name);
+          										throw new ScriptException("ScriptException for: " + taxName);
           									}catch (e){
-          										callback(new Error("failed getting something:" + e.message));
+          										callback(new Error("The scientificName already exists in the database:" + e.message));
           									}
           								}else{
           									callback();
@@ -75,7 +77,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           					function(callback){
           						taxName = taxName.trim().replace(/ /g,"%20");
           						console.log("***ScientificName to search in the GBIF API: " + taxName +" ***");
-          						rest.get('http://api.gbif.org/v1/species?name='+name+'&limit=1').on('complete', function(data) {
+          						rest.get('http://api.gbif.org/v1/species?name='+ taxName +'&limit=1').on('complete', function(data) {
           							//console.log("gbif api for "+ name +JSON.stringify(data));
           							if(data.results.length > 0){
           								var taxonRecordName = {};
@@ -189,7 +191,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           					},
           					function(data, hierarchy, callback){
           						console.log("***Saving the element hierarchy in the database***");
-          						if(synonymsAtomized.length !== 0){ 
+          						if(hierarchy.length !== 0){ 
           							var hierarchySchema = HierarchyVersion.schema;
           							var HierarchyVersionModel = CatalogoDb.model('HierarchyVersion', hierarchySchema );
           							var hierarchy_version = {}; 
@@ -269,24 +271,347 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										keyValue = '';
 								}
 								if(keyValue !== ''){
-									console.log("The KeyValue for the taxon: "+keyValue);
-									rest.get('http://api.gbif.org/v1/species/' + keyValue + '/synonyms').on('complete', function(result) {
-										//TO DO
-									});
-
+									callback(null, data, keyValue);
 								}else{
-									console.log("No get information about synonyms and commonNames: " + name);
-									//TO DO
+									console.log("No get information about synonyms and commonNames: " + taxName);
+									callback(null, data, keyValue);
 								}
           					},
-          					function(callback){
-          						console.log("Next element");
-          						//callback(null, 'done');
+          					function(data, keyValue, callback){
+          						console.log("***Calling speciesplus for: "+ taxName + " ***");
+          						var resultPlus = '';
+          						rest.get('http://api.speciesplus.net/api/v1/taxon_concepts.json?name=' + taxName, { headers : {'X-Authentication-Token' : 'xl3tUZ6wEEzQmqMSXra5Awtt'}}).on('complete', function(result) {
+          							if(result instanceof Error){
+          								callback(new Error("Error!: " + result.message));
+          							}else{
+          								resultPlus = result;
+          								callback(null, resultPlus, data, keyValue);
+          							}
+          						});
+          					},
+          					function(resultPlus, data, keyValue, callback){
+          						console.log("***Calling GBIF API for the key: "+ keyValue + " for synonyms ***");
+          						var resultSyn = '';
+          						if(keyValue !== ''){
+          							rest.get('http://api.gbif.org/v1/species/' + keyValue + '/synonyms').on('complete', function(result) {
+          								if(result instanceof Error){
+          									callback(new Error("Error!: " + result.message));
+          								}else{
+          									resultSyn = result;
+          									callback(null, resultSyn, resultPlus, data, keyValue);
+          								}
+          							});	
+          						}else{
+          							console.log("keyValue is Empty");
+          							callback(null, resultSyn, resultPlus, data, keyValue);
+          						}
+          					},
+          					function(resultSyn, resultPlus, data, keyValue, callback){
+          						console.log("***Calling GBIF API for the key: "+ keyValue + " for vernacularNames ***");
+          						var resultCom = '';
+          						if(keyValue !== ''){
+          							rest.get('http://api.gbif.org/v1/species/' + keyValue + '/vernacularNames').on('complete', function(result) {
+          								if(result instanceof Error){
+          									callback(new Error("Error!: " + result.message));
+          								}else{
+          									resultCom = result;
+          									callback(null, resultCom, resultSyn, resultPlus, data);
+          								}
+          							});
+          						}else{
+          							console.log("keyValue is Empty");
+          							callback(null, resultCom, resultSyn, resultPlus, data);
+          						}
+          					},
+          					function(resultCom, resultSyn, resultPlus, data, callback){
+          						console.log("***Creating the element synonymsAtomized for: " + taxName +"***");
+          						//console.log("data for syn: " + JSON.stringify(resultSyn));
+          						//console.log("data for syn: " + JSON.stringify(resultPlus));
+          						//console.log("data for syn: " + JSON.stringify(resultSyn.results));
+          						console.log("data for syn: " + JSON.stringify(resultSyn.results.length));
+          						var synonymsAtomized = [];
+          						if(resultSyn !== ''){
+          							if (resultSyn.results !== undefined && resultSyn.results.length > 0) {
+          								for(var i = 0; i < resultSyn.results.length; i++){
+          									var syno = {};
+											var canonicalName = {};
+											var canonicalAuthorship = {};
+											var publishedIn = {};
+											//console.log("data for syn: " + JSON.stringify(resultSyn.results));
+											console.log("data for syn: " + resultSyn.results[i].scientificName );
+											console.log("data for syn: " + resultSyn.results[i].rank );
+											console.log("data for syn: " + resultSyn.results[i].canonicalName );
+											syno.simple = (resultSyn.results[i].scientificName !== undefined) ? resultSyn.results[i].scientificName : '';
+											syno.rank = (resultSyn.results[i].rank !== undefined) ? resultSyn.results[i].rank : '';
+											canonicalName.simple = (resultSyn.results[i].canonicalName !== undefined) ? resultSyn.results[i].canonicalName : '';
+											canonicalAuthorship.simple = (resultSyn.results[i].authorship !== undefined) ? resultSyn.results[i].authorship : '';
+											publishedIn.source = (resultSyn.results[i].publishedIn !== undefined) ? resultSyn.results[i].publishedIn : '';
+											syno.synonymStatus = (resultSyn.results[i].nomenclaturalStatus !== undefined && resultSyn.results[i].nomenclaturalStatus[0] !== undefined) ? data_1.results[i].nomenclaturalStatus : '';
+											syno.canonicalName = canonicalName;
+											syno.canonicalAuthorship = canonicalAuthorship;
+											syno.publishedIn = publishedIn;
+											synonymsAtomized.push(syno);
+          								}
+          							}else{
+          								console.log("No information for synonyms from GBIF API");
+          							}
+          						}
+          						if(resultPlus !== ''){
+          							if(resultPlus.taxon_concepts[0] !== undefined){
+          									for(var i = 0; i < resultPlus.taxon_concepts[0].synonyms.length; i++){
+          										var syno = {};
+												var canonicalName = {};
+												var canonicalAuthorship = {};
+												var publishedIn = {};
+												syno.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
+												syno.rank = resultPlus.taxon_concepts[0].synonyms[i].rank;
+												canonicalName.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
+												canonicalAuthorship.simple = resultPlus.taxon_concepts[0].synonyms[i].author_year;
+												publishedIn.source = 'CITES';
+												syno.synonymStatus = '';
+												syno.canonicalName = canonicalName;
+												syno.canonicalAuthorship = canonicalAuthorship;
+												syno.publishedIn = publishedIn;
+												synonymsAtomized.push(syno);
+          									}
+          							}else{
+          									console.log("No information for synonyms from speciesplus API");
+          							}
+          						}
+          						callback(null, resultCom, synonymsAtomized, resultPlus, data);
+          					},
+          					function(resultCom, synonymsAtomized, resultPlus, data, callback){
+          						console.log("***Creating the element commonNamesAtomized for: " + taxName +"***");
+          						var commonNamesAtomized = [];
+          						if(resultCom !== ''){
+          							if (resultCom.results !== undefined && resultCom.results.length > 0) {
+          								for(var i = 0; i < resultCom.results.length; i++){
+          									var comm = {};
+											var usedIn = {};
+											comm.name = (resultCom.results[i].vernacularName !== undefined) ? resultCom.results[i].vernacularName : '';
+											comm.language =(resultCom.results[i].language !== undefined) ? resultCom.results[i].language : '';
+											usedIn.distributionUnstructured =(resultCom.results[i].area !== undefined) ? resultCom.results[i].area : '';
+          									comm.usedIn = usedIn;
+											commonNamesAtomized.push(comm);
+          								}
+          							}else{
+          								console.log("No information for commonNamesAtomized from GBIF API");
+          							}
+          						}
+          						if(resultPlus !== ''){
+          							if(resultPlus.taxon_concepts[0]!==undefined){
+          								for(var i = 0; i < resultPlus.taxon_concepts[0].common_names.length; i++){
+          									var comm = {};
+											var usedIn = {};
+											comm.name = resultPlus.taxon_concepts[0].common_names[i].name;
+											comm.language = resultPlus.taxon_concepts[0].common_names[i].language;
+											usedIn.distributionUnstructured = '';
+          									comm.usedIn = usedIn;
+											commonNamesAtomized.push(comm);
+          								}
+          							}else{
+          								console.log("No information for commonNamesAtomized from speciesplus API");
+          							}
+          						}
+          						callback(null, commonNamesAtomized, synonymsAtomized, resultPlus, data);
+          					},
+          					function(commonNamesAtomized, synonymsAtomized, resultPlus, data, callback){
+          						console.log("***Creating the element threatStatus for: " + taxName +"***");
+          						var cites = [];
+          						var threatStatus = [];
+          						if(resultPlus !== ''){
+          							if(resultPlus.taxon_concepts.length > 0){
+          								if(resultPlus.taxon_concepts[0].cites_listings!== undefined && resultPlus.taxon_concepts[0].cites_listings.length>0){
+          									for (var i = 0; i < resultPlus.taxon_concepts[0].cites_listings.length; i++) {
+          										var appendix = resultPlus.taxon_concepts[0].cites_listings[i].appendix;
+          										if(appendix==='I'){
+													cites.push("Apéndice I");
+												}else if(appendix==='II'){
+													cites.push("Apéndice II");
+												}else{
+													cites.push("Apéndice III");
+												}
+          									}
+          									var threatStatus = [];
+          									var theat = {};
+          									var threatStatusAtomized = {};
+          									threatStatusAtomized.apendiceCITES = cites;
+          									theat.threatStatusAtomized = threatStatusAtomized;
+          									threatStatus.push(theat);
+          									callback(null, commonNamesAtomized, synonymsAtomized, threatStatus, data);
+          								}else{
+          									console.log("No for taxon_concepts: " + taxName);
+          									callback(null, commonNamesAtomized, synonymsAtomized, threatStatus, data);
+          								}
+          							}else{
+          								console.log("No informatio for threatStatus");
+          								callback(null, commonNamesAtomized, synonymsAtomized, threatStatus, data);
+          							}
+          						}
+          					},
+          					function(commonNamesAtomized, synonymsAtomized, threatStatus, data, callback){
+          						console.log("***Saving the element synonymsAtomized in the database***");
+          						if(synonymsAtomized.length !== 0){ 
+          							var synonyms_atomized_version = {}; 
+          							var synonymsAtomizedSchema = SynonymsAtomizedVersion.schema;
+          							var SynonymsAtomizedVersionModel = CatalogoDb.model('SynonymsAtomizedVersion', synonymsAtomizedSchema );
+            						ob_ids= new Array();
+            						synonyms_atomized_version.synonymsAtomized = synonymsAtomized;
+            						synonyms_atomized_version._id = mongoose.Types.ObjectId();
+            						synonyms_atomized_version.id_record = id_record;
+            						synonyms_atomized_version.created = Date(); //***
+            						synonyms_atomized_version.id_user="sib+ac@humboldt.org.co";
+            						synonyms_atomized_version.state="to review";
+            						synonyms_atomized_version.element="synonymsAtomized";
+            						synonyms_atomized_version = new SynonymsAtomizedVersionModel(synonyms_atomized_version);
+            						var id_v = synonyms_atomized_version._id;
+            						ob_ids.push(id_v);
+            						if(typeof  synonyms_atomized_version.synonymsAtomized!=="undefined" && synonyms_atomized_version.synonymsAtomized!=""){
+            							newRecordModel.count({ _id : id_record }, function (err, count){
+            								if(typeof count!=="undefined"){
+            									if(count==0){
+            										console.log({message: "The Record (Ficha) with id: " + id_record + " doesn't exist."});
+            									}else{
+            										newRecordModel.findByIdAndUpdate( id_record, { $push: { "synonymsAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+                      									if (err){
+                        									console.log("Saving synonymsAtomized Error!: "+err+" id_record: "+id_rc);
+                        									callback(null, commonNamesAtomized, threatStatus, data);
+                      									}else{
+                        									synonyms_atomized_version.id_record=id_record;
+                        									synonyms_atomized_version.version=doc.synonymsAtomizedVersion.length+1;
+                        									var ver = synonyms_atomized_version.version;
+                        									synonyms_atomized_version.save(function(err){
+                          										if(err){
+                           											console.log("Saving synonymsAtomized Error!: "+err+" id_record: "+id_rc);
+                           											callback(null, commonNamesAtomized, threatStatus, data);
+                          										}else{
+                           											console.log({ message: 'Save SynonymsAtomizedVersion', element: 'synonymsAtomized', version : ver, _id: id_v, id_record : id_record });
+                           											callback(null, commonNamesAtomized, threatStatus, data);
+                          										}
+                        									});
+                      									}
+                    								});
+            									}
+            								}
+            							});
+            						}
+          						}else{
+          							console.log({message: "Empty data in version of the element synonymsAtomized, id_record: "+id_record});
+          							callback(null, commonNamesAtomized, threatStatus, data);
+          						}
+          					},
+          					function(commonNamesAtomized, threatStatus, data, callback){
+          						console.log("***Saving the element commonNamesAtomized in the database***");
+          						if(commonNamesAtomized.length !== 0){
+          							var commonNamesAtomizedSchema = CommonNamesAtomizedVersion.schema;
+         							var CommonNamesAtomizedVersionModel = CatalogoDb.model('CommonNamesAtomizedVersion', commonNamesAtomizedSchema );
+          							var common_names_atomized = {}; 
+          							var ob_ids= new Array();
+          							common_names_atomized.commonNamesAtomized=commonNamesAtomized;
+            						common_names_atomized._id = mongoose.Types.ObjectId();
+            						common_names_atomized.id_record = id_record;
+            						common_names_atomized.created = Date();
+            						common_names_atomized.id_user="sib+ac@humboldt.org.co";
+            						common_names_atomized.state="to review";
+            						common_names_atomized.element="commonNamesAtomized";
+            						common_names_atomized = new CommonNamesAtomizedVersionModel(common_names_atomized);
+            						var id_v = common_names_atomized._id;
+            						ob_ids.push(id_v);
+            						if(typeof  common_names_atomized.commonNamesAtomized!=="undefined" && common_names_atomized.commonNamesAtomized!=""){
+            							newRecordModel.count({ _id : id_record }, function (err, count){
+            								if(typeof count!=="undefined"){
+            									if(count==0){
+            										console.log({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
+            									}else{
+            										newRecordModel.findByIdAndUpdate( id_record, { $push: { "commonNamesAtomizedVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+            											if (err){
+            												console.log("Saving commonNamesAtomized Error!: "+err+" id_record: "+id_rc);
+                        									callback(null, threatStatus, data);
+            											}else{
+            												common_names_atomized.id_record=id_record;
+                        									common_names_atomized.version=doc.commonNamesAtomizedVersion.length+1;
+                        									var ver = common_names_atomized.version;
+                        									common_names_atomized.save(function(err){
+                          										if(err){
+                            										console.log("Saving commonNamesAtomized Error!: "+err+" id_record: "+id_rc);
+                            										callback(null, threatStatus, data);
+                          										}else{
+                            										console.log({ message: 'Save CommonNamesAtomizedVersion', element: 'commonNamesAtomized', version : ver, _id: id_v, id_record : id_record });
+                            										callback(null, threatStatus, data);
+                          										}
+                        									});
+            											}
+            										});
+            									}
+            								}
+            							});
+            						}else{
+            							console.log({message: "Empty data in version of the element commonNamesAtomized, id_record: "+id_record});
+              							callback(null, threatStatus, data);
+            						}
+          						}else{
+          							console.log({message: "Empty data in version to save of the element commonNamesAtomized, id_record: "+id_record});
+          							callback(null, threatStatus, data);
+          						}
+          					},
+          					function(threatStatus, data, callback){
+          						console.log("***Saving the element threatStatusAtomized in the database***");
+          						if(threatStatus.length !== 0){
+          							var threatStatusSchema = ThreatStatusVersion.schema;
+          							var ThreatStatusVersionModel = CatalogoDb.model('ThreatStatusVersion', threatStatusSchema );
+          							var threat_status_version = {}; 
+          							var ob_ids= new Array();
+            						threat_status_version.threatStatus = threatStatus;
+            						threat_status_version._id = mongoose.Types.ObjectId();
+            						threat_status_version.id_record=id_record;
+            						threat_status_version.created=Date(); //***
+            						threat_status_version.id_user="sib+ac@humboldt.org.co";
+            						threat_status_version.state="to review";
+            						threat_status_version.element="threatStatus";
+            						threat_status_version = new ThreatStatusVersionModel(threat_status_version);
+            						var id_v = threat_status_version._id;
+            						ob_ids.push(id_v);
+            						if(typeof  threat_status_version.threatStatus!=="undefined" && threat_status_version.threatStatus!=""){
+            							newRecordModel.count({ _id : id_record }, function (err, count){
+            								if(typeof count!=="undefined"){
+            									if(count==0){
+            										console.log({message: "The Record (Ficha) with id: "+id_record+" doesn't exist."});
+            										callback();
+            									}else{
+            										newRecordModel.findByIdAndUpdate( id_record, { $push: { "threatStatusVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
+            											if (err){
+            												console.log("Saving threatStatus Error!: "+err+" id_record: "+id_rc);
+                        									callback();
+            											}else{
+            												threat_status_version.id_record=id_record;
+                        									threat_status_version.version=doc.threatStatusVersion.length+1;
+                        									var ver = threat_status_version.version;
+                        									threat_status_version.save(function(err){
+                        										if(err){
+                            										console.log("Saving threatStatus Error!: "+err+" id_record: "+id_record);
+                            										callback();
+                          										}else{
+                            										console.log({ message: 'Save ThreatStatusVersion', element: 'threatStatus', version : ver, _id: id_v, id_record : id_record });
+                            										callback();
+                          										}
+                        									});
+            											}
+            										});
+            									}
+            								}
+            							});
+            						}else{
+            							console.log({message: "Empty data in version of the element threatStatus, id_record: "+id_record});
+              							callback();
+            						}
+          						}else{
+          							console.log("No data to save in the element threatStatus!!");
+          							callback();
+          						}
           					}
-
           				],function(err, result) {
           					if (err) {
-            					console.log("Error: "+err);
+            					console.log("Error!!: " + err);
             					//callback();
           					}else{
             					console.log('done!');
