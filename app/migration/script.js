@@ -45,8 +45,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
           		sData=scNames.slice(1, scNames.length);
           		async.eachSeries(sData, function(line, callback) {
-          				//var taxName = line[2];
-          				var taxName ="Inia geoffrensis";
+          				var taxName = line[2];
+          				//var taxName ="Inia geoffrensis";
           				var id_record = '';
           				console.log("Scientific name to search: "+taxName);
           				async.waterfall([
@@ -60,8 +60,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{	
           								console.log("Number of Records finded: " + records.length);
-          								//if(records.length > 0){
-          								if(false){
+          								if(records.length > 0){
+          								//if(false){
           									//throw error to end the the function
           									try{
           										throw new ScriptException("ScriptException for: " + taxName);
@@ -92,9 +92,9 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										taxonRecordName.scientificName.publishedln.simple = (data.results[0].publishedIn !== undefined) ? data.results[0].publishedIn : '';
 										callback(null, data, taxonRecordName);
           							}else{
-          								console.log("No results for the name: " + name + "In the GBIF API");
+          								console.log("No results for the name: " + taxName + "In the GBIF API");
           								try{
-          									throw new ScriptException("No results for the name: " + name);
+          									throw new ScriptException("No results for the name: " + taxName);
           								}catch (e){
           									callback(new Error("Failed getting result fron the API:" + e.message));
           								}
@@ -325,32 +325,26 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           					},
           					function(resultCom, resultSyn, resultPlus, data, callback){
           						console.log("***Creating the element synonymsAtomized for: " + taxName +"***");
-          						//console.log("data for syn: " + JSON.stringify(resultSyn));
-          						//console.log("data for syn: " + JSON.stringify(resultPlus));
-          						//console.log("data for syn: " + JSON.stringify(resultSyn.results));
-          						console.log("data for syn: " + JSON.stringify(resultSyn.results.length));
           						var synonymsAtomized = [];
           						if(resultSyn !== ''){
           							if (resultSyn.results !== undefined && resultSyn.results.length > 0) {
           								for(var i = 0; i < resultSyn.results.length; i++){
-          									var syno = {};
-											var canonicalName = {};
-											var canonicalAuthorship = {};
-											var publishedIn = {};
-											//console.log("data for syn: " + JSON.stringify(resultSyn.results));
-											console.log("data for syn: " + resultSyn.results[i].scientificName );
-											console.log("data for syn: " + resultSyn.results[i].rank );
-											console.log("data for syn: " + resultSyn.results[i].canonicalName );
-											syno.simple = (resultSyn.results[i].scientificName !== undefined) ? resultSyn.results[i].scientificName : '';
-											syno.rank = (resultSyn.results[i].rank !== undefined) ? resultSyn.results[i].rank : '';
-											canonicalName.simple = (resultSyn.results[i].canonicalName !== undefined) ? resultSyn.results[i].canonicalName : '';
-											canonicalAuthorship.simple = (resultSyn.results[i].authorship !== undefined) ? resultSyn.results[i].authorship : '';
-											publishedIn.source = (resultSyn.results[i].publishedIn !== undefined) ? resultSyn.results[i].publishedIn : '';
-											syno.synonymStatus = (resultSyn.results[i].nomenclaturalStatus !== undefined && resultSyn.results[i].nomenclaturalStatus[0] !== undefined) ? data_1.results[i].nomenclaturalStatus : '';
-											syno.canonicalName = canonicalName;
-											syno.canonicalAuthorship = canonicalAuthorship;
-											syno.publishedIn = publishedIn;
-											synonymsAtomized.push(syno);
+          									 var syno = {};
+                             var synonymName = {};
+                             var canonicalName = {};
+                             var canonicalAuthorship = {};
+                             var publishedln = {};
+											       synonymName.simple = (resultSyn.results[i].scientificName !== undefined) ? resultSyn.results[i].scientificName : '';
+                             synonymName.rank = (resultSyn.results[i].rank !== undefined) ? resultSyn.results[i].rank : '';
+                             canonicalName.simple = (resultSyn.results[i].canonicalName !== undefined) ? resultSyn.results[i].canonicalName : '' ;
+                             canonicalAuthorship.simple = (resultSyn.results[i].authorship !== undefined) ? resultSyn.results[i].authorship : '' ;
+                             publishedln.source = (resultSyn.results[i].publishedIn !== undefined) ? resultSyn.results[i].publishedIn : '' ;
+                             synonymName.canonicalName = canonicalName;
+                             synonymName.canonicalAuthorship = canonicalAuthorship;
+                             synonymName.publishedln = publishedln;
+                             syno.synonymStatus = (resultSyn.results[i].nomenclaturalStatus !== undefined && resultSyn.results[i].nomenclaturalStatus[0] !== undefined) ? resultSyn.results[i].nomenclaturalStatus : '' ;
+											       syno.synonymName = synonymName;
+											       synonymsAtomized.push(syno);
           								}
           							}else{
           								console.log("No information for synonyms from GBIF API");
@@ -358,22 +352,29 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           						}
           						if(resultPlus !== ''){
           							if(resultPlus.taxon_concepts[0] !== undefined){
+                          if(resultPlus.taxon_concepts[0].synonyms !== undefined ){
           									for(var i = 0; i < resultPlus.taxon_concepts[0].synonyms.length; i++){
           										var syno = {};
-												var canonicalName = {};
-												var canonicalAuthorship = {};
-												var publishedIn = {};
-												syno.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
-												syno.rank = resultPlus.taxon_concepts[0].synonyms[i].rank;
-												canonicalName.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
-												canonicalAuthorship.simple = resultPlus.taxon_concepts[0].synonyms[i].author_year;
-												publishedIn.source = 'CITES';
-												syno.synonymStatus = '';
-												syno.canonicalName = canonicalName;
-												syno.canonicalAuthorship = canonicalAuthorship;
-												syno.publishedIn = publishedIn;
-												synonymsAtomized.push(syno);
+                              var synonymName = {};
+                              var canonicalName = {};
+                              var canonicalAuthorship = {};
+                              var publishedln = {};
+
+                              synonymName.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
+                              synonymName.rank = resultPlus.taxon_concepts[0].synonyms[i].rank;
+  												    canonicalName.simple = resultPlus.taxon_concepts[0].synonyms[i].full_name;
+  												    canonicalAuthorship.simple = resultPlus.taxon_concepts[0].synonyms[i].author_year;
+  												    publishedln.source = 'CITES';
+                              synonymName.canonicalName = canonicalName;
+                              synonymName.canonicalAuthorship = canonicalAuthorship;
+                              synonymName.publishedln = publishedln;
+                              syno.synonymStatus = '';
+                              syno.synonymName = synonymName;
+                              synonymsAtomized.push(syno);
           									}
+                          }else{
+                            console.log("No information for synonyms from speciesplus API");
+                          }
           							}else{
           									console.log("No information for synonyms from speciesplus API");
           							}
@@ -425,12 +426,12 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           									for (var i = 0; i < resultPlus.taxon_concepts[0].cites_listings.length; i++) {
           										var appendix = resultPlus.taxon_concepts[0].cites_listings[i].appendix;
           										if(appendix==='I'){
-													cites.push("Apéndice I");
-												}else if(appendix==='II'){
-													cites.push("Apéndice II");
-												}else{
-													cites.push("Apéndice III");
-												}
+													     cites.push("Apéndice I");
+												      }else if(appendix==='II'){
+													     cites.push("Apéndice II");
+												      }else{
+													     cites.push("Apéndice III");
+												      }
           									}
           									var threatStatus = [];
           									var theat = {};
@@ -612,10 +613,10 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           				],function(err, result) {
           					if (err) {
             					console.log("Error!!: " + err);
-            					//callback();
+            					callback();
           					}else{
             					console.log('done!');
-            					//callback();
+            					callback();
           					}
         				});
 
@@ -641,7 +642,13 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           		}
         	}
     		],function (err, result){
-
+          if (err) {
+                      console.log("Error in the script!!: " + err);
+                      callback();
+                    }else{
+                      console.log('done!');
+                      callback();
+                    }
     	});
 
     }
