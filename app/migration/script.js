@@ -45,8 +45,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
           		sData=scNames.slice(1, scNames.length);
           		async.eachSeries(sData, function(line, callback) {
-          				var taxName = line[2];
-          				//var taxName ="Inia geoffrensis";
+          				var taxName = line[2].trim();
+          				//var taxName ="Lynchailurus colocolo";
           				var id_record = '';
           				console.log("Scientific name to search: "+taxName);
           				async.waterfall([
@@ -243,32 +243,34 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           						}
           					},
           					function(data, callback){
-          						console.log("Next element");
+          						console.log("Getting the keyValue");
           						var keyValue ='';
-          						switch (data.results[0].rank.toLowerCase()) {
-									case 'kingdom':
-										keyValue = data.results[0].kingdomKey;
-										break;
-									case 'phylum':
-										keyValue = data.results[0].phylumKey;
-										break;
-									case 'class':
-										keyValue = data.results[0].classKey;
-										break;
-									case 'order':
-										keyValue = data.results[0].orderKey;
-										break;
-									case 'family':
-										keyValue = data.results[0].familyKey;
-										break;
-									case 'genus':
-										keyValue = data.results[0].genusKey;
-										break;
-									case 'species':
-										keyValue = data.results[0].speciesKey;
-										break;
-									default:
-										keyValue = '';
+          						if(data.results[0].rank !== undefined){
+          							switch (data.results[0].rank.toLowerCase()) {
+										case 'kingdom':
+											keyValue = data.results[0].kingdomKey;
+											break;
+										case 'phylum':
+											keyValue = data.results[0].phylumKey;
+											break;
+										case 'class':
+											keyValue = data.results[0].classKey;
+											break;
+										case 'order':
+											keyValue = data.results[0].orderKey;
+											break;
+										case 'family':
+											keyValue = data.results[0].familyKey;
+											break;
+										case 'genus':
+											keyValue = data.results[0].genusKey;
+											break;
+										case 'species':
+											keyValue = data.results[0].speciesKey;
+											break;
+										default:
+											keyValue = '';
+									}
 								}
 								if(keyValue !== ''){
 									callback(null, data, keyValue);
@@ -401,14 +403,18 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           						}
           						if(resultPlus !== ''){
           							if(resultPlus.taxon_concepts[0]!==undefined){
-          								for(var i = 0; i < resultPlus.taxon_concepts[0].common_names.length; i++){
-          									var comm = {};
-											var usedIn = {};
-											comm.name = resultPlus.taxon_concepts[0].common_names[i].name;
-											comm.language = resultPlus.taxon_concepts[0].common_names[i].language;
-											usedIn.distributionUnstructured = '';
-          									comm.usedIn = usedIn;
-											commonNamesAtomized.push(comm);
+          								if(resultPlus.taxon_concepts[0].common_names !==undefined ){
+          									for(var i = 0; i < resultPlus.taxon_concepts[0].common_names.length; i++){
+          										var comm = {};
+												var usedIn = {};
+												comm.name = resultPlus.taxon_concepts[0].common_names[i].name;
+												comm.language = resultPlus.taxon_concepts[0].common_names[i].language;
+												usedIn.distributionUnstructured = '';
+          										comm.usedIn = usedIn;
+												commonNamesAtomized.push(comm);
+          									}
+          								}else{
+          									console.log("No information for commonNamesAtomized from speciesplus API");	
           								}
           							}else{
           								console.log("No information for commonNamesAtomized from speciesplus API");
@@ -642,13 +648,13 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           		}
         	}
     		],function (err, result){
-          if (err) {
+          		if (err) {
                       console.log("Error in the script!!: " + err);
                       callback();
                     }else{
                       console.log('done!');
                       callback();
-                    }
+                }
     	});
 
     }
