@@ -35,9 +35,74 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           			}
           		});
     		},
-    		function(records, callback) {
+    		function(taxon_records, callback) {
       			if(records.length > 0){
-      				async.eachSeries(records, function(record, callback){
+      				async.eachSeries(taxon_records, function(taxon_record, callback){
+     					var taxNombre = taxon_record.scientificName.canonicalName.simple;
+     					console.log("taxon to search images: " + taxNombre);
+      					async.waterfall([
+      						function(callback) {
+      							rest.get("http://eol.org/api/search/1.0.json?q="+ encodeURIComponent(taxonnombre) +"&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=").on('complete', function(data, response) {
+      								if (data instanceof Error || response.statusCode !== 200) {
+      									console.log('Error:', data.message);
+      									//callback(null, data); TO DO throw error
+      								}else{
+      									callback(null, data);
+      								}
+      							});
+    						},
+    						function(results, callback) {
+      							// arg1 now equals 'one' and arg2 now equals 'two'
+        						async.eachSeries(results, function(result, callback){
+        							rest.get("http://eol.org/api/search/1.0.json?q="+ encodeURIComponent(taxonnombre) +"&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=").on('complete', function(results, response) {
+        								if (results instanceof Error || response.statusCode !== 200) {
+        									console.log("An error occurred for a eol row");
+      										console.log('Error:', results.message);
+      									}else{
+      										async.eachSeries(results, function(result, callback){
+      											var url = '';
+                                                var source = '';
+                                                if(typeof  result.eolMediaURL != 'undefined'){
+                                                    url =(result_data.eolMediaURL).replace(/'/g, "\''");
+                                                }
+                                                if(typeof  result.source != 'undefined'){
+                                                    source =(result_data.source).replace(/'/g, "\''");
+                                                }
+                                                /*
+                                                taxonnombre = taxonnombre
+                                                imageUrl = url 
+                                                imageLicense = result_data.license
+                                                imageRights = result_data.rights
+                                                imageRightsHolder = result_data.rightsHolder
+                                                imageSource = source
+                                                */
+
+      											References.save();
+      										}, 
+      										function{});
+      										callback(null, data);
+      									}
+        							});
+        						},
+        						function(err){
+              						// if any of the file processing produced an error, err would equal that error
+              						if( err ) {
+                						console.log('A record failed to process');
+              						} else {
+                						console.log('All records have been processed successfully');
+                						callback(null, dataN, catalogoDb);
+              						}
+          						});
+    						},
+    						function(arg1, callback) {
+        						// arg1 now equals 'three'
+        						callback(null, 'done');
+    						}
+      						],
+      						{
+
+      					});
+      					/*	
       					rest.get("http://eol.org/api/search/1.0.json?q="+ encodeURIComponent(taxonnombre) +"&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=").on('complete', function(data) {
       						if (data instanceof Error || response.statusCode !== 200) {
       							console.log('Error:', result.message);
@@ -45,6 +110,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
       						}
       					});
+      					*/
       				}, 
       				function(err){
               			// if any of the file processing produced an error, err would equal that error
@@ -56,7 +122,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 			console.log('All records have been processed successfully');
                 			callback(null, dataN, catalogoDb);
               			}
-          			})
+          			});
       			}
     		},
     		function(arg1, callback) {

@@ -45,8 +45,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
           		sData=scNames.slice(1, scNames.length);
           		async.eachSeries(sData, function(line, callback) {
-          				var taxName = line[2].trim();
-          				//var taxName ="Lynchailurus colocolo";
+          				//var taxName = line[2].trim();
+          				var taxName ="Priocnessus flavidulus";
           				var id_record = '';
           				console.log("Scientific name to search: "+taxName);
           				async.waterfall([
@@ -60,8 +60,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{	
           								console.log("Number of Records finded: " + records.length);
-          								if(records.length > 0){
-          								//if(false){
+          								//if(records.length > 0){
+          								if(false){
           									//throw error to end the the function
           									try{
           										throw new ScriptException("ScriptException for: " + taxName);
@@ -77,8 +77,10 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           					function(callback){
           						taxName = taxName.trim().replace(/ /g,"%20");
           						console.log("***ScientificName to search in the GBIF API: " + taxName +" ***");
-          						rest.get('http://api.gbif.org/v1/species?name='+ taxName +'&limit=1').on('complete', function(data) {
+          						rest.get('http://api.gbif.org/v1/species?name='+ taxName +'&limit=1').on('complete', function(data, response) {
           							//console.log("gbif api for "+ name +JSON.stringify(data));
+          							console.log("Status code: "+response.statusCode);
+          							if(data.results !== undefined ){
           							if(data.results.length > 0){
           								var taxonRecordName = {};
           								taxonRecordName.scientificName = {};
@@ -99,6 +101,14 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           									callback(new Error("Failed getting result fron the API:" + e.message));
           								}
           							}
+          						}else{
+          							console.log("Somthing failed; No results for the name: " + taxName + "In the GBIF API");
+          								try{
+          									throw new ScriptException("No results for the name: " + taxName);
+          								}catch (e){
+          									callback(new Error("Failed getting result fron the API:" + e.message));
+          							}
+          						}
           						});
           					},
           					function(data, taxonRecordName, callback){
@@ -156,9 +166,9 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           								}
             						}
           						}else{
-          							console.log("No results for the name: " + name + "In the field taxonRecordName.scientificName.simple");
+          							console.log("No results for the name: " + taxName + "In the field taxonRecordName.scientificName.simple");
           							try{
-          								throw new ScriptException("No results for the name: " + name + "In the field taxonRecordName.scientificName.simple");
+          								throw new ScriptException("No results for the name: " + taxName + "In the field taxonRecordName.scientificName.simple");
           							}catch (e){
           								callback(new Error("Error:" + e.message));
           							}
@@ -185,7 +195,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 									hierarchy.push(hier);
 									callback(null, data, hierarchy);
           						}else{
-          							console.log("No get information about kingdom: " + name);
+          							console.log("No get information about kingdom: " + taxName);
 									callback(null, data, hierarchy);
           						}
           					},
