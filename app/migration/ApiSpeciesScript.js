@@ -25,8 +25,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     		function(callback){
     			console.log("!!Starting script");
     			var scNames = [];
+    			console.log("Read the csv file");
         		var input = fs.createReadStream("/home/inaturalist/Desktop/TAX.csv");
-        		console.log("Read the csv file");
         		var parser = parse({delimiter: ','});
         		parser.on('readable', function(){
   					while(record = parser.read()){
@@ -45,8 +45,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
           		sData=scNames.slice(1, scNames.length);
           		async.eachSeries(sData, function(line, callback) {
-          				//var taxName = line[2].trim();
-          				var taxName ="Priocnessus flavidulus";
+          				var taxName = line[2].trim();
+          				//var taxName ="Priocnessus flavidulus";
           				var id_record = '';
           				console.log("Scientific name to search: "+taxName);
           				async.waterfall([
@@ -60,8 +60,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{	
           								console.log("Number of Records finded: " + records.length);
-          								//if(records.length > 0){
-          								if(false){
+          								if(records.length > 0){
+          								//if(false){
           									//throw error to end the the function
           									try{
           										throw new ScriptException("ScriptException for: " + taxName);
@@ -258,7 +258,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
             						}
           						}else{
           							console.log({message: "Empty data for the element hierarchy for the RecordVersion with id "+id_record});
-          							callback(null, data, keyValue);
+          							callback(null, data);
           						}
           					},
           					function(data, callback){
@@ -393,9 +393,9 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                               syno.synonymName = synonymName;
                               synonymsAtomized.push(syno);
           									}
-                          }else{
-                            console.log("No information for synonyms from speciesplus API");
-                          }
+                          	}else{
+                            	console.log("No information for synonyms from speciesplus API");
+                          	}
           							}else{
           									console.log("No information for synonyms from speciesplus API");
           							}
