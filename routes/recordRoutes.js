@@ -21,7 +21,7 @@ exports.getRecord = function(req, res) {
     if(record){
   		if (err){
   			res.send(err);
-  		};
+  		}
   		res.json(record);
     }else{
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
@@ -39,7 +39,7 @@ exports.getRecordLast = function(req, res) {
     if(record){
       if (err){
         res.send(err);
-      };
+      }
       /*
       var len=record.identificationKeysVersion.length;
       if(ver<=len && ver>0){

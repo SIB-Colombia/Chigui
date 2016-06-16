@@ -99,6 +99,7 @@ var ElementVersion = new Schema ({
 
 var RecordVersion = new Schema({
 	language : String,
+	legacy_id : String,
 	moreInformationVersion : [{ type: Schema.Types.ObjectId, ref: 'MoreInformationVersion' }],
 	associatedPartyVersion : [{ type: Schema.Types.ObjectId, ref: 'AssociatedPartyVersion' }],
 	directThreatsVersion : [{ type: Schema.Types.ObjectId, ref: 'DirectThreatsVersion' }],

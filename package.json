@@ -28,6 +28,8 @@
     "mongoose-text-search" : "latest",
     "unix-timestamp" : "latest",
     "mongoose-pagination" : "latest",
-    "async" : "latest"
+    "async" : "latest",
+    "csv-parse" : "latest",
+    "restler" : "latest"
   }
 }
