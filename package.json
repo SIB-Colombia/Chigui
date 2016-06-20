@@ -16,7 +16,7 @@
     "kerberos": "0.0.18",
     "mongodb": "~2.0.33",
     "mongoose": "~4.2.7",
-    "mongoose-schema-extend": "latest",
+    "mongoose-schema-extend": "0.2.0",
     "morgan": "~1.6.1",
     "nodemon": "latest",
     "serve-favicon": "~2.3.0",
@@ -24,6 +24,7 @@
     "mongoose-pagination" : "latest",
     "async" : "latest",
     "csv" : "latest",
-    "restler" : "latest"
+    "restler" : "latest",
+    "csv-parse" : "latest"
   }
 }

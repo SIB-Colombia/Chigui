@@ -11,7 +11,7 @@ var cors = require;
 
 RecordVersion.plugin(mongoosePaginate);
 
-var exports = module.exports = {}
+var exports = module.exports = {};
 
 exports.getRecord = function(req, res) {
 	var id_rc=req.params.id_record;
@@ -21,7 +21,7 @@ exports.getRecord = function(req, res) {
     if(record){
   		if (err){
   			res.send(err);
-  		};
+  		}
   		res.json(record);
     }else{
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
@@ -39,7 +39,7 @@ exports.getRecordLast = function(req, res) {
     if(record){
       if (err){
         res.send(err);
-      };
+      }
       /*
       var len=record.identificationKeysVersion.length;
       if(ver<=len && ver>0){
