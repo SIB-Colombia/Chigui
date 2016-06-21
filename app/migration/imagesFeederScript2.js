@@ -5,6 +5,7 @@ var TaxonRecordNameVersion = require('../models/taxonRecordName.js');
 var SynonymsAtomizedVersion = require('../models/synonymsAtomized.js');
 var CommonNamesAtomizedVersion = require('../models/commonNamesAtomized.js');
 var ReferencesVersionVersion = require('../models/references.js');
+var AncillaryDataVersion = require('../models/ancillaryData.js');
 var HierarchyVersion = require('../models/hierarchy.js');
 var ThreatStatusVersion = require('../models/threatStatus.js');
 var add_objects = require('../models/additionalModels.js');
@@ -26,8 +27,6 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 			function(callback) {
 				var texSchema = TaxonRecordNameVersion.schema;
 				var TaxonRecordNameVersionModel = CatalogoDb.model('TaxonRecordNameVersion', texSchema );
-				var referencesSchema = ReferencesVersion.schema;
-          		var ReferencesVersionModel = catalogoDb.model('ReferencesVersion', referencesSchema );
 				//find all records
 				TaxonRecordNameVersionModel.find({}, function(err, records){
 					if(err){
@@ -99,13 +98,31 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 });
 
 //ID de la ficha
-function postVersion(reference, id) {
+function postVersion(reference, id_rc) {
 	//primero buscar la la ultima version de ReferenceVersion
 	//RecordVersion.References
 	//último elemento de ese arreglo, sacar ID
 	//ReferencesVersion.findID()
+
+	add_objects.RecordVersion.findOne({ _id : id_rc }).exec(function (err, record) {
+		var len = record.referencesVersion.length;
+		var last_ref=record.referencesVersion[len-1];
+		var referencesSchema = ReferencesVersion.schema;
+        var ReferencesVersionModel = catalogoDb.model('ReferencesVersion', referencesSchema );
+        ReferencesVersionModel.findOne({ _id : id_rc }).exec(function (err, reference) {
+        	var new_reference = reference;
+        });
+	});
 	
 	var references_version = {};
+	references_version.references = record._doc.references;
+    references_version._id = mongoose.Types.ObjectId();
+            references_version.id_record=record._id;
+            references_version.created=record._id.getTimestamp(); //***
+            references_version.id_user="sib+ac@humboldt.org.co";
+            references_version.state="accepted";
+            references_version.element="references";
+            references_version = new ReferencesVersionModel(references_version);
 
 
 
@@ -206,4 +223,4 @@ function postVersion(reference, id) {
     res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
-};
+}
