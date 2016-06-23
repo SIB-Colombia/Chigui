@@ -46,10 +46,11 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 				});
 			},
 			function(taxon_records, callback){
+				var id_search = [];
 				async.eachSeries(taxon_records, function(taxon_record, callback){
 					var taxName = taxon_record.taxonRecordName.scientificName.canonicalName.simple;
 					var taxRecId = taxon_record.id_record;
-					var id_search = [];
+					
 					taxName = taxName.trim().replace(/ /g,"%20");
 					console.log("Scientific name to search images: "+taxName);
 					console.log("URL to consult: "+'http://eol.org/api/search/1.0.json?q='+taxName+'&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=');
@@ -75,18 +76,41 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 						console.error("Error finding a taxonRecordName"+err.message);
 					}else{
 						console.log("All records processed");
-						callback(null, id_search);
+						//callback(null, id_search);
 					}
 				});
 			}, 
 			function(id_search, callback){
 				console.log(id_search.length);
+				console.log(id_search);
 				var image_search = [];
 				async.eachSeries(id_search, function(id_image, callback){
+					console.log("TaxName: "+id_image.taxName);
 					rest.get('http://eol.org/api/pages/1.0/'+id_image.resultId+'.json?images=10&videos=0&sounds=0&maps=0&text=0&iucn=false&subjects=overview&licenses=all&details=true&common_names=false&synonyms=false&references=false&vetted=0&cache_ttl=').on('complete',function(data_id, response_id) {
-						console.log("API Response Status code: "+ response.statusCode);
+						console.log("API Response Status code: "+ response_id.statusCode);
+						console.log();
 						if (!(data_id instanceof Error) && (response_id.statusCode == 200)) {
 							var image_value={};
+							var source = '';
+							var url = '';
+							console.log("Object length: "+data_id.dataObjects.length);
+							for(var i=0; i<data_id.dataObjects.length; i++){
+								if(typeof  data_id.dataObjects[i].eolMediaURL != 'undefined'){
+                            		url =(data_id.dataObjects[i].eolMediaURL).replace(/'/g, "\''");
+                            	}
+                            	if(typeof  data_id.dataObjects[i].source != 'undefined'){
+                            		source =(data_id.dataObjects[i].source).replace(/'/g, "\''");
+                            	}
+								image_value.taxName = id_image.taxName;
+								image_value.taxRecId = id_image.taxRecId;
+								image_value.resultId = id_image.resultId;
+								image_value.imageLicense = data_id.dataObjects[i].license;
+								image_value.imageRights = data_id.dataObjects[i].rights;
+								image_value.rightsHolder = data_id.dataObjects[i].rightsHolder;
+								image_value.source = source;
+								image_value.url = url;
+								image_search.push(image_value);
+							}
 						}else{
 							console.log('Error:', data.message);
 						}
@@ -97,9 +121,12 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 						console.error("Error finding a taxonRecordName"+err.message);
 					}else{
 						console.log("All records processed");
-						callback(null, id_search);
+						//callback(null, image_search);
 					}
 				});
+			},
+			function(id_search, callback){
+				console.log(id_search);
 			}
 		],function(err, result){
 			if (err) {

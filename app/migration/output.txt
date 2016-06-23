@@ -1,0 +1,142 @@
+connection successful
+Number of records: 3528
+***Saving RecordVersion and taxonRecordName***
+ID record: 5661f9186752b5394179b668
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175264,
+  id_record: 5661f9186752b5394179b668 }
+ID record: 5661b2a2f3b30194336dc7a6
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175267,
+  id_record: 5661b2a2f3b30194336dc7a6 }
+ID record: 567089e2f289f5a40c0cd2e7
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb105917526a,
+  id_record: 567089e2f289f5a40c0cd2e7 }
+ID record: 5661e5d36752b5394179b666
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb105917526d,
+  id_record: 5661e5d36752b5394179b666 }
+ID record: 5661f47f6752b5394179b667
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175270,
+  id_record: 5661f47f6752b5394179b667 }
+ID record: 566f0418f289f5a40c0cd26e
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175273,
+  id_record: 566f0418f289f5a40c0cd26e }
+ID record: 566202836752b5394179b669
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175276,
+  id_record: 566202836752b5394179b669 }
+ID record: 566203616752b5394179b66a
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175279,
+  id_record: 566203616752b5394179b66a }
+ID record: 566978136752b5394179b66b
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb105917527c,
+  id_record: 566978136752b5394179b66b }
+ID record: 566978586752b5394179b66c
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb105917527f,
+  id_record: 566978586752b5394179b66c }
+ID record: 5669a78a6752b5394179b66d
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fd1a72cb1059175282,
+  id_record: 5669a78a6752b5394179b66d }
+ID record: 566b4c8af289f5a40c0cd263
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb1059175285,
+  id_record: 566b4c8af289f5a40c0cd263 }
+ID record: 566b6bc9f289f5a40c0cd264
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb1059175288,
+  id_record: 566b6bc9f289f5a40c0cd264 }
+ID record: 566edb26f289f5a40c0cd265
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb105917528b,
+  id_record: 566edb26f289f5a40c0cd265 }
+ID record: 566edbf1f289f5a40c0cd266
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb105917528e,
+  id_record: 566edbf1f289f5a40c0cd266 }
+ID record: 566eedd0f289f5a40c0cd267
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb1059175291,
+  id_record: 566eedd0f289f5a40c0cd267 }
+ID record: 566ef9fef289f5a40c0cd26b
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb1059175294,
+  id_record: 566ef9fef289f5a40c0cd26b }
+ID record: 566efb96f289f5a40c0cd26c
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb1059175297,
+  id_record: 566efb96f289f5a40c0cd26c }
+ID record: 566efc8ef289f5a40c0cd26d
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb105917529a,
+  id_record: 566efc8ef289f5a40c0cd26d }
+ID record: 566f0dbcf289f5a40c0cd274
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb105917529d,
+  id_record: 566f0dbcf289f5a40c0cd274 }
+ID record: 566f10fdf289f5a40c0cd275
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb10591752a0,
+  id_record: 566f10fdf289f5a40c0cd275 }
+ID record: 566f14a2f289f5a40c0cd276
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb10591752a3,
+  id_record: 566f14a2f289f5a40c0cd276 }
+ID record: 566f17baf289f5a40c0cd277
+{ message: 'Created a new Record and Save TaxonRecordNameVersion',
+  element: 'TaxonRecordName',
+  version: 1,
+  _id: 576c51fe1a72cb10591752a6,
+  id_record: 566f17baf289f5a40c0cd277 }
+ID record: 566f1fe5f289f5a40c0cd279
