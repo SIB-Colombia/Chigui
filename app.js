@@ -76,6 +76,7 @@ app.get('/fichas/:id_record/', record.getRecordLast);
 app.post('/fichas/', taxon_record_name.postRecord);
 
 app.get('/lista/', record.getRecordList);
+app.get('/search/tax_author/:ficha_aut_tax', record.search);
 app.get('/record/:id_record/', record.getRecord);
 app.post('/fichas/:id_record/more_information/', more_information.postVersion);
 app.get('/fichas/:id_record/more_information/:version', more_information.getVersion);
@@ -84,7 +85,6 @@ app.get('/fichas/:id_record/associated_party/:version', associated_party.getVers
 app.post('/fichas/:id_record/direct_threats/', direct_threats.postVersion);
 app.get('/fichas/:id_record/direct_threats/:version', direct_threats.getVersion);
 app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);
-//app.post('/fichas/taxon_record_name/', taxon_record_name.postRecord);
 app.get('/fichas/:id_record/taxon_record_name/:version', taxon_record_name.getVersion);
 app.post('/fichas/:id_record/synonyms_atomized/', synonyms_atomized.postVersion);
 app.get('/fichas/:id_record/synonyms_atomized/:version', synonyms_atomized.getVersion);
@@ -126,10 +126,8 @@ app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.po
 app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
-
 app.post('/fichas/:id_record/habitats/', habitats.postVersion);
 app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
-
 app.post('/fichas/:id_record/territory/', territory.postVersion);
 app.get('/fichas/:id_record/territory/:version', territory.getVersion);
 

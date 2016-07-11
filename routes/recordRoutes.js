@@ -3,6 +3,7 @@ var mongoosePaginate = require('mongoose-paginate');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
+var async = require('async');
 var TaxonRecordNameVersion = require('../app/models/taxonRecordName.js');
 var AssociatedPartyVersion = require('../app/models/associatedParty.js');
 var add_objects = require('../app/models/additionalModels.js');
@@ -86,32 +87,6 @@ exports.getRecordLast = function(req, res) {
       var lenEcol = record.ecologicalSignificanceVersion.length;
       var lenInva = record.invasivenessVersion.length;
 
-      /*
-      console.log("dir: "+record.directThreatsVersion);
-      console.log("lenUses: "+ lenUseCon);
-      console.log("lenUses: "+ record.usesManagementAndConservationVersion);
-      */
-    //
-      /*
-      var lenEndAt = record.endemicAtomizedVersion.length;
-       
-      var lenLegs = record.legislationVersion.length; 
-      var lenUseAt = record.usesAtomizedVersion.length; 
-      var lenManCon = record.managementAndConservationVersion.length; 
-      var lenMeaFac = record.measurementOrFactVersion.length; 
-      var lenRefe = record.referencesVersion.length; 
-      var lenDetAt = record.detailAtomizedVersion.length; 
-      
-      */
-
-      //console.log(record.associatedPartyVersion);
-     /* 
-    if(typeof record.associatedPartyVersion[lenAsPar-1]!=="undefined"){
-      lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
-    }else{
-      lastRec.associatedParty="";
-    }
-    */
 
     if(typeof record.associatedPartyVersion[lenAsPar-1]!=="undefined"){
       lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
@@ -253,39 +228,62 @@ exports.getRecordLast = function(req, res) {
       lastRec.invasiveness=record.invasivenessVersion[lenInva-1].invasiveness;
     }
 
-    //
-    /*
     
-    if(typeof record.usesAtomizedVersion[lenUseAt-1]!=="undefined"){
-      lastRec.usesAtomized=record.usesAtomizedVersion[lenUseAt-1].usesAtomized;
-    }else{
-      lastRec.usesAtomized="";
-    }
-
-    if(typeof record.managementAndConservationVersion[lenManCon-1]!=="undefined"){
-      lastRec.managementAndConservation = record.managementAndConservationVersion[lenManCon-1].managementAndConservation;
-    }else{
-      lastRec.managementAndConservation ="";
-    }
-
-    if(typeof record.measurementOrFactVersion[lenMeaFac-1]!=="undefined"){
-      lastRec.measurementOrFact=record.measurementOrFactVersion[lenMeaFac-1].measurementOrFact;
-    }else{
-      lastRec.measurementOrFact ="";
-    }
-    if(typeof record.detailAtomizedVersion[lenDetAt-1]!=="undefined"){
-      lastRec.detailAtomized=record.detailAtomizedVersion[lenDetAt-1].detailAtomized;
-    }else{
-      lastRec.detailAtomized ="";
-    }
-      
-      */
       res.json(lastRec);
     }else{
       res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
     }
   });
 };
+
+exports.search = function(req, res) {
+  var lastRec={};
+  var response=[];
+  var dataObject ={};
+  var consl=req.params.ficha_aut_tax;
+  consl = consl.replace(/\\"/g, '"');
+  consl = consl.split("-");
+  console.log(consl[0]);
+  console.log(consl[1]);
+  if(typeof consl[1] ==="undefined"){
+    consl[1]="";
+  }
+  console.log(consl[0]);
+  console.log(consl[1]);
+  var query = AssociatedPartyVersion.find({'associatedParty.firstName':{ "$regex": consl[0], "$options": "i" },'associatedParty.lastName':{ "$regex": consl[1], "$options": "i" }});
+  query.exec(function(err, records){
+    if(records){
+      console.log("Number: "+records.length);
+      if(records.length){
+        async.eachSeries(records, function(record, callback){
+          console.log(record.id_record);
+          var query2 = add_objects.RecordVersion.find({'_id' : record.id_record}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion');
+          query2.exec(function (err, data) {
+            if (err){
+              console.log(err);
+            }else{
+              console.log(data);
+              //callback();
+            }
+          });
+          //response.push();
+        },function(err){
+            if(err){
+              console.error("Error "+err.message);
+            }else{
+              console.log("All records processed");
+              res.json({"message" : "Result"});
+            }
+        });
+      }else{
+        res.json({"message" : "zero records founded"});
+      }
+    }else{
+      console.log("Error: "+err);
+      res.json({"message" : "error"});
+    }
+  });
+}
 
  
 exports.getRecordList = function(req, res) {

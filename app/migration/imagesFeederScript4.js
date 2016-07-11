@@ -48,14 +48,13 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 			function(id_search, taxon_records, callback){
 				var id_search = [];
 				async.eachSeries(taxon_records, function(taxon_record, callback){
-
 					var taxName = taxon_record.taxonRecordName.scientificName.canonicalName.simple;
 					var taxRecId = taxon_record.id_record;
 					taxName = taxName.trim().replace(/ /g,"%20");
 					if(taxName != ''){
 						async.waterfall([
 							function(callback){
-								console.log("Scientific name to search images: "+taxName);
+								console.log("Scientific name to search images: " + taxName);
 								console.log("URL to consult: "+'http://eol.org/api/search/1.0.json?q='+taxName+'&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=');
 								rest.get('http://eol.org/api/search/1.0.json?q='+taxName+'&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=').on('complete',function(data, response) {
 									console.log("API Response Status code: "+ response.statusCode);
