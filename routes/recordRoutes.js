@@ -238,51 +238,125 @@ exports.getRecordLast = function(req, res) {
 
 exports.search = function(req, res) {
   var lastRec={};
-  var response=[];
   var dataObject ={};
   var consl=req.params.ficha_aut_tax;
   consl = consl.replace(/\\"/g, '"');
   consl = consl.split("-");
-  console.log(consl[0]);
-  console.log(consl[1]);
   if(typeof consl[1] ==="undefined"){
-    consl[1]="";
-  }
-  console.log(consl[0]);
-  console.log(consl[1]);
-  var query = AssociatedPartyVersion.find({'associatedParty.firstName':{ "$regex": consl[0], "$options": "i" },'associatedParty.lastName':{ "$regex": consl[1], "$options": "i" }});
-  query.exec(function(err, records){
-    if(records){
-      console.log("Number: "+records.length);
-      if(records.length){
-        async.eachSeries(records, function(record, callback){
-          console.log(record.id_record);
-          var query2 = add_objects.RecordVersion.find({'_id' : record.id_record}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion');
-          query2.exec(function (err, data) {
-            if (err){
-              console.log(err);
-            }else{
-              console.log(data);
-              //callback();
-            }
-          });
-          //response.push();
-        },function(err){
+    var query = TaxonRecordNameVersion.find({'taxonRecordName.scientificName.simple':{ "$regex": consl[0], "$options": "i" }});
+    query.exec(function(err, tax_records){
+      if(tax_records){
+        console.log("Number of tax_records: "+tax_records.length);
+        if(tax_records.length > 0){
+          var response=[];
+          async.eachSeries(tax_records, function(tax_record, callback){
+            var query2 = add_objects.RecordVersion.find({'_id' : tax_record.id_record}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion');
+            query2.exec(function (err, data) {
+              if(data){
+                var lenTaxRecNam=0;
+                var lenAsPar=0;
+                for(i=0 ; i < data.length ; i++){
+                  lastRec._id=data[i]._id;
+                  lastRec.creation_date=data[i]._id.getTimestamp();
+                  lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+                  lenAsPar=data[i].associatedPartyVersion.length;
+                  if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+                    lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+                  }else{
+                    lastRec.associatedParty="";
+                  }
+  
+                  if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+                    lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+                  }else{
+                    lastRec.taxonRecordName="";
+                  }
+                  response.push(lastRec);
+                  lastRec={};
+                  callback();
+                }
+              }else{
+                console.log("Error: "+err);
+                callback(err);
+              }
+            });
+          },function(err){
             if(err){
               console.error("Error "+err.message);
             }else{
-              console.log("All records processed");
-              res.json({"message" : "Result"});
+              console.log("Resultado: " + response);
+              res.json(response);
             }
-        });
+          });
+        }else{
+          res.status(406);
+          res.json({"message" : "zero records found"});
+        }
       }else{
-        res.json({"message" : "zero records founded"});
+        console.log("Error: "+err);
+        res.status(406);
+        res.json({"message" : "error " + err});
       }
-    }else{
-      console.log("Error: "+err);
-      res.json({"message" : "error"});
-    }
-  });
+    });
+  }else{
+    var query = AssociatedPartyVersion.find({'associatedParty.firstName':{ "$regex": consl[0], "$options": "i" },'associatedParty.lastName':{ "$regex": consl[1], "$options": "i" }});
+    query.exec(function(err, aso_records){
+      if(aso_records){
+        console.log("Number of associatedParty: "+aso_records.length);
+        if(aso_records.length > 0){
+          var response=[];
+          async.eachSeries(aso_records, function(aso_record, callback){
+            console.log(aso_record.id_record);
+            var query2 = add_objects.RecordVersion.find({'_id' : aso_record.id_record}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion');
+            query2.exec(function (err, data) {
+              if(data){
+                var lenTaxRecNam=0;
+                var lenAsPar=0;
+                for(i=0 ; i < data.length ; i++){
+                  lastRec._id=data[i]._id;
+                  lastRec.creation_date=data[i]._id.getTimestamp();
+                  lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+                  lenAsPar=data[i].associatedPartyVersion.length;
+                  if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+                    lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+                  }else{
+                    lastRec.associatedParty="";
+                  }
+  
+                  if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+                    lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+                  }else{
+                    lastRec.taxonRecordName="";
+                  }
+
+                  response.push(lastRec);
+                  lastRec={};
+                  callback();
+                }
+              }else{
+                console.log("Error: "+err);
+                callback(err);
+              }
+            });
+          }, function(err){
+            if(err){
+              console.error("Error "+err.message);
+            }else{
+              res.json(response);
+            }
+          });
+        }else{
+          res.status(406);
+          res.json({"message" : "zero records found"});
+        }
+      }else{
+        console.log("Error: "+err);
+        res.status(406);
+        res.json({"message" : "error " + err});
+      }
+    });
+  }
+  
 }
 
  

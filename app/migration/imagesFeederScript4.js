@@ -45,12 +45,13 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 					}
 				});
 			},
-			function(id_search, taxon_records, callback){
-				var id_search = [];
+			function(taxon_records, callback){
+				var ids_to_search = [];
 				async.eachSeries(taxon_records, function(taxon_record, callback){
 					var taxName = taxon_record.taxonRecordName.scientificName.canonicalName.simple;
 					var taxRecId = taxon_record.id_record;
 					taxName = taxName.trim().replace(/ /g,"%20");
+					console.log("Scientific name: " + taxName);
 					if(taxName != ''){
 						async.waterfall([
 							function(callback){
@@ -60,16 +61,30 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 									console.log("API Response Status code: "+ response.statusCode);
 									if (!(data instanceof Error) && (response.statusCode == 200)) {
 										var value={};
-										for(var i=0; i<data.results.length; i++){
+										console.log(data);
+										for(var i=0; i < data.results.length; i++){
 											value.taxName = taxName;
 											value.taxRecId = taxRecId;
 											value.resultId = data.results[i].id;
-											id_search.push(value);
+											ids_to_search.push(value);
 										}
-										callback(null, id_search);
+										callback(null, ids_to_search);
 									}else{
 										console.log('Error:', data.message);
 										//callback("Error");
+									}
+								});
+							},
+							function(ids_to_search,callback){
+								console.log(ids_to_search);
+								async.eachSeries(ids_to_search, function(id_image, callback){
+									console.log(id_image);
+								},function(err){
+									if(err){
+										console.error("Error finding a taxonRecordName"+err.message);
+									}else{
+										console.log("All records processed");
+										callback(null, image_search, taxon_records);
 									}
 								});
 							}
@@ -118,7 +133,6 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 						console.error("Error finding a taxonRecordName"+err.message);
 					}else{
 						console.log("All records processed");
-						callback(null, id_search, taxon_records);
 					}
 				});
 			}
