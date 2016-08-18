@@ -1,0 +1,1486 @@
+swagger: "2.0"
+info:
+  version: "1.5"
+  title: SiB Colombia - Dataportal API
+  description: API for SiB Colombia Dataportal. This API is used as a backend for SiB Colombia's web sites and online services.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: SiB Colombia Developer Team
+    url: http://www.sibcolombia.net
+    email: lgrajales@humboldt.org.co
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+# during dev, should point to your local machine
+host: localhost:8000
+# basePath prefixes all resource paths
+basePath: /api/v1.5
+tags:
+  - name: registry
+    description: This API works against the SiB Colombia Registry, which makes all registered Datasets and Organizations discoverable.
+  - name: occurrence
+    description: This API works against the SiB Colombia Occurrence data store, which handles occurrence records and makes them available through the web service.
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  
+  
+  /records/{id}:
+    x-swagger-router-controller: records
+    get:
+      description: get the latest version of a record
+      tags:
+        - record
+      operationId: lastRecord
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Record"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /occurrence/count:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: occurrences
+    get:
+      description: Returns count of occurrences according to query parameters
+      tags:
+        - occurrence
+      # used as the method name of the controller
+      operationId: occurrenceCount
+      parameters:
+        - name: isGeoreferenced
+          in: query
+          description: True or false if you wants only georeferenced occurrences
+          required: false
+          type: boolean
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /occurrence/search:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: occurrences
+    get:
+      description: Returns count of occurrences according to query parameters
+      tags:
+        - occurrence
+      # used as the method name of the controller
+      operationId: search
+      parameters:
+        - name: q
+          in: query
+          description: Simple search parameter. The value for this parameter can be a simple word or a phrase. See http://lucene.apache.org/core/6_1_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
+          required: false
+          type: string
+        - name: kingdomName
+          in: query
+          description: Kingdom name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: phylumName
+          in: query
+          description: Phylum name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: className
+          in: query
+          description: Class name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: orderName
+          in: query
+          description: Order name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: familyName
+          in: query
+          description: Family name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: genusName
+          in: query
+          description: Genus name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: speciesName
+          in: query
+          description: Species name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: specificEpithetName
+          in: query
+          description: Specific epithet name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: infraspecificEpithetName
+          in: query
+          description: Infraspecific epithet name.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: size
+          in: query
+          description: The maximum number of results to return. This can't be greater than 1000.
+          required: false
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 1000
+        - name: page
+          in: query
+          description: The initial offset of page query, this parameter combined with size parameter will determine the results.
+          required: false
+          type: integer
+          default: 0
+          minimum: 0
+        - name: facet
+          in: query
+          description: "Name of element or elements used for aggregation, valid values: scientificName, kingdom, phylum, class, order, family, genus, specie, specific_epithet, infraspecific_epithet, country, department, county, habitat, basis_of_record, collection_name, provider_name, resource_name"
+          required: false
+          type: array
+          items:
+            type: string
+        - name: facetLimit
+          in: query
+          description: "Used in combination with the facet parameter. Set facetLimit=# to show the first # aggregations."
+          required: false
+          type: integer
+          default: 10
+          maximum: 1000
+          minimum: 1
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Record"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  Record:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      associatedParty:
+        type: array
+        items:
+          $ref: '#/definitions/Agent'
+      commonNamesAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/CommonNamesAtomized' 
+      synonymsAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/SynonymsAtomized' 
+      taxonRecordName:
+        $ref: '#/definitions/TaxonRecordName' 
+      lifeCycle:
+        $ref: '#/definitions/LifeCycle' 
+      lifeForm:
+        $ref: '#/definitions/LifeForm' 
+      identificationKeys:
+        $ref: '#/definitions/IdentificationKeys' 
+      fullDescription:
+        $ref: '#/definitions/FullDescription' 
+      abstract:
+        type: string
+      hierarchy:
+        type: array
+        items:
+          $ref: '#/definitions/Hierarchy' 
+      reproduction:
+        $ref: '#/definitions/Reproduction' 
+      annualCycles:
+        $ref: '#/definitions/AnnualCycles' 
+      feeding:
+        $ref: '#/definitions/Feeding' 
+      dispersal:
+        $ref: '#/definitions/Dispersal' 
+      behavior:
+        $ref: '#/definitions/Behavior' 
+      interactions:
+        $ref: '#/definitions/Interactions' 
+      molecularData:
+        $ref: '#/definitions/MolecularData' 
+      migratory:
+        $ref: '#/definitions/Migratory' 
+      habitats:
+        $ref: '#/definitions/Habitats' 
+      distribution:
+        type: array
+        items:
+          $ref: '#/definitions/Distribution'
+      territory:
+        $ref: '#/definitions/Territory' 
+      populationBiology:
+        $ref: '#/definitions/PopulationBiology' 
+      threatStatus:
+        type: array
+        items:
+          $ref: '#/definitions/ThreatStatus' 
+      legislation:
+        $ref: '#/definitions/Legislation' 
+      usesManagementAndConservation:
+        $ref: '#/definitions/UsesManagementAndConservation' 
+      directThreats:
+        $ref: '#/definitions/DirectThreats'
+      endemicAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/EndemicAtomized' 
+      references:
+        type: array
+        items:
+          $ref: '#/definitions/Reference' 
+      environmentalEnvelope:
+        $ref: '#/definitions/EnvironmentalEnvelope' 
+      ecologicalSignificance:
+        $ref: '#/definitions/EcologicalSignificance' 
+      invasiveness:
+        $ref: '#/definitions/Invasiveness' 
+        
+  Agent:
+    properties:
+      firstName: 
+        type: string
+      lastName:
+        type: string
+      organisation:
+        type: string
+      position:
+        type: string
+      address:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      country: 
+        type: string
+      postalCode:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      homepage:
+        type: string
+      personnelDirectory:
+        type: string
+      personnelIdentifier :
+        type: string
+        
+  Invasiveness:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      invasivenessUnstructured:
+        type: string
+      invasivenessAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/InvasivenessAtomized'
+          
+  InvasivenessAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      origin:
+        type: string
+      presence:
+        type: string
+      persistence:
+        type: string
+      distribution:
+        type: string
+      harmful:
+        type: string
+      modified:
+        $ref: '#/definitions/DateInterval'
+      startValidateDate:
+        $ref: '#/definitions/DateInterval'
+      endValidateDate:
+        $ref: '#/definitions/DateInterval'
+      countryCode:
+        type: string
+      stateProvince:
+        type: string
+      county:
+        type: string
+      localityName:
+        type: string
+      language:
+        type: string
+      citation:
+        type: string
+      abundance:
+        type: string
+      trend:
+        type: string
+      rateOfSpread:
+        type: string
+      regulatoryListing:
+        type: string
+      memo:
+        type: string
+      localityType:
+        type: string
+      locationValue:
+        type: string
+      publicationDatePrecision:
+        type: string
+      whatImpact:
+        type: string
+      vector:
+        type: string
+      route:
+        type: string
+      target:
+        type: string
+      mechanism:
+        type: string
+        
+  DateInterval:
+    properties:
+      type: 
+        type: string # ** Date
+      default:
+        type: string # ** Date
+        
+  EcologicalSignificance:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      ecologicalSignificanceUnstructured:
+        type: string
+      ecologicalSignificanceAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/EcologicalSignificanceAtomized'
+          
+  EcologicalSignificanceAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+        
+  EnvironmentalEnvelope:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      environmentalEnvelopeUnstructured:
+        type: string
+      environmentalEnvelopeAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/EnvironmentalEnvelopeAtomized'
+          
+  EnvironmentalEnvelopeAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+        
+  EndemicAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      endemicTo:
+        type: array
+        items:
+          type: string
+      endemicIn:
+        type: string
+          
+  DirectThreats:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      directThreatsUnstructured:
+        type: string
+      directThreatsAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/DirectThreatsAtomized'
+          
+  DirectThreatsAtomized:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+        
+  UsesManagementAndConservation:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      managementAndConservation:
+        $ref: '#/definitions/ManagementAndConservation'
+      usesAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/UsesAtomized'
+          
+  ManagementAndConservation:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      managementAndConservationUnstructured:
+        type: string
+      managementAndConservationAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/ManagementAndConservationAtomized'
+  
+  ManagementAndConservationAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      type: 
+        type: string
+      objetive:
+        type: string
+      managementPlan:
+        type: string
+      actions:
+        type: array
+        items:
+          $ref: '#/definitions/Actions'
+      humanAndEnviromentalrelevanc:
+        type: string
+        
+  Actions:
+     properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      measurementOrFact:
+        type: array
+        items:
+          $ref: '#/definitions/MeasurementOrFact'
+          
+  UsesAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      sourceOfInformation:
+        $ref: '#/definitions/SourceOfInformation'
+      useValue:
+        type: string
+      partUsed:
+        type: string
+      users:
+        type: string
+      organisms:
+        type: string
+      vernacularNameUseAnnotations:
+        type: string
+      productionDetails:
+        type: string
+      meansOfApplicationAdministration:
+        type: string
+      seasonOfAvailabilityUse:
+        type: string
+      conservationExplotationData:
+        type: string
+      useTypeAtomized:
+        type: string
+      economics:
+        type: string
+      ratingPopularity:
+        type: string
+      properties:
+        type: string
+      potential:
+        type: string
+      useNotes:
+        type: string
+        
+  SourceOfInformation:
+    properties:
+      references:
+        type: array
+        items: 
+          type: string
+      sourceOfInformationText:
+        type: string
+      
+  Legislation:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      legislationUnstructured:
+        type: string
+      legislationAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/LegislationAtomized'
+          
+  LegislationAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      legislationName:
+        type: string
+      protectionLegalStatus:
+        type: string
+      legislationRead:
+        type: string
+      status: 
+        type: string
+      type:
+        type: string
+      norm:
+        type: string
+      appliesTo:
+        $ref: '#/definitions/AppliesTo'
+      
+  ThreatStatus:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      threatStatusUnstructured:
+        type: string
+      threatStatusAtomized:
+        $ref: '#/definitions/ThreatStatusAtomized'
+        
+  ThreatStatusAtomized:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      threatCategory:
+        $ref: '#/definitions/MeasurementOrFact' 
+      authority:
+        type: array
+        items: 
+          type: string
+      appliesTo:
+        $ref: '#/definitions/AppliesTo' 
+      apendiceCITES:
+        type: string
+        
+  AppliesTo:
+    properties:
+      country:
+        type: string
+      stateProvince:
+        type: string
+      county:
+        type: string
+      municipality:
+        type: string
+      locality:
+        type: string
+        
+  PopulationBiology:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      populationBiologyUnstructured:
+        type: string
+      populationBiologyAtomized:
+        $ref: '#/definitions/PopulationBiologyAtomized'
+        
+  PopulationBiologyAtomized:
+    properties:
+      region: 
+        $ref: '#/definitions/Measurement'
+      abundanceData:
+        $ref: '#/definitions/Measurement'
+      densityData:
+        $ref: '#/definitions/Measurement'
+      patternDistribution:
+        $ref: '#/definitions/Measurement'
+      size:
+        $ref: '#/definitions/Measurement'
+      sexRatio:
+        $ref: '#/definitions/Measurement'
+      fecundity:
+        $ref: '#/definitions/Measurement'
+      mortalityRate:
+        $ref: '#/definitions/Measurement'
+      birthRate:
+        $ref: '#/definitions/Measurement'
+      numberIndividualsPerObservation:
+        $ref: '#/definitions/Measurement'
+      averageDensity:
+        $ref: '#/definitions/Measurement'
+      populationTrend:
+        $ref: '#/definitions/Measurement'
+      recruitment:
+        $ref: '#/definitions/Measurement'
+      populationGrowthRate:
+        $ref: '#/definitions/Measurement'
+      emigration:
+        $ref: '#/definitions/Measurement'
+      immigration:
+        $ref: '#/definitions/Measurement'
+      descriptionLifeStages:
+        $ref: '#/definitions/Measurement'
+      proportionIndividualsPerStageLife:
+        $ref: '#/definitions/Measurement'
+      carryingCapacity:
+        $ref: '#/definitions/Measurement'
+        
+  Measurement:
+    properties:
+      measurementValue:
+        type: string
+        
+  Territory:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      territoryUnstructured:
+        type: string
+      territoryAtomized:
+        $ref: '#/definitions/TerritoryAtomized'
+        
+  TerritoryAtomized:
+    properties:
+      extentOfOccurrence:
+        type: string
+      areaOfOccupancy:
+        type: string
+  
+  Habitats:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      habitatUnstructured:
+        type: string
+      habitatAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/HabitatAtomized'
+          
+  HabitatAtomized:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+      relatedTo:
+        type: string
+        
+  Migratory:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      migratoryUnstructured:
+        type: string
+      additionalInformation:
+        type: string
+      dataObject:
+        type: string
+      migratoryAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/MigratoryAtomized'
+          
+  MigratoryAtomized:
+    properties:
+      causes:
+        type: string
+      patterns:
+        type: string
+      routes:
+        type: string
+      season:
+        type: string
+        
+  MolecularData:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      molecularDataUnstructured:
+        type: string
+      molecularDataAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/MolecularDataAtomized'
+  
+  MolecularDataAtomized:
+    properties:
+      measurementOrFact: 
+        $ref: '#/definitions/MolecularMeasurementOrFact'
+      relatedTo:
+        type: string
+        
+  MolecularMeasurementOrFact:
+    properties:
+      relatedTo:
+        type: string
+      MeasurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+          
+  Interactions:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      interactionsUnstructured:
+        type: string
+      interactionsAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/InteractionsAtomized'
+          
+  InteractionsAtomized:
+    properties:
+      interactionSpecies:
+        type: string
+      interactionSpeciesType:
+        type: array
+        items:
+          $ref: '#/definitions/Atomized'
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+          
+  Behavior:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      behaviorUnstructured:
+        type: string
+      behaviorAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/Atomized'
+        
+  Dispersal:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      dispersalUnstructured:
+        type: string
+      dispersalAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/DispersalAtomized'
+          
+  DispersalAtomized:
+    properties:
+      purpose:  
+        type: string
+      type:
+        type: string
+      structureDispersed:
+        type: string
+      distance:
+        $ref: '#/definitions/Distance'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+        
+  Distance:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+        
+  Feeding:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      feedingUnstructured:
+        type: string
+      feedingAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/FeedingAtomized'
+          
+  FeedingAtomized:
+    properties:
+      type:
+        type: string
+      thropic:
+        type: array
+        items:
+          $ref: '#/definitions/Thropic'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+        
+  Thropic:
+    properties:
+      strategy:
+        type: string
+        
+  Hierarchy:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      classification:
+        type: string
+      recommended::
+        type: string
+      kingdom:
+        type: string
+      phylum:
+        type: string
+      classHierarchy:
+        type: string
+      order:
+        type: string
+      family:
+        type: string
+      genus:
+        type: string
+      subgenus:
+        type: string
+      taxonRank:
+        type: string
+      specificEpithet:
+        type: string
+      infraspecificEpithet:
+        type: string
+      higherClassification:
+        type: string
+      parentTaxon:
+        type: string
+        
+  AnnualCycles:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      annualCycleUnstructured:
+        type: string
+      annualCycleAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/AnnualCycleAtomized'
+          
+  AnnualCycleAtomized:
+    properties:
+      event: 
+        type: string
+      startTimeInterval:
+        type: string
+      endTimeInterval:
+        type: string
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+        
+  FullDescription:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      fullDescriptionUnstructured:
+        type: string
+      fullDescriptionAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/FullDescriptionAtomized'   
+          
+  FullDescriptionAtomized:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+  
+  Reproduction:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      reproductionUnstructured:
+        type: string
+      reproductionAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/Atomized'
+        
+  Atomized:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'  
+        
+  IdentificationKeys:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      keys:
+        type: string
+        
+  LifeCycle:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      lifeCycleAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/LifeCycleAtomized' 
+          
+  LifeCycleAtomized:
+    properties:
+      measurementOrFact:
+        $ref: '#/definitions/MeasurementOrFact' 
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+          
+  LifeForm:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      lifeFormAtomized:
+        type: array
+        items:
+          $ref: '#/definitions/LifeFormAtomized' #**
+          
+  LifeFormAtomized:
+    properties:
+      measurementOrFact:
+       $ref: '#/definitions/MeasurementOrFact'
+      ancillaryData:
+        $ref: '#/definitions/AncillaryData'
+          
+  MeasurementOrFact:
+    properties:
+      measurementID:
+        type: string
+      measurementType:
+        type: string
+      measurementValue:
+        type: string
+      measurementAccuracy:
+        type: string
+      measurementUnit:
+        type: string
+      measurementDeterminedDate: #**
+        type: string
+      measurementDeterminedBy:
+        type: array
+        items: 
+          type: string
+      measurementMethod:
+        type: string
+      measurementRemarks:
+        type: string
+      relatedTo:
+        type: string
+      
+  
+  CommonNamesAtomized:
+    properties:
+      name:
+        type: string
+      language:
+        type: string
+      synonymStatus:
+        type: string
+      usedIn:
+        $ref: '#/definitions/Distribution' 
+      usedBy:
+        type: string
+  
+  Distribution:
+    properties:
+      distributionScope:
+        $ref: '#/definitions/DistributionScope'
+      temporalCoverage:
+        $ref: '#/definitions/TemporalCoverage' 
+      distributionAtomizedBranch:
+        type: array
+        items: 
+          type: string
+  
+  DistributionScope:
+    properties:
+      type:
+        type: string
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData' 
+          
+  TemporalCoverage:
+    properties:
+      startDate: 
+        type: string
+      endDate:
+        type: string
+        
+  AncillaryData:
+    properties:
+      dataType:
+        type: string 
+      mimeType:
+        type: string
+      agent:
+        type: array
+        items:
+          $ref: '#/definitions/Agent' 
+      created:
+        type: string
+      modified:
+        type: string
+      title:
+        type: string
+      license:
+        type: string
+      rights:
+        type: string
+      rightsHolder:
+        type: string
+      bibliographicCitation:
+        type: string
+      audience:
+        type: array
+        items:
+          type: string
+      source :
+        type: string
+      subject:
+        type: array
+        items:
+          type: string
+      description:
+        type: string
+      mediaURL:
+        type: array
+        items:
+          type: string
+      thumbnailURL:
+        type: string
+      location:
+        type: string
+      geoPoint:
+        type: string
+      additionalInformation:
+        type: string
+      dataObject:
+        type: string
+      reference: 
+        type: array
+        items:
+          $ref: '#/definitions/Reference'      
+  
+  Reference:
+    properties:
+      profile_id:
+        type: string
+      group_id:
+        type: string
+      created:
+        type: string
+      last_modified:
+        type: string
+      identifiers:
+        type: array
+        items:
+          type: string
+      abstract:
+        type: string
+      type:
+        type: string
+      source: 
+        type: string
+      title:
+        type: string
+      authors:
+        type: array
+        items:
+          type: string
+      year:
+        type: string
+      volume: 
+        type: string
+      issue:
+        type: string
+      pages:
+        type: string
+      series:
+        type: string
+      chapter: 
+        type: string
+      websites:
+        type: string
+      accessed:
+        type: string
+      publisher:
+        type: string
+      address:
+        type: string
+      city:
+        type: string
+      edition:
+        type: string
+      institution:
+        type: string
+      editors:
+        type: array
+        items:
+          type: string
+      keywords:
+        type: array
+        items:
+          type: string
+      doi:
+        type: string
+      isbn:
+        type: string
+      issn:
+        type: string
+      link:
+        type: string
+      recordId:
+        type: string
+        
+  SynonymsAtomized:
+    properties:
+      synonymStatus:
+        type: string
+      synonymName:
+        $ref: '#/definitions/ScientificName' 
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+        
+  ScientificName: 
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      attributes:
+        $ref: '#/definitions/Attributes' 
+      simple:
+        type: string
+      rank:
+        type: string
+      canonicalName: 
+        $ref: '#/definitions/CanonicalName' 
+      canonicalAuthorship:
+        $ref: '#/definitions/CanonicalAuthorship'
+      specialAuthorship:
+        $ref: '#/definitions/SpecialAuthorship' 
+      publishedln:
+        $ref: '#/definitions/Publishedln'
+      year:
+        type: string
+      microReference:
+        type: string
+      typificacion:
+        $ref: '#/definitions/Typificacion' 
+      typeNameEntity:
+        $ref: '#/definitions/TypeNameEntity' 
+      spellingCorrentionOf:
+        type: array
+        items:
+          type: string
+      basionym:
+        $ref: '#/definitions/ScientificNameAux' 
+      basedOn:
+        $ref: '#/definitions/ScientificNameAux' 
+      conservedAgainst :
+        type: array
+        items:
+          type: string
+      laterHomonymOf:
+        $ref: '#/definitions/ScientificNameAux' 
+      sanctioned:
+        $ref: '#/definitions/ScientificNameAux' 
+      replacementNameFor:
+        $ref: '#/definitions/ScientificNameAux' 
+      publicationStatus:
+        $ref: '#/definitions/ScientificNameAux' 
+      providerLink:
+        type: string
+      providerSpecificData:
+        $ref: '#/definitions/ProviderSpecificData' 
+  
+  Attributes:
+    properties:
+      id:
+        type: integer
+      isAnamorphic:
+        type: boolean
+      nomenclaturalCode:
+        type: string
+        
+  CanonicalName:
+    properties:
+      simple:
+        type: string
+      uninomial:
+        type: string
+      genus:
+        $ref: '#/definitions/Genus' 
+      epithet:
+        $ref: '#/definitions/Epithet' 
+  
+  CanonicalAuthorship:
+    properties:
+      simple:
+        type: string
+      authorship:
+        $ref: '#/definitions/Authorship' 
+        
+  SpecialAuthorship:
+    properties:
+      basionymAuthorship :
+        $ref: '#/definitions/BasionymAuthorship' 
+  
+  Publishedln:
+    properties:
+      identifier:
+        type: string
+      datatype:
+        type: string
+      source:
+        type: string
+        
+  Typificacion: 
+    properties:
+      simple: 
+        type: string
+      typeVoucherEntity:
+        $ref: '#/definitions/TypeVoucherEntity' 
+        
+  TypeNameEntity:
+    properties:
+      nameReference: 
+        $ref: '#/definitions/NameReference'
+  
+  ScientificNameAux:
+    properties:
+      ruleConsidered:
+        type: string
+      note:
+        type: string
+      relatedName:
+        $ref: '#/definitions/RelatedNamePublished'
+      publishedln:
+        $ref: '#/definitions/RelatedNamePublished'
+      microReference:
+        type: string
+        
+  RelatedNamePublished: #*********
+    properties:
+      identifier:
+        type: string
+      datatype:
+        type: string
+      source: 
+        type: string
+        
+  NameReference:
+    properties:
+      identifier:
+        type: string
+      datatype:
+        type: string
+      source:
+        type: string
+        
+  TypeVoucherEntity:
+    properties:
+      voucherReference:
+        type: array
+        items:
+          type: string
+      lectotypePublicationVoucher:
+        type: array
+        items:
+          type: string
+      lectotypeMicroReferenceVoucher:
+        type: array
+        items:
+          type: string
+      typeOfType:
+        type: string
+        
+  BasionymAuthorship:
+    properties:
+      simple:
+        type: string
+      year:
+        type: array
+        items:
+          type: string
+      authors:
+        type: array
+        items:
+          type: string
+      combinationAuthorship:
+        type: array
+        items:
+          type: string
+  
+  Authorship:
+    properties:
+      simple:
+        type: string
+      authors:
+        type: array
+        items:
+          type: string
+          
+  Genus:
+    properties:
+      ref:
+        type: string
+      linkType:
+        type: string
+        
+  Epithet:
+    properties:
+      infragenericEpithe:
+        type: string
+      specificEpithet:
+        type: string
+      infraspecificEpithet:
+        type: string
+  
+  ProviderSpecificData:
+    properties:
+      anyOne:
+        type: array
+        items:
+          type: string
+      anyTwo:
+        type: array
+        items:
+          type: string
+          
+  TaxonRecordName:
+    properties:
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+      scientificName:
+        $ref: '#/definitions/ScientificName'
+        
+  ResultResponse:
+    required:
+      - count
+    properties:
+      count:
+        type: integer
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+      description:
+        type: string
