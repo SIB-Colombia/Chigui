@@ -2,18 +2,24 @@
 //var mongoosePaginate = require('mongoose-paginate');
 import mongoose from 'mongoose';
 import async from 'async';
-import TaxonRecordNameVersion from '../app/models/taxonRecordName.js';
-import AssociatedPartyVersion from '../app/models/associatedParty.js';
-import add_objects from '../app/models/additionalModels.js';
-import RecordVersion = require('mongoose').model('RecordVersion').schema; //*******
+import TaxonRecordNameVersion from '../models/taxonRecordName.js';
+import AssociatedPartyVersion from '../models/associatedParty.js';
+import add_objects from '../models/additionalModels.js';
+//import RecordVersion from 'mongoose'.model('RecordVersion').schema; //*******
 /*
 import elasticsearch from 'elasticsearch';
 import { config } from '../../config/application-config';
 const debug = require('debug')('dataportal-api:occurrences');
 */
 
-exports.getRecordLast = function(req, res) {
-  var id_rc=req.params.id_record;
+/*
+  Returns the last versioonof a record according to id
+
+  Param 1: isGeoreferenced (boolean), if true returns the count of georeferenced occurrences
+ */
+function lastRecord(req, res) {
+  var RecordVersion = mongoose.model('RecordVersion').schema;
+  var id_rc=req.swagger.params.id.value;
   var ver=req.params.version;
   var lastRec={};
 
@@ -60,209 +66,364 @@ exports.getRecordLast = function(req, res) {
       async.waterfall([
         function(callback){
           AssociatedPartyVersion.findOne({ id_record : id_rc, version: lenAsPar }).exec(function (err, asparty) {
-            lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
+            if(err){
+              callback(new Error("Error to get AssociatedParty element for the record with id: "+id_rc+" : " + err.message));
+             }else{ 
+              lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
+              callback();
+            }
           });
-        }
+        },
+        function(callback){
+          BaseElementsVersion.findOne({ id_record : id_rc, version: lenBasEl }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get BaseElements element for the record with id: "+id_rc+" : " + err.message));
+            }else{ 
+              lastRec.baseElements = elementVer.baseElements;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          CommonNamesAtomizedVersion.findOne({ id_record : id_rc, version: lenComNameAt }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get CommonNamesAtomized element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.commonNamesAtomized = elementVer.commonNamesAtomized;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          SynonymsAtomizedVersion.findOne({ id_record : id_rc, version: lenSyAt }).exec(function (err, elementVer) {
+             if(err){
+              callback(new Error("Error to get SynonymsAtomized element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.synonymsAtomized = elementVer.synonymsAtomized;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          TaxonRecordNameVersion.findOne({ id_record : id_rc, version: lenTaxRecNam }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.taxonRecordName = elementVer.taxonRecordName;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          LifeCycleVersion.findOne({ id_record : id_rc, version: lenLifCyc }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get LifeCycle element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.lifeCycle = elementVer.lifeCycle;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          LifeFormVersion.findOne({ id_record : id_rc, version: lenLifFor }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get LifeForm element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.lifeForm = elementVer.lifeForm;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          IdentificationKeysVersion.findOne({ id_record : id_rc, version: lenIdeKey }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get IdentificationKeys element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.identificationKeys=elementVer.identificationKeys;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          FullDescriptionVersion.findOne({ id_record : id_rc, version: lenFulDes }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get FullDescription element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.fullDescription = elementVer.fullDescription;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          BriefDescriptionVersion.findOne({ id_record : id_rc, version: lenBrfDes }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get BriefDescription element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.briefDescription=elementVer.briefDescription;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          AbstractVersion.findOne({ id_record : id_rc, version: lenAbs }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Abstract element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.abstract = elementVer.abstract;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          HierarchyVersion.findOne({ id_record : id_rc, version: lenHie }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Hierarchy element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.hierarchy=elementVer.hierarchy;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          ReproductionVersion.findOne({ id_record : id_rc, version: lenRep }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Reproduction element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.reproduction = elementVer.reproduction;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          AnnualCyclesVersion.findOne({ id_record : id_rc, version: lenAnnCyc }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get AnnualCycles element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.annualCycles = elementVer.annualCycles;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          FeedingVersion.findOne({ id_record : id_rc, version: lenFed }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Feeding element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.feeding = elementVer.feeding;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          DispersalVersion.findOne({ id_record : id_rc, version: lenDis }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Dispersal element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.dispersal = elementVer.dispersal;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          BehaviorVersion.findOne({ id_record : id_rc, version: lenBeh }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Behavior element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.behavior = elementVer.behavior;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          InteractionsVersion.findOne({ id_record : id_rc, version: lenInt }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Interactions element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.interactions = elementVer.interactions;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          MolecularDataVersion.findOne({ id_record : id_rc, version: lenMolDat }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get MolecularData element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.molecularData = elementVer.molecularData;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          MigratoryVersion.findOne({ id_record : id_rc, version: lenMig }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Migratory element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.migratory = elementVer.migratory;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          HabitatsVersion.findOne({ id_record : id_rc, version: lenHab }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Habitats element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.habitats = elementVer.habitats;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          DistributionVersion.findOne({ id_record : id_rc, version: lenDistr}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Distribution element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.distribution = elementVer.distribution;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          TerritoryVersion.findOne({ id_record : id_rc, version: lenTerr }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Territory element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.territory = elementVer.territory;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          PopulationBiologyVersion.findOne({ id_record : id_rc, version: lenPopBio}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.populationBiology = elementVer.populationBiology;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          MoreInformationVersion.findOne({ id_record : id_rc, version: lenMorInf }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.moreInformation = elementVer.moreInformation;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          ThreatStatusVersion.findOne({ id_record : id_rc, version: lenThrSta}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get ThreatStatus element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.threatStatus = elementVer.threatStatus;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          LegislationVersion.findOne({ id_record : id_rc, version: lenLegs }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Legislation element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.legislation = elementVer.legislation;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          UsesManagementAndConservationVersion.findOne({ id_record : id_rc, version: lenUseCon}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get UsesManagementAndConservation element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.usesManagementAndConservation = elementVer.usesManagementAndConservation;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          DirectThreatsVersion.findOne({ id_record : id_rc, version: lenDirThr }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get DirectThreats element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.directThreats = elementVer.directThreats;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          AncillaryDataVersion.findOne({ id_record : id_rc, version: lenAncDat}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get AncillaryData element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.ancillaryData = elementVer.ancillaryData;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          EndemicAtomizedVersion.findOne({ id_record : id_rc, version: lenEndAt }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get EndemicAtomized element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.endemicAtomized = elementVer.endemicAtomized;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          ReferencesVersion.findOne({ id_record : id_rc, version: lenRefe}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get References element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.references = elementVer.references;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          EnvironmentalEnvelopeVersion.findOne({ id_record : id_rc, version: lenEnv }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get EnvironmentalEnvelope element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.environmentalEnvelope = elementVer.environmentalEnvelope;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          EcologicalSignificanceVersion.findOne({ id_record : id_rc, version: lenEcol}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get EcologicalSignificance element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.ecologicalSignificance = elementVer.ecologicalSignificance;
+              callback();
+            }
+          });
+        },
+        function(callback){
+          InvasivenessVersion.findOne({ id_record : id_rc, version: lenInva}).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get Invasiveness element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              lastRec.invasiveness = elementVer.invasiveness;
+              callback();
+            }
+          });
+        },
         ],function(err, result) {
           if (err) {
             console.log("Error: "+err);
             res.status(406);
             res.json({ message: ""+err });
           }else{
-            res.json({ message: 'Save AbstractVersion', element: 'abstract', version : ver, _id: id_v, id_record : id_rc });
+            res.json(lastRec);
           }
         });
     });
-
-    add_objects.RecordVersion.findOne({ _id : id_rc }).populate('associatedPartyVersion baseElementsVersion commonNamesAtomizedVersion synonymsAtomizedVersion taxonRecordNameVersion lifeCycleVersion lifeFormVersion identificationKeysVersion fullDescriptionVersion briefDescriptionVersion abstractVersion hierarchyVersion reproductionVersion annualCyclesVersion feedingVersion dispersalVersion behaviorVersion interactionsVersion molecularDataVersion migratoryVersion habitatsVersion distributionVersion territoryVersion populationBiologyVersion moreInformationVersion threatStatusVersion legislationVersion usesManagementAndConservationVersion directThreatsVersion ancillaryDataVersion endemicAtomizedVersion referencesVersion environmentalEnvelopeVersion ecologicalSignificanceVersion invasivenessVersion').exec(function (err, record) {
-    if(record){
-      if (err){
-        res.send(err);
-      }
-      lastRec._id=record._id;
-      var lenAsPar=record.associatedPartyVersion.length;
-      var lenBasEl=record.baseElementsVersion.length;
-      var lenComNameAt=record.commonNamesAtomizedVersion.length;
-      var lenSyAt=record.synonymsAtomizedVersion.length;
-      var lenTaxRecNam=record.taxonRecordNameVersion.length;
-      var lenLifCyc= record.lifeCycleVersion.length;
-      var lenLifFor= record.lifeFormVersion.length; 
-      var lenIdeKey= record.identificationKeysVersion.length;
-      var lenFulDes= record.fullDescriptionVersion.length;
-      var lenBrfDes= record.briefDescriptionVersion.length;
-      var lenAbs= record.abstractVersion.length;
-      var lenHie= record.hierarchyVersion.length;
-      var lenRep= record.reproductionVersion.length; 
-      var lenAnnCyc= record.annualCyclesVersion.length;
-      var lenFed= record.feedingVersion.length;
-      var lenDis= record.dispersalVersion.length;
-      var lenBeh= record.behaviorVersion.length; 
-      var lenInt=record.interactionsVersion.length;
-      var lenMolDat=record.molecularDataVersion.length; 
-      var lenMig = record.migratoryVersion.length; 
-      var lenHab = record.habitatsVersion.length; 
-      var lenDistr = record.distributionVersion.length; 
-      var lenTerr = record.territoryVersion.length; 
-      var lenPopBio = record.populationBiologyVersion.length; 
-      var lenMorInf = record.moreInformationVersion.length; 
-      var lenThrSta = record.threatStatusVersion.length; 
-      var lenLegs = record.legislationVersion.length;
-      var lenUseCon = record.usesManagementAndConservationVersion.length;
-      var lenDirThr = record.directThreatsVersion.length;
-      var lenAncDat = record.ancillaryDataVersion.length;
-      var lenEndAt = record.endemicAtomizedVersion.length;
-      var lenRefe = record.referencesVersion.length; 
-      var lenEnv = record.environmentalEnvelopeVersion.length;
-      var lenEcol = record.ecologicalSignificanceVersion.length;
-      var lenInva = record.invasivenessVersion.length;
-
-
-    if(typeof record.associatedPartyVersion[lenAsPar-1]!=="undefined"){
-      lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
-    }
-
-    if(typeof record.baseElementsVersion[lenBasEl-1]!=="undefined"){
-      lastRec.baseElements=record.baseElementsVersion[lenBasEl-1].baseElements;
-    }
-
-    if(typeof record.commonNamesAtomizedVersion[lenComNameAt-1]!=="undefined"){
-      lastRec.commonNamesAtomized=record.commonNamesAtomizedVersion[lenComNameAt-1].commonNamesAtomized;
-    }
-
-    if(typeof record.synonymsAtomizedVersion[lenSyAt-1]!=="undefined"){
-      lastRec.synonymsAtomized=record.synonymsAtomizedVersion[lenSyAt-1].synonymsAtomized;
-    }
-
-    if(typeof record.taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
-      lastRec.taxonRecordName=record.taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
-    }
-
-    if(typeof record.lifeCycleVersion[lenLifCyc-1]!=="undefined"){
-      lastRec.lifeCycle=record.lifeCycleVersion[lenLifCyc-1].lifeCycle;
-    }
-
-    if(typeof record.lifeFormVersion[lenLifFor-1]!=="undefined"){
-      lastRec.lifeForm=record.lifeFormVersion[lenLifFor-1].lifeForm;
-    }
-
-    if(typeof record.identificationKeysVersion[lenIdeKey-1]!=="undefined"){
-      lastRec.identificationKeys=record.identificationKeysVersion[lenIdeKey-1].identificationKeys;
-    }
-
-    if(typeof record.fullDescriptionVersion[lenFulDes-1]!=="undefined"){
-      lastRec.fullDescription=record.fullDescriptionVersion[lenFulDes-1].fullDescription;
-    }
-
-    if(typeof record.briefDescriptionVersion[lenBrfDes-1]!=="undefined"){
-      lastRec.briefDescription=record.briefDescriptionVersion[lenBrfDes-1].briefDescription;
-    }
-
-    if(typeof record.abstractVersion[lenAbs-1]!=="undefined"){
-      lastRec.abstract=record.abstractVersion[lenAbs-1].abstract;
-    }
-
-    if(typeof record.hierarchyVersion[lenHie-1]!=="undefined"){
-      lastRec.hierarchy=record.hierarchyVersion[lenHie-1].hierarchy;
-    }
-
-    if(typeof record.reproductionVersion[lenRep-1]!=="undefined"){
-      lastRec.reproduction=record.reproductionVersion[lenRep-1].reproduction;
-    }
-
-    if(typeof record.annualCyclesVersion[lenAnnCyc-1]!=="undefined"){
-      lastRec.annualCycles=record.annualCyclesVersion[lenAnnCyc-1].annualCycles;
-    }
-
-    if(typeof record.feedingVersion[lenFed-1]!=="undefined"){
-      lastRec.feeding=record.feedingVersion[lenFed-1].feeding;
-    }
-
-    if(typeof record.dispersalVersion[lenDis-1]!=="undefined"){
-      lastRec.dispersal=record.dispersalVersion[lenDis-1].dispersal;
-    }
-
-    if(typeof record.behaviorVersion[lenBeh-1]!=="undefined"){
-      lastRec.behavior=record.behaviorVersion[lenBeh-1].behavior;
-    }
-
-    if(typeof record.interactionsVersion[lenInt-1]!=="undefined"){
-      lastRec.interactions=record.interactionsVersion[lenInt-1].interactions;
-    }
-
-    if(typeof record.molecularDataVersion[lenMolDat-1]!=="undefined"){
-      lastRec.molecularData=record.molecularDataVersion[lenMolDat-1].molecularData;
-    }
-
-    if(typeof record.migratoryVersion[lenMig-1]!=="undefined"){
-      lastRec.migratory=record.migratoryVersion[lenMig-1].migratory;
-    }
-
-    if(typeof record.habitatsVersion[lenHab-1]!=="undefined"){
-      lastRec.habitats=record.habitatsVersion[lenHab-1].habitats;
-    }
-
-    if(typeof record.distributionVersion[lenDistr-1]!=="undefined"){
-      lastRec.distribution=record.distributionVersion[lenDistr-1].distribution;
-    }
-
-    if(typeof record.territoryVersion[lenTerr-1]!=="undefined"){
-      lastRec.territory=record.territoryVersion[lenTerr-1].territory;
-    }
-
-    if(typeof record.populationBiologyVersion[lenPopBio-1]!=="undefined"){
-      lastRec.populationBiology=record.populationBiologyVersion[lenPopBio-1].populationBiology;
-    }
-
-    if(typeof record.moreInformationVersion[lenMorInf-1]!=="undefined"){
-      lastRec.moreInformation=record.moreInformationVersion[lenMorInf-1].moreInformation;
-    }
-
-    if(typeof record.threatStatusVersion[lenThrSta-1]!=="undefined"){
-      lastRec.threatStatus=record.threatStatusVersion[lenThrSta-1].threatStatus;
-    }
- 
-    if(typeof record.legislationVersion[lenLegs-1]!=="undefined"){
-      lastRec.legislation=record.legislationVersion[lenLegs-1].legislation;
-    }
-
-    if(typeof record.usesManagementAndConservationVersion[lenUseCon-1]!=="undefined"){
-      lastRec.usesManagementAndConservation=record.usesManagementAndConservationVersion[lenUseCon-1]._doc.usesManagementAndConservation;
-    }
-    
-    if(typeof record.directThreatsVersion[lenDirThr-1]!=="undefined"){
-      lastRec.directThreats=record.directThreatsVersion[lenDirThr-1].directThreats;
-    }
-
-    if(typeof record.ancillaryDataVersion[lenAncDat-1]!=="undefined"){
-      lastRec.ancillaryData=record.ancillaryDataVersion[lenAncDat-1].ancillaryData;
-    }
-
-    if(typeof record.endemicAtomizedVersion[lenEndAt-1]!=="undefined"){
-      lastRec.endemicAtomized=record.endemicAtomizedVersion[lenEndAt-1].endemicAtomized;
-    }
-
-    if(typeof record.referencesVersion[lenRefe-1]!=="undefined"){
-      lastRec.references=record.referencesVersion[lenRefe-1].references;
-    } 
-
-    if(typeof record.environmentalEnvelopeVersion[lenEnv-1]!=="undefined"){
-      lastRec.environmentalEnvelope=record.environmentalEnvelopeVersion[lenEnv-1].environmentalEnvelope;
-    }
-
-    if(typeof record.ecologicalSignificanceVersion[lenEcol-1]!=="undefined"){
-      lastRec.ecologicalSignificance=record.ecologicalSignificanceVersion[lenEcol-1].ecologicalSignificance;
-    }
-
-    if(typeof record.invasivenessVersion[lenInva-1]!=="undefined"){
-      lastRec.invasiveness=record.invasivenessVersion[lenInva-1].invasiveness;
-    }
-
-    
-      res.json(lastRec);
-    }else{
-      res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
-    }
-  });
 };
 
 /*
@@ -729,5 +890,6 @@ function search(req, res) {
 
 module.exports = {
   occurrenceCount,
-  search
+  search,
+  lastRecord
 };
