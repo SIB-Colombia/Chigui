@@ -10,7 +10,7 @@ var DistributionScope = Element.extend({
 	type : String,
 }, { versionKey: false });
 
-distributionAtomized = Element.extend({
+var distributionAtomized = Element.extend({
 	country : String,
 	county : String,
 	municipality: String,

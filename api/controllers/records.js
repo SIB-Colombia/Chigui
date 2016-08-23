@@ -4,6 +4,39 @@ import mongoose from 'mongoose';
 import async from 'async';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import AssociatedPartyVersion from '../models/associatedParty.js';
+import BaseElementsVersion from '../models/baseElements.js';
+import CommonNamesAtomizedVersion from '../models/commonNamesAtomized.js';
+import SynonymsAtomizedVersion from '../models/synonymsAtomized.js';
+import LifeCycleVersion from '../models/lifeCycle.js';
+import LifeFormVersion from '../models/lifeForm.js';
+import IdentificationKeysVersion from '../models/identificationKeys.js';
+import FullDescriptionVersion from '../models/fullDescription.js';
+import BriefDescriptionVersion from '../models/briefDescription.js';
+import AbstractVersion from '../models/abstract.js';
+import HierarchyVersion from '../models/hierarchy.js';
+import ReproductionVersion from '../models/reproduction.js';
+import AnnualCyclesVersion from '../models/annualCycles.js';
+import FeedingVersion from '../models/feeding.js';
+import DispersalVersion from '../models/dispersal.js';
+import BehaviorVersion from '../models/behavior.js';
+import InteractionsVersion from '../models/interactions.js';
+import MolecularDataVersion from '../models/molecularData.js';
+import MigratoryVersion from '../models/migratory.js';
+import HabitatsVersion from '../models/habitats.js';
+import DistributionVersion from '../models/distribution.js';
+import TerritoryVersion from '../models/territory.js';
+import PopulationBiologyVersion from '../models/populationBiology.js';
+import MoreInformationVersion from '../models/moreInformation.js';
+import ThreatStatusVersion from '../models/threatStatus.js';
+import LegislationVersion from '../models/legislation.js';
+import UsesManagementAndConservationVersion from '../models/usesManagementAndConservation.js';
+import DirectThreatsVersion from '../models/directThreats.js';
+import AncillaryDataVersion from '../models/ancillaryData.js';
+import EndemicAtomizedVersion from '../models/endemicAtomized.js';
+import ReferencesVersion from '../models/references.js';
+import EnvironmentalEnvelopeVersion from '../models/environmentalEnvelope.js';
+import EcologicalSignificanceVersion from '../models/ecologicalSignificance.js';
+import InvasivenessVersion from '../models/invasiveness.js';
 import add_objects from '../models/additionalModels.js';
 //import RecordVersion from 'mongoose'.model('RecordVersion').schema; //*******
 /*
@@ -18,12 +51,22 @@ const debug = require('debug')('dataportal-api:occurrences');
   Param 1: isGeoreferenced (boolean), if true returns the count of georeferenced occurrences
  */
 function lastRecord(req, res) {
+
   var RecordVersion = mongoose.model('RecordVersion').schema;
   var id_rc=req.swagger.params.id.value;
   var ver=req.params.version;
   var lastRec={};
-
+  mongoose.connect('mongodb://localhost:27017/catalogoDb', function(err) {
+    if(err) {
+        console.log('connection error', err);
+    } else {
+        console.log('connection successful');
+    }
+  });
+  //console.log(Object.keys(mongoose));
+  //console.log(mongoose.connections);
     add_objects.RecordVersion.findOne({ _id : id_rc }).exec(function (err, record) {
+      console.log("!!!!");
       if (err){
         res.send(err);
       }
@@ -65,11 +108,13 @@ function lastRecord(req, res) {
       var lenInva = record.invasivenessVersion.length;
       async.waterfall([
         function(callback){
-          AssociatedPartyVersion.findOne({ id_record : id_rc, version: lenAsPar }).exec(function (err, asparty) {
+          AssociatedPartyVersion.findOne({ id_record : id_rc, version: lenAsPar }).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get AssociatedParty element for the record with id: "+id_rc+" : " + err.message));
              }else{ 
-              lastRec.associatedParty=record.associatedPartyVersion[lenAsPar-1].associatedParty;
+              if(elementVer){
+                lastRec.associatedParty=elementVer.associatedParty;
+              }
               callback();
             }
           });
@@ -79,7 +124,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get BaseElements element for the record with id: "+id_rc+" : " + err.message));
             }else{ 
-              lastRec.baseElements = elementVer.baseElements;
+              if(elementVer){
+                lastRec.baseElements = elementVer.baseElements;
+              }
               callback();
             }
           });
@@ -89,7 +136,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get CommonNamesAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.commonNamesAtomized = elementVer.commonNamesAtomized;
+              if(elementVer){
+                lastRec.commonNamesAtomized = elementVer.commonNamesAtomized;
+              }
               callback();
             }
           });
@@ -99,7 +148,9 @@ function lastRecord(req, res) {
              if(err){
               callback(new Error("Error to get SynonymsAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.synonymsAtomized = elementVer.synonymsAtomized;
+              if(elementVer){
+                lastRec.synonymsAtomized = elementVer.synonymsAtomized;
+              }
               callback();
             }
           });
@@ -109,7 +160,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.taxonRecordName = elementVer.taxonRecordName;
+              if(elementVer){
+                lastRec.taxonRecordName = elementVer.taxonRecordName;
+              }
               callback();
             }
           });
@@ -119,7 +172,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get LifeCycle element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.lifeCycle = elementVer.lifeCycle;
+              if(elementVer){
+                lastRec.lifeCycle = elementVer.lifeCycle;
+              }
               callback();
             }
           });
@@ -129,7 +184,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get LifeForm element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.lifeForm = elementVer.lifeForm;
+              if(elementVer){
+                lastRec.lifeForm = elementVer.lifeForm;
+              }
               callback();
             }
           });
@@ -139,7 +196,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get IdentificationKeys element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.identificationKeys=elementVer.identificationKeys;
+              if(elementVer){
+                lastRec.identificationKeys=elementVer.identificationKeys;
+              }
               callback();
             }
           });
@@ -149,7 +208,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get FullDescription element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.fullDescription = elementVer.fullDescription;
+              if(elementVer){
+                lastRec.fullDescription = elementVer.fullDescription;
+              }
               callback();
             }
           });
@@ -159,7 +220,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get BriefDescription element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.briefDescription=elementVer.briefDescription;
+              if(elementVer){
+                lastRec.briefDescription=elementVer.briefDescription;
+              }
               callback();
             }
           });
@@ -169,7 +232,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Abstract element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.abstract = elementVer.abstract;
+              if(elementVer){
+                lastRec.abstract = elementVer.abstract;
+              }
               callback();
             }
           });
@@ -179,7 +244,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Hierarchy element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.hierarchy=elementVer.hierarchy;
+              if(elementVer){
+                lastRec.hierarchy=elementVer.hierarchy;
+              }
               callback();
             }
           });
@@ -189,7 +256,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Reproduction element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.reproduction = elementVer.reproduction;
+              if(elementVer){
+                lastRec.reproduction = elementVer.reproduction;
+              }
               callback();
             }
           });
@@ -199,7 +268,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get AnnualCycles element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.annualCycles = elementVer.annualCycles;
+              if(elementVer){
+                lastRec.annualCycles = elementVer.annualCycles;
+              }
               callback();
             }
           });
@@ -209,7 +280,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Feeding element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.feeding = elementVer.feeding;
+              if(elementVer){
+                lastRec.feeding = elementVer.feeding;
+              }
               callback();
             }
           });
@@ -219,7 +292,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Dispersal element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.dispersal = elementVer.dispersal;
+              if(elementVer){
+                lastRec.dispersal = elementVer.dispersal;
+              }
               callback();
             }
           });
@@ -229,7 +304,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Behavior element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.behavior = elementVer.behavior;
+              if(elementVer){
+                lastRec.behavior = elementVer.behavior;
+              }
               callback();
             }
           });
@@ -239,7 +316,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Interactions element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.interactions = elementVer.interactions;
+              if(elementVer){
+                lastRec.interactions = elementVer.interactions;
+              }
               callback();
             }
           });
@@ -249,7 +328,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get MolecularData element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.molecularData = elementVer.molecularData;
+              if(elementVer){
+                lastRec.molecularData = elementVer.molecularData;
+              }
               callback();
             }
           });
@@ -259,7 +340,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Migratory element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.migratory = elementVer.migratory;
+              if(elementVer){
+                lastRec.migratory = elementVer.migratory;
+              }
               callback();
             }
           });
@@ -269,7 +352,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Habitats element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.habitats = elementVer.habitats;
+              if(elementVer){
+                lastRec.habitats = elementVer.habitats;
+              }
               callback();
             }
           });
@@ -279,7 +364,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Distribution element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.distribution = elementVer.distribution;
+              if(elementVer){
+                lastRec.distribution = elementVer.distribution;
+              }
               callback();
             }
           });
@@ -289,7 +376,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Territory element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.territory = elementVer.territory;
+              if(elementVer){
+                lastRec.territory = elementVer.territory;
+              }
               callback();
             }
           });
@@ -299,7 +388,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.populationBiology = elementVer.populationBiology;
+              if(elementVer){
+                lastRec.populationBiology = elementVer.populationBiology;
+              }
               callback();
             }
           });
@@ -309,7 +400,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.moreInformation = elementVer.moreInformation;
+              if(elementVer){
+                lastRec.moreInformation = elementVer.moreInformation;
+              }
               callback();
             }
           });
@@ -319,7 +412,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get ThreatStatus element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.threatStatus = elementVer.threatStatus;
+              if(elementVer){
+                lastRec.threatStatus = elementVer.threatStatus;
+              }
               callback();
             }
           });
@@ -329,17 +424,21 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Legislation element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.legislation = elementVer.legislation;
+              if(elementVer){
+                lastRec.legislation = elementVer.legislation;
+              }
               callback();
             }
           });
         },
         function(callback){
-          UsesManagementAndConservationVersion.findOne({ id_record : id_rc, version: lenUseCon}).exec(function (err, elementVer) {
+          UsesManagementAndConservationVersion.findOne({ id_record : id_rc, version: lenUseCon }).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get UsesManagementAndConservation element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.usesManagementAndConservation = elementVer.usesManagementAndConservation;
+              if(elementVer){
+                lastRec.usesManagementAndConservation = elementVer.usesManagementAndConservation;
+              }
               callback();
             }
           });
@@ -349,7 +448,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get DirectThreats element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.directThreats = elementVer.directThreats;
+              if(elementVer){
+                lastRec.directThreats = elementVer.directThreats;
+              }
               callback();
             }
           });
@@ -359,7 +460,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get AncillaryData element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.ancillaryData = elementVer.ancillaryData;
+              if(elementVer){
+                lastRec.ancillaryData = elementVer.ancillaryData;
+              }
               callback();
             }
           });
@@ -369,7 +472,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get EndemicAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.endemicAtomized = elementVer.endemicAtomized;
+              if(elementVer){
+                lastRec.endemicAtomized = elementVer.endemicAtomized;
+              }
               callback();
             }
           });
@@ -379,7 +484,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get References element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.references = elementVer.references;
+              if(elementVer){
+                lastRec.references = elementVer.references;
+              }
               callback();
             }
           });
@@ -389,7 +496,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get EnvironmentalEnvelope element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.environmentalEnvelope = elementVer.environmentalEnvelope;
+              if(elementVer){
+                lastRec.environmentalEnvelope = elementVer.environmentalEnvelope;
+              }
               callback();
             }
           });
@@ -399,7 +508,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get EcologicalSignificance element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.ecologicalSignificance = elementVer.ecologicalSignificance;
+              if(elementVer){
+                lastRec.ecologicalSignificance = elementVer.ecologicalSignificance;
+              }
               callback();
             }
           });
@@ -409,7 +520,9 @@ function lastRecord(req, res) {
             if(err){
               callback(new Error("Error to get Invasiveness element for the record with id: "+id_rc+" : " + err.message));
             }else{
-              lastRec.invasiveness = elementVer.invasiveness;
+              if(elementVer){
+                lastRec.invasiveness = elementVer.invasiveness;
+              }
               callback();
             }
           });
