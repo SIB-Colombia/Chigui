@@ -2,12 +2,12 @@ swagger: "2.0"
 info:
   version: "1.5"
   title: SiB Colombia - Dataportal API
-  description: API for SiB Colombia Dataportal. This API is used as a backend for SiB Colombia's web sites and online services.
+  description: API for SiB Colombia Catalogue. This API is used as a backend for consult the information of the species records reported in the SiB Colombia.
   termsOfService: http://swagger.io/terms/
   contact:
     name: SiB Colombia Developer Team
     url: http://www.sibcolombia.net
-    email: lgrajales@humboldt.org.co
+    email: oduque@humboldt.org.co
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -20,6 +20,8 @@ tags:
     description: This API works against the SiB Colombia Registry, which makes all registered Datasets and Organizations discoverable.
   - name: occurrence
     description: This API works against the SiB Colombia Occurrence data store, which handles occurrence records and makes them available through the web service.
+  - name: record
+    description: This API works against the SiB Colombia Records data store, which store all species records registered through Mamut editor.
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -31,7 +33,6 @@ consumes:
 produces:
   - application/json
 paths:
-  
   
   /records/{id}:
     x-swagger-router-controller: records
@@ -56,6 +57,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
   /occurrence/count:
     # binds a127 app logic to a route
     x-swagger-router-controller: occurrences
@@ -289,6 +291,520 @@ definitions:
         $ref: '#/definitions/EcologicalSignificance' 
       invasiveness:
         $ref: '#/definitions/Invasiveness' 
+        
+  MoreInformationVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      moreInformation:
+        type: string
+        
+  AssociatedPartyVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      associatedParty:
+        type: array
+        items:
+          $ref: '#/definitions/Agent'
+          
+  DirectThreatsVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      directThreats:
+        $ref: '#/definitions/DirectThreats'
+        
+  #BaseElementsVersion:
+  
+  TaxonRecordNameVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      directThreats:
+        $ref: '#/definitions/TaxonRecordName'
+        
+  SynonymsAtomizedVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      directThreats:
+        type: array
+        items:
+          $ref: '#/definitions/SynonymsAtomized'
+          
+  CommonNamesAtomizedVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      directThreats:
+        type: array
+        items:
+          $ref: '#/definitions/CommonNamesAtomized'
+          
+  HierarchyVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      directThreats:
+        type: array
+        items:
+          $ref: '#/definitions/Hierarchy'
+          
+  BriefDescriptionVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      briefDescription:
+        type: string
+        
+  AbstractVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      abstract:
+        type: string
+        
+  FullDescriptionVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      fullDescription:
+        $ref: '#/definitions/FullDescription'
+        
+  IdentificationKeysVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      identificationKeys:
+        $ref: '#/definitions/IdentificationKeys'
+        
+  LifeFormVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      lifeForm:
+        $ref: '#/definitions/LifeForm'
+        
+  LifeCycleVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      lifeCycle:
+        $ref: '#/definitions/LifeCycle'
+        
+  ReproductionVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      reproduction:
+        $ref: '#/definitions/Reproduction'
+        
+  AnnualCyclesVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      annualCycles:
+        $ref: '#/definitions/AnnualCycles'
+        
+  MolecularDataVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      molecularData:
+        $ref: '#/definitions/MolecularData'
+        
+  MigratoryVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      migratory:
+        $ref: '#/definitions/Migratory'
+        
+  EcologicalSignificanceVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      ecologicalSignificance:
+        $ref: '#/definitions/EcologicalSignificance'
+        
+  EnvironmentalEnvelopeVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      environmentalEnvelope:
+        $ref: '#/definitions/EnvironmentalEnvelope'
+      
+  InvasivenessVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      invasiveness:
+        $ref: '#/definitions/Invasiveness'   
+        
+  FeedingVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      feeding:
+        $ref: '#/definitions/Feeding'
+        
+  DispersalVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      dispersal:
+        $ref: '#/definitions/Dispersal'
+        
+  BehaviorVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      behavior:
+        $ref: '#/definitions/Behavior'
+        
+  InteractionsVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      interactions:
+        $ref: '#/definitions/Interactions'
         
   Agent:
     properties:
