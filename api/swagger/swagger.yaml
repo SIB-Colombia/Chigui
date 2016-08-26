@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "1.5"
-  title: SiB Colombia - Dataportal API
+  title: SiB Colombia - Catalogue API
   description: API for SiB Colombia Catalogue. This API is used as a backend for consult the information of the species records reported in the SiB Colombia.
   termsOfService: http://swagger.io/terms/
   contact:
@@ -58,6 +58,58 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/{id}:/taxon_record_name/{version}:
+    x-swagger-router-controller: taxonRecordName
+    get: 
+      description: Returns a version of a taxonRecord element by record id and version
+      tags:
+        - element
+      operationId: getTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TaxonRecordName"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}:/taxon_record_name:
+    x-swagger-router-controller: taxonRecordName
+    post:
+      description: Save a new version of a taxonRecord related with the a recrd with the id
+      tags:
+        - element
+      operationId: postTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /occurrence/count:
     # binds a127 app logic to a route
     x-swagger-router-controller: occurrences
@@ -84,125 +136,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /occurrence/search:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: occurrences
-    get:
-      description: Returns count of occurrences according to query parameters
-      tags:
-        - occurrence
-      # used as the method name of the controller
-      operationId: search
-      parameters:
-        - name: q
-          in: query
-          description: Simple search parameter. The value for this parameter can be a simple word or a phrase. See http://lucene.apache.org/core/6_1_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
-          required: false
-          type: string
-        - name: kingdomName
-          in: query
-          description: Kingdom name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: phylumName
-          in: query
-          description: Phylum name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: className
-          in: query
-          description: Class name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: orderName
-          in: query
-          description: Order name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: familyName
-          in: query
-          description: Family name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: genusName
-          in: query
-          description: Genus name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: speciesName
-          in: query
-          description: Species name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: specificEpithetName
-          in: query
-          description: Specific epithet name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: infraspecificEpithetName
-          in: query
-          description: Infraspecific epithet name.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: size
-          in: query
-          description: The maximum number of results to return. This can't be greater than 1000.
-          required: false
-          type: integer
-          default: 10
-          minimum: 1
-          maximum: 1000
-        - name: page
-          in: query
-          description: The initial offset of page query, this parameter combined with size parameter will determine the results.
-          required: false
-          type: integer
-          default: 0
-          minimum: 0
-        - name: facet
-          in: query
-          description: "Name of element or elements used for aggregation, valid values: scientificName, kingdom, phylum, class, order, family, genus, specie, specific_epithet, infraspecific_epithet, country, department, county, habitat, basis_of_record, collection_name, provider_name, resource_name"
-          required: false
-          type: array
-          items:
-            type: string
-        - name: facetLimit
-          in: query
-          description: "Used in combination with the facet parameter. Set facetLimit=# to show the first # aggregations."
-          required: false
-          type: integer
-          default: 10
-          maximum: 1000
-          minimum: 1
-      responses:
-        "200":
-          description: Success
-          schema:
-            # a pointer to a definition
-            $ref: "#/definitions/Record"
-        # responses may fall through to errors
-        "400":
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+  
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -805,6 +739,229 @@ definitions:
         type: string
       interactions:
         $ref: '#/definitions/Interactions'
+        
+  HabitatsVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      habitats:
+        $ref: '#/definitions/Habitats'
+        
+  DistributionVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      distribution:
+        type: array
+        items:
+          $ref: '#/definitions/Distribution'
+        
+  TerritoryVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      territory:
+        $ref: '#/definitions/Territory'
+        
+  PopulationBiologyVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      populationBiology:
+        $ref: '#/definitions/PopulationBiology'
+        
+  ThreatStatusVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      threatStatus:
+        type: array
+        items:
+          $ref: '#/definitions/ThreatStatus'
+        
+  LegislationVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      legislation:
+        $ref: '#/definitions/Legislation'
+        
+  UsesManagementAndConservationVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      usesManagementAndConservation:
+        $ref: '#/definitions/UsesManagementAndConservation'
+        
+  ReferencesVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      references:
+        type: array
+        items:
+          $ref: '#/definitions/Reference'
+          
+          
+  AncillaryDataVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryData'
+          
+  
+  EndemicAtomizedVersion:
+    required:
+      - -id
+    properties:
+      -id:
+        type: string
+      id_record: 
+        type: string
+      created: 
+        type: string #****
+      id_user:
+        type: string
+      version:
+        type: integer
+      state:
+        type: string
+      element:
+        type: string
+      ancillaryData:
+        type: array
+        items:
+          $ref: '#/definitions/EndemicAtomized'  
+  
         
   Agent:
     properties:
@@ -1988,10 +2145,11 @@ definitions:
         
   ResultResponse:
     required:
-      - count
+      - message
     properties:
-      count:
-        type: integer
+      message:
+        type: string
+        
   ErrorResponse:
     required:
       - message
