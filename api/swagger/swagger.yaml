@@ -58,7 +58,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
-  /records/{id}:/taxon_record_name/{version}:
+  /records/{id}/taxon_record_name/{version}:
     x-swagger-router-controller: taxonRecordName
     get: 
       description: Returns a version of a taxonRecord element by record id and version
@@ -98,6 +98,12 @@ paths:
           type: string
           in: path
           required: true
+        - name: taxonRecordNameVersion
+          description: taxonRecordNameVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaxonRecordNameVersion'
       responses:
         "200":
           description: Success
@@ -110,32 +116,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
-  /occurrence/count:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: occurrences
-    get:
-      description: Returns count of occurrences according to query parameters
-      tags:
-        - occurrence
-      # used as the method name of the controller
-      operationId: occurrenceCount
-      parameters:
-        - name: isGeoreferenced
-          in: query
-          description: True or false if you wants only georeferenced occurrences
-          required: false
-          type: boolean
-      responses:
-        "200":
-          description: Success
-          schema:
-            # a pointer to a definition
-            $ref: "#/definitions/ResultResponse"
-        # responses may fall through to errors
-        "400":
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -294,10 +274,8 @@ definitions:
   #BaseElementsVersion:
   
   TaxonRecordNameVersion:
-    required:
-      - -id
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -311,7 +289,7 @@ definitions:
         type: string
       element:
         type: string
-      directThreats:
+      taxonRecordName:
         $ref: '#/definitions/TaxonRecordName'
         
   SynonymsAtomizedVersion:
@@ -2130,9 +2108,7 @@ definitions:
         items:
           type: string
       anyTwo:
-        type: array
-        items:
-          type: string
+        type: string
           
   TaxonRecordName:
     properties:
@@ -2155,6 +2131,4 @@ definitions:
       - message
     properties:
       message:
-        type: string
-      description:
         type: string

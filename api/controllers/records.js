@@ -46,7 +46,7 @@ const debug = require('debug')('dataportal-api:occurrences');
 */
 
 /*
-  Returns the last versioonof a record according to id
+  Returns the last version of a record according to id
 
   Param 1: isGeoreferenced (boolean), if true returns the count of georeferenced occurrences
  */
@@ -63,10 +63,8 @@ function lastRecord(req, res) {
         console.log('connection successful');
     }
   });
-  //console.log(Object.keys(mongoose));
-  //console.log(mongoose.connections);
+  
     add_objects.RecordVersion.findOne({ _id : id_rc }).exec(function (err, record) {
-      console.log("!!!!");
       if (err){
         res.send(err);
       }
