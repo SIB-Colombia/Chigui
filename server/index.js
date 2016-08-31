@@ -9,6 +9,7 @@ import { config } from '../config/application-config';
 import { logger } from './log';
 import SwaggerExpress from 'swagger-express-mw';
 import swaggerUiMiddleware from 'swagger-ui-middleware';
+import mongoose from 'mongoose';
 
 const app = express();
 const swaggerConfig = {
@@ -34,6 +35,14 @@ db(λ => {
   // api router
   // app.use('/api', api());
 
+  mongoose.connect('mongodb://localhost:27017/catalogoDb', (err) => {
+      if(err) {
+          console.log('connection error', err);
+      } else {
+          console.log('connection successful');
+      }
+  });
+
   SwaggerExpress.create(swaggerConfig, (err, swaggerExpress) => {
     if (err) { throw err; }
 
@@ -46,7 +55,7 @@ db(λ => {
 
     app.server.listen(config.get('server.port') || 5000);
 
-    logger.info(`Started on port ${app.server.address().port}`);
+    logger.info(`Started on port! ${app.server.address().port}`);
   });
 });
 

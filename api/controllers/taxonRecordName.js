@@ -3,6 +3,7 @@ import async from 'async';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import add_objects from '../models/additionalModels.js';
 
+
 function postTaxonRecordName(req, res) {
 	console.log("!!!");
 	var taxon_record_name_version  = req.body; 
@@ -18,14 +19,6 @@ function postTaxonRecordName(req, res) {
   	ob_ids.push(id_v);
 
   	var ver = "";
-
-  	mongoose.connect('mongodb://localhost:27017/catalogoDb', function(err) {
-    	if(err) {
-        	console.log('connection error', err);
-    	} else {
-        	console.log('connection successful');
-    	}
-  	});
 
   	if(typeof  id_rc!=="undefined" && id_rc!=""){
   		if(typeof  elementValue!=="undefined" && elementValue!=""){
@@ -96,9 +89,6 @@ function postTaxonRecordName(req, res) {
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
-          				mongoose.connection.close(function () {
-      						console.log('Mongoose connection finished');
-    					});
             			res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
          			 }			
         		});
@@ -118,42 +108,28 @@ function postTaxonRecordName(req, res) {
 
 function getTaxonRecordName(req, res) {
 	console.log("****");
-	var taxon_record_name_version  = req.body; 
-  	taxon_record_name_version._id = mongoose.Types.ObjectId();
-  	taxon_record_name_version.created=Date();
-  	taxon_record_name_version.element="taxonRecordName";
-  	var elementValue = taxon_record_name_version.taxonRecordName;
-  	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
-  	var version = taxon_record_name_version._id;
+
   	var id_rc = req.swagger.params.id.value;
+  	var version = req.swagger.params.version.value;
 
-  	var ob_ids= new Array();
-  	ob_ids.push(id_v);
-
-  	var ver = "";
-
-  	mongoose.connect('mongodb://localhost:27017/catalogoDb', function(err) {
-    	if(err) {
-        	console.log('connection error', err);
-    	} else {
-        	console.log('connection successful');
-    	}
-  	});
-
-  	TaxonRecordNameVersion.findOne({ id_record : id_rc, version: lenTaxRecNam }).exec(function (err, elementVer) {
+  	TaxonRecordNameVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
+              res.status(400);
+              res.send(err);
             }else{
               if(elementVer){
-                lastRec.taxonRecordName = elementVer.taxonRecordName;
+                res.json(elementVer);
+              }else{
+              	res.status(400);
+              	res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc+" and version: "+version});
               }
-              callback();
             }
-          });
+    });
 
 }
 
 
 module.exports = {
-  postTaxonRecordName
+  postTaxonRecordName,
+  getTaxonRecordName
 };

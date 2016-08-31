@@ -61,7 +61,7 @@ paths:
   /records/{id}/taxon_record_name/{version}:
     x-swagger-router-controller: taxonRecordName
     get: 
-      description: Returns a version of a taxonRecord element by record id and version
+      description: Returns a version of a taxonRecordName element by record id and version
       tags:
         - element
       operationId: getTaxonRecordName
@@ -89,7 +89,7 @@ paths:
   /records/{id}:/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
-      description: Save a new version of a taxonRecord related with the a recrd with the id
+      description: Save a new version of a taxonRecordName related with the a recrd with the id
       tags:
         - element
       operationId: postTaxonRecordName
@@ -115,6 +115,181 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/associated_party/{version}:
+    x-swagger-router-controller: associatedParty
+    get: 
+      description: Returns a version of a AssociatedParty element by record id and version
+      tags:
+        - element
+      operationId: getAssociatedParty
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AssociatedPartyVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/associated_party:
+    x-swagger-router-controller: associatedParty
+    post:
+      description: Save a new version of a AssociatedParty related with the a recrd with the id
+      tags:
+        - element
+      operationId: postAssociatedParty
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: associatedPartyVersion
+          description: associatedPartyVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AssociatedPartyVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/common_names_atomized/{version}:
+    x-swagger-router-controller: commonNamesAtomized
+    get: 
+      description: Returns a version of a CommonNamesAtomized element by record id and version
+      tags:
+        - element
+      operationId: getCommonNamesAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CommonNamesAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/common_names_atomized:
+    x-swagger-router-controller: commonNamesAtomized
+    post:
+      description: Save a new version of a CommonNamesAtomized related with the a recrd with the id
+      tags:
+        - element
+      operationId: postCommonNamesAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: commonNamesAtomizedVersion
+          description: commonNamesAtomizedVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CommonNamesAtomizedVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/{id}/synonyms_atomized/{version}:
+    x-swagger-router-controller: synonymsAtomized
+    get: 
+      description: Returns a version of a SynonymsAtomized element by record id and version
+      tags:
+        - element
+      operationId: getSynonymsAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SynonymsAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/synonyms_atomized:
+    x-swagger-router-controller: synonymsAtomized
+    post:
+      description: Save a new version of a SynonymsAtomized related with the a recrd with the id
+      tags:
+        - element
+      operationId: postSynonymsAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: synonymsAtomizedVersion
+          description: synonymsAtomizedVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SynonymsAtomizedVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"          
             
   
   /swagger:
@@ -229,9 +404,9 @@ definitions:
         
   AssociatedPartyVersion:
     required:
-      - -id
+      - id_user
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -294,9 +469,9 @@ definitions:
         
   SynonymsAtomizedVersion:
     required:
-      - -id
+      - synonymsAtomized
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -310,16 +485,16 @@ definitions:
         type: string
       element:
         type: string
-      directThreats:
+      synonymsAtomized:
         type: array
         items:
           $ref: '#/definitions/SynonymsAtomized'
           
   CommonNamesAtomizedVersion:
     required:
-      - -id
+      - commonNamesAtomized
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -333,7 +508,7 @@ definitions:
         type: string
       element:
         type: string
-      directThreats:
+      commonNamesAtomized:
         type: array
         items:
           $ref: '#/definitions/CommonNamesAtomized'
