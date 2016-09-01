@@ -289,8 +289,354 @@ paths:
         "400":
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"          
+            $ref: "#/definitions/ErrorResponse"   
             
+  /records/{id}/life_cycle/{version}:
+    x-swagger-router-controller: lifeCycle
+    get: 
+      description: Returns a version of a LifeCycle element by record id and version
+      tags:
+        - element
+      operationId: getLifeCycle
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeCycleVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/life_cycle:
+    x-swagger-router-controller: lifeCycle
+    post:
+      description: Save a new version of a LifeCycle related with the a recrd with the id
+      tags:
+        - element
+      operationId: postLifeCycle
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: lifeCycleVersion
+          description: lifeCycleVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LifeCycleVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"     
+            
+  /records/{id}/life_form/{version}:
+    x-swagger-router-controller: lifeForm
+    get: 
+      description: Returns a version of a LifeForm element by record id and version
+      tags:
+        - element
+      operationId: getLifeForm
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeFormVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/life_form:
+    x-swagger-router-controller: lifeForm
+    post:
+      description: Save a new version of a LifeForm related with the a recrd with the id
+      tags:
+        - element
+      operationId: postLifeForm
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: lifeFormVersion
+          description: lifeFormVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LifeFormVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/identification_keys/{version}:
+    x-swagger-router-controller: identificationKeys
+    get: 
+      description: Returns a version of a IdentificationKeys element by record id and version
+      tags:
+        - element
+      operationId: getIdentificationKeys
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/IdentificationKeysVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/identification_keys:
+    x-swagger-router-controller: identificationKeys
+    post:
+      description: Save a new version of a IdentificationKeys related with the a recrd with the id
+      tags:
+        - element
+      operationId: postIdentificationKeys
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: identificationKeysVersion
+          description: identificationKeysVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IdentificationKeysVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"          
+  
+  /records/{id}/full_description/{version}:
+    x-swagger-router-controller: fullDescription
+    get: 
+      description: Returns a version of a fullDescription element by record id and version
+      tags:
+        - element
+      operationId: getFullDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FullDescriptionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/full_description:
+    x-swagger-router-controller: fullDescription
+    post:
+      description: Save a new version of a fullDescription related with the a recrd with the id
+      tags:
+        - element
+      operationId: postFullDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: fullDescriptionVersion
+          description: fullDescriptionVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FullDescriptionVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"          
+  /records/{id}/abstract/{version}:
+    x-swagger-router-controller: abstract
+    get: 
+      description: Returns a version of a Abstract element by record id and version
+      tags:
+        - element
+      operationId: getAbstract
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AbstractVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/abstract:
+    x-swagger-router-controller: abstract
+    post:
+      description: Save a new version of a abstract related with the a recrd with the id
+      tags:
+        - element
+      operationId: postAbstract
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: abstractVersion
+          description: abstractVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AbstractVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"  
+            
+  /records/{id}/hierarchy/{version}:
+    x-swagger-router-controller: hierarchy
+    get: 
+      description: Returns a version of a Hierarchy element by record id and version
+      tags:
+        - element
+      operationId: getHierarchy
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HierarchyVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/hierarchy:
+    x-swagger-router-controller: hierarchy
+    post:
+      description: Save a new version of a hierarchy related with the a recrd with the id
+      tags:
+        - element
+      operationId: postHierarchy
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: hierarchyVersion
+          description: hierarchyVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/HierarchyVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -559,9 +905,10 @@ definitions:
         
   AbstractVersion:
     required:
-      - -id
+      - abstract
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -580,7 +927,8 @@ definitions:
         
   FullDescriptionVersion:
     required:
-      - -id
+      - fullDescription
+      - id_user
     properties:
       -id:
         type: string
@@ -601,9 +949,9 @@ definitions:
         
   IdentificationKeysVersion:
     required:
-      - -id
+      - identificationKeys
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -622,9 +970,9 @@ definitions:
         
   LifeFormVersion:
     required:
-      - -id
+      - lifeForm
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
@@ -643,9 +991,9 @@ definitions:
         
   LifeCycleVersion:
     required:
-      - -id
+      - lifeCycle
     properties:
-      -id:
+      id:
         type: string
       id_record: 
         type: string
