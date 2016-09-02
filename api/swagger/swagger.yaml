@@ -637,6 +637,122 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/reproduction/{version}:
+    x-swagger-router-controller: reproduction
+    get: 
+      description: Returns a version of a Reproduction element by record id and version
+      tags:
+        - element
+      operationId: getReproduction
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReproductionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/reproduction:
+    x-swagger-router-controller: reproduction
+    post:
+      description: Save a new version of a reproduction related with the a recrd with the id
+      tags:
+        - element
+      operationId: postReproduction
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: reproductionVersion
+          description: reproductionVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReproductionVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/annual_cycles/{version}:
+    x-swagger-router-controller: annualCycles
+    get: 
+      description: Returns a version of a AnnualCycles element by record id and version
+      tags:
+        - element
+      operationId: getAnnualCycles
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AnnualCyclesVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/annual_cycles:
+    x-swagger-router-controller: annualCycles
+    post:
+      description: Save a new version of a annualCycles related with the a recrd with the id
+      tags:
+        - element
+      operationId: postAnnualCycles
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: AnnualCyclesVersion
+          description: AnnualCyclesVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AnnualCyclesVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -861,9 +977,10 @@ definitions:
           
   HierarchyVersion:
     required:
-      - -id
+      - hierarchy
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -877,7 +994,7 @@ definitions:
         type: string
       element:
         type: string
-      directThreats:
+      hierarchy:
         type: array
         items:
           $ref: '#/definitions/Hierarchy'
@@ -971,6 +1088,7 @@ definitions:
   LifeFormVersion:
     required:
       - lifeForm
+      - id_user
     properties:
       id:
         type: string
@@ -992,6 +1110,7 @@ definitions:
   LifeCycleVersion:
     required:
       - lifeCycle
+      - id_user
     properties:
       id:
         type: string
@@ -1012,9 +1131,10 @@ definitions:
         
   ReproductionVersion:
     required:
-      - -id
+      - reproduction
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
