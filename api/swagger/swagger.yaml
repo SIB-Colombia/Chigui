@@ -753,6 +753,238 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/feeding/{version}:
+    x-swagger-router-controller: feeding
+    get: 
+      description: Returns a version of a Feeding element by record id and version
+      tags:
+        - element
+      operationId: getFeeding
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FeedingVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/feeding:
+    x-swagger-router-controller: feeding
+    post:
+      description: Save a new version of a feeding related with the a recrd with the id
+      tags:
+        - element
+      operationId: postFeeding
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: FeedingVersion
+          description: FeedingVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FeedingVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/dispersal/{version}:
+    x-swagger-router-controller: dispersal
+    get: 
+      description: Returns a version of a Dispersal element by record id and version
+      tags:
+        - element
+      operationId: getDispersal
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DispersalVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/dispersal:
+    x-swagger-router-controller: dispersal
+    post:
+      description: Save a new version of a dispersal related with the a recrd with the id
+      tags:
+        - element
+      operationId: postDispersal
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: DispersalVersion
+          description: DispersalVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DispersalVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/behavior/{version}:
+    x-swagger-router-controller: behavior
+    get: 
+      description: Returns a version of a Behavior element by record id and version
+      tags:
+        - element
+      operationId: getBehavior
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BehaviorVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/behavior:
+    x-swagger-router-controller: behavior
+    post:
+      description: Save a new version of a behavior related with the a record with the id
+      tags:
+        - element
+      operationId: postBehavior
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: BehaviorVersion
+          description: BehaviorVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BehaviorVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/interactions/{version}:
+    x-swagger-router-controller: interactions
+    get: 
+      description: Returns a version of a Interactions element by record id and version
+      tags:
+        - element
+      operationId: getInteractions
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InteractionsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/interactions:
+    x-swagger-router-controller: interactions
+    post:
+      description: Save a new version of a Interactions element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postInteractions
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: InteractionsVersion
+          description: InteractionsVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InteractionsVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -842,6 +1074,8 @@ definitions:
         $ref: '#/definitions/EcologicalSignificance' 
       invasiveness:
         $ref: '#/definitions/Invasiveness' 
+        
+  
         
   MoreInformationVersion:
     required:
@@ -1279,9 +1513,10 @@ definitions:
         
   FeedingVersion:
     required:
-      - -id
+      - feeding
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1300,9 +1535,10 @@ definitions:
         
   DispersalVersion:
     required:
-      - -id
+      - dispersal
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1321,9 +1557,10 @@ definitions:
         
   BehaviorVersion:
     required:
-      - -id
+      - behavior
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1342,9 +1579,10 @@ definitions:
         
   InteractionsVersion:
     required:
-      - -id
+      - interactions
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2148,9 +2386,8 @@ definitions:
       dispersalUnstructured:
         type: string
       dispersalAtomized:
-        type: array
-        items:
-          $ref: '#/definitions/DispersalAtomized'
+        
+        $ref: '#/definitions/DispersalAtomized'
           
   DispersalAtomized:
     properties:
