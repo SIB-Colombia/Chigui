@@ -985,6 +985,412 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/molecular_data/{version}:
+    x-swagger-router-controller: molecularData
+    get: 
+      description: Returns a version of a MolecularData element by record id and version
+      tags:
+        - element
+      operationId: getMolecularData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MolecularDataVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/molecular_data:
+    x-swagger-router-controller: molecularData
+    post:
+      description: Save a new version of a MolecularData element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postMolecularData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: MolecularDataVersion
+          description: MolecularDataVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MolecularDataVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/migratory/{version}:
+    x-swagger-router-controller: migratory
+    get: 
+      description: Returns a version of a MigratoryData element by record id and version
+      tags:
+        - element
+      operationId: getMigratory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MigratoryVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/migratory:
+    x-swagger-router-controller: migratory
+    post:
+      description: Save a new version of a MigratoryData element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postMigratory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: migratory
+          description: MigratoryVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MigratoryVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"   
+            
+  /records/{id}/habitats/{version}:
+    x-swagger-router-controller: habitats
+    get: 
+      description: Returns a version of a Habitats element by record id and version
+      tags:
+        - element
+      operationId: getHabitats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HabitatsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/habitats:
+    x-swagger-router-controller: habitats
+    post:
+      description: Save a new version of a Habitats element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postHabitats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: HabitatsVersion
+          description: HabitatsVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/HabitatsVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/distribution/{version}:
+    x-swagger-router-controller: distribution
+    get: 
+      description: Returns a version of a Distribution element by record id and version
+      tags:
+        - element
+      operationId: getDistribution
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DistributionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/distribution:
+    x-swagger-router-controller: distribution
+    post:
+      description: Save a new version of a Distribution element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postDistribution
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: distribution
+          description: DistributionVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DistributionVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/territory/{version}:
+    x-swagger-router-controller: territory
+    get: 
+      description: Returns a version of a Territory element by record id and version
+      tags:
+        - element
+      operationId: getTerritory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TerritoryVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/territory:
+    x-swagger-router-controller: territory
+    post:
+      description: Save a new version of a Territory element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postTerritory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: territory
+          description: TerritoryVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TerritoryVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/population_biology/{version}:
+    x-swagger-router-controller: populationBiology
+    get: 
+      description: Returns a version of a PopulationBiology element by record id and version
+      tags:
+        - element
+      operationId: getPopulationBiology
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PopulationBiologyVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/population_biology:
+    x-swagger-router-controller: populationBiology
+    post:
+      description: Save a new version of a PopulationBiology element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postPopulationBiology
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: populationBiology
+          description: PopulationBiologyVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PopulationBiologyVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/threat_status/{version}:
+    x-swagger-router-controller: threatStatus
+    get: 
+      description: Returns a version of a ThreatStatus element by record id and version
+      tags:
+        - element
+      operationId: getThreatStatus
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ThreatStatusVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/threat_status:
+    x-swagger-router-controller: threatStatus
+    post:
+      description: Save a new version of a ThreatStatus element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postThreatStatus
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: threatStatus
+          description: ThreatStatusVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ThreatStatusVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -1100,6 +1506,7 @@ definitions:
         
   AssociatedPartyVersion:
     required:
+      - associatedParty
       - id_user
     properties:
       id:
@@ -1387,7 +1794,8 @@ definitions:
         
   AnnualCyclesVersion:
     required:
-      - -id
+      - annualCycles
+      - id_user
     properties:
       -id:
         type: string
@@ -1408,9 +1816,10 @@ definitions:
         
   MolecularDataVersion:
     required:
-      - -id
+      - molecularData
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1429,9 +1838,10 @@ definitions:
         
   MigratoryVersion:
     required:
-      - -id
+      - migratory
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1492,9 +1902,10 @@ definitions:
       
   InvasivenessVersion:
     required:
-      - -id
+      - invasiveness
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1601,9 +2012,10 @@ definitions:
         
   HabitatsVersion:
     required:
-      - -id
+      - habitats
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1622,9 +2034,10 @@ definitions:
         
   DistributionVersion:
     required:
-      - -id
+      - distribution
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1645,9 +2058,10 @@ definitions:
         
   TerritoryVersion:
     required:
-      - -id
+      - territory
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1666,7 +2080,8 @@ definitions:
         
   PopulationBiologyVersion:
     required:
-      - -id
+      - populationBiology
+      - id_user
     properties:
       -id:
         type: string
@@ -1687,9 +2102,10 @@ definitions:
         
   ThreatStatusVersion:
     required:
-      - -id
+      - threatStatus
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
