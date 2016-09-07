@@ -1391,6 +1391,122 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/legislation/{version}:
+    x-swagger-router-controller: legislation
+    get: 
+      description: Returns a version of a Legislation element by record id and version
+      tags:
+        - element
+      operationId: getLegislation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LegislationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/legislation:
+    x-swagger-router-controller: legislation
+    post:
+      description: Save a new version of a Legislation element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postLegislation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: legislation
+          description: LegislationVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LegislationVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/uses_management_conservation/{version}:
+    x-swagger-router-controller: usesManagementAndConservation
+    get: 
+      description: Returns a version of a UsesManagementAndConservation element by record id and version
+      tags:
+        - element
+      operationId: getUsesManagementAndConservation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UsesManagementAndConservationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/uses_management_conservation:
+    x-swagger-router-controller: usesManagementAndConservation
+    post:
+      description: Save a new version of a UsesManagementAndConservation element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postUsesManagementAndConservation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: usesManagementAndConservation
+          description: UsesManagementAndConservationVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UsesManagementAndConservationVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -1480,6 +1596,7 @@ definitions:
         $ref: '#/definitions/EcologicalSignificance' 
       invasiveness:
         $ref: '#/definitions/Invasiveness' 
+      
         
   
         
@@ -1860,9 +1977,10 @@ definitions:
         
   EcologicalSignificanceVersion:
     required:
-      - -id
+      - ecologicalSignificance
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1881,9 +1999,10 @@ definitions:
         
   EnvironmentalEnvelopeVersion:
     required:
-      - -id
+      - environmentalEnvelope
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2126,9 +2245,10 @@ definitions:
         
   LegislationVersion:
     required:
-      - -id
+      - legislation
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2147,9 +2267,10 @@ definitions:
         
   UsesManagementAndConservationVersion:
     required:
-      - -id
+      - usesManagementAndConservation
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
