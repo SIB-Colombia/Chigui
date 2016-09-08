@@ -123,23 +123,14 @@ function getUsesManagementAndConservation(req, res) {
                   for(var i=0;i<elementVer._doc.usesManagementAndConservation.usesAtomized.length;i++){
                     for(var j=0;j<elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData.length;j++){
                       for(var k=0;k<elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference.length;k++){
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors);
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.constructor);
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.constructor === Array);
-                        console.log(!elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.constructor === Array);
-                        console.log(!(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.constructor === Array));
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors);
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors.constructor);
-                        console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors.constructor === Array);
                         if(!(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.constructor === Array)){
-                          console.log("***");
-                          console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.split(";"));
                           elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors = elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].authors.split(";");
                         }
                         if(!(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors.constructor === Array)){
-                          console.log("!!!");
-                          console.log(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors.split(";"));
                           elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors = elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].editors.split(";");
+                        }
+                        if(!(elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].keywords.constructor === Array)){
+                          elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].keywords = elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData[j].reference[k].keywords.split(";");
                         }
                       }
                     }
@@ -148,14 +139,13 @@ function getUsesManagementAndConservation(req, res) {
                     for(var i=0;i<elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData.length;i++){
                       for(var j=0;j<elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference.length;j++){
                         if(!(elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].authors.constructor === Array)){
-                          console.log("***");
-                          console.log(elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].authors.split(";"));
                           elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].authors = elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].authors.split(";");
                         }
                         if(!(elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].editors.constructor === Array)){
-                          console.log("!!!");
-                          console.log(elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].editors.split(";"));
                           elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].editors = elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].editors.split(";");
+                        }
+                        if(!(elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].keywords.constructor === Array)){
+                          elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].keywords = elementVer._doc.usesManagementAndConservation.managementAndConservation.ancillaryData[i].reference[j].keywords.split(";");
                         }
                       }
                     }

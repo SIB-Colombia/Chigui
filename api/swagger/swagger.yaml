@@ -1507,6 +1507,413 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/{id}/direct_threats/{version}:
+    x-swagger-router-controller: directThreats
+    get: 
+      description: Returns a version of a DirectThreats element by record id and version
+      tags:
+        - element
+      operationId: getDirectThreats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DirectThreatsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/direct_threats:
+    x-swagger-router-controller: directThreats
+    post:
+      description: Save a new version of a DirectThreats element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postDirectThreats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: directThreats
+          description: DirectThreatsVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DirectThreatsVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+              
+  /records/{id}/endemic_atomized/{version}:
+    x-swagger-router-controller: endemicAtomized
+    get: 
+      description: Returns a version of a EndemicAtomized element by record id and version
+      tags:
+        - element
+      operationId: getEndemicAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EndemicAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/endemic_atomized:
+    x-swagger-router-controller: endemicAtomized
+    post:
+      description: Save a new version of a EndemicAtomized element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postEndemicAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: endemicAtomized
+          description: EndemicAtomizedVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EndemicAtomizedVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/references/{version}:
+    x-swagger-router-controller: references
+    get: 
+      description: Returns a version of a References element by record id and version
+      tags:
+        - element
+      operationId: getReferences
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReferencesVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/references:
+    x-swagger-router-controller: references
+    post:
+      description: Save a new version of a References element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postReferences
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: reference
+          description: ReferencesVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReferencesVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/environmental_envelope/{version}:
+    x-swagger-router-controller: environmentalEnvelope
+    get: 
+      description: Returns a version of a EnvironmentalEnvelope element by record id and version
+      tags:
+        - element
+      operationId: getEnvironmentalEnvelope
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EnvironmentalEnvelopeVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/environmental_envelope:
+    x-swagger-router-controller: environmentalEnvelope
+    post:
+      description: Save a new version of a EnvironmentalEnvelope element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postEnvironmentalEnvelope
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: environmentalEnvelope
+          description: EnvironmentalEnvelopeVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EnvironmentalEnvelopeVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/ecological_significance/{version}:
+    x-swagger-router-controller: ecologicalSignificance
+    get: 
+      description: Returns a version of a EcologicalSignificance element by record id and version
+      tags:
+        - element
+      operationId: getEcologicalSignificance
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EcologicalSignificanceVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/ecological_significance:
+    x-swagger-router-controller: ecologicalSignificance
+    post:
+      description: Save a new version of a EcologicalSignificance element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postEcologicalSignificance
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: ecologicalSignificance
+          description: EcologicalSignificanceVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EcologicalSignificanceVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/invasiveness/{version}:
+    x-swagger-router-controller: invasiveness
+    get: 
+      description: Returns a version of a Invasiveness element by record id and version
+      tags:
+        - element
+      operationId: getInvasiveness
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InvasivenessVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/invasiveness:
+    x-swagger-router-controller: invasiveness
+    post:
+      description: Save a new version of a Invasiveness element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postInvasiveness
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: invasiveness
+          description: InvasivenessVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvasivenessVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/more_information/{version}:
+    x-swagger-router-controller: moreInformation
+    get: 
+      description: Returns a version of a MoreInformation element by record id and version
+      tags:
+        - element
+      operationId: getMoreInformation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MoreInformationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/more_information:
+    x-swagger-router-controller: moreInformation
+    post:
+      description: Save a new version of a MoreInformation element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postMoreInformation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: moreInformation
+          description: MoreInformationVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MoreInformationVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -1596,15 +2003,15 @@ definitions:
         $ref: '#/definitions/EcologicalSignificance' 
       invasiveness:
         $ref: '#/definitions/Invasiveness' 
+      moreInformation:
+        type: string
       
-        
-  
         
   MoreInformationVersion:
     required:
-      - -id
+      - moreInformation
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1647,9 +2054,10 @@ definitions:
           
   DirectThreatsVersion:
     required:
-      - -id
+      - directThreats
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1825,8 +2233,9 @@ definitions:
   IdentificationKeysVersion:
     required:
       - identificationKeys
+      - id_user
     properties:
-      id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -1848,7 +2257,7 @@ definitions:
       - lifeForm
       - id_user
     properties:
-      id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2289,9 +2698,10 @@ definitions:
         
   ReferencesVersion:
     required:
-      - -id
+      - references
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2313,9 +2723,10 @@ definitions:
           
   AncillaryDataVersion:
     required:
-      - -id
+      - ancillaryData
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2337,9 +2748,10 @@ definitions:
   
   EndemicAtomizedVersion:
     required:
-      - -id
+      - endemicAtomized
+      - id_user
     properties:
-      -id:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2353,7 +2765,7 @@ definitions:
         type: string
       element:
         type: string
-      ancillaryData:
+      endemicAtomized:
         type: array
         items:
           $ref: '#/definitions/EndemicAtomized'  
