@@ -5,8 +5,7 @@ import add_objects from '../models/additionalModels.js';
 
 
 function postTaxonRecordName(req, res) {
-	console.log("!!!");
-	var taxon_record_name_version  = req.body; 
+	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
   	taxon_record_name_version.element="taxonRecordName";

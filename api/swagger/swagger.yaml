@@ -1914,6 +1914,122 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/brief_description/{version}:
+    x-swagger-router-controller: briefDescription
+    get: 
+      description: Returns a version of a BriefDescription element by record id and version
+      tags:
+        - element
+      operationId: getBriefDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BriefDescriptionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/brief_description:
+    x-swagger-router-controller: briefDescription
+    post:
+      description: Save a new version of a BriefDescription element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postBriefDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: briefDescription
+          description: BriefDescriptionVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BriefDescriptionVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/ancillary_data/{version}:
+    x-swagger-router-controller: ancillaryData
+    get: 
+      description: Returns a version of a AncillaryData element by record id and version
+      tags:
+        - element
+      operationId: getAncillaryData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AncillaryDataVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/{id}/ancillary_data:
+    x-swagger-router-controller: ancillaryData
+    post:
+      description: Save a new version of a AncillaryData element which belongs to record with id in the url
+      tags:
+        - element
+      operationId: postAncillaryData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: ancillaryData
+          description: AncillaryDataVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AncillaryDataVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
