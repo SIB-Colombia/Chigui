@@ -2030,6 +2030,56 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /collection/{id}:
+    x-swagger-router-controller: collection
+    get: 
+      description: Returns a collection by id
+      tags:
+        - collection
+      operationId: getCollection
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Collection"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /collection:
+    x-swagger-router-controller: collection
+    post:
+      description: Save a new Collection 
+      tags:
+        - collection
+      operationId: postCollection
+      parameters:
+        - name: collection
+          description: Collection object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Collection'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -4063,6 +4113,33 @@ definitions:
           $ref: '#/definitions/AncillaryData'
       scientificName:
         $ref: '#/definitions/ScientificName'
+        
+  Collection:
+    required:
+     - id_user
+     - records
+    properties:
+      id_user:
+        type: string
+      records:  
+        type: array
+        items:
+          type: string
+      created: 
+        type: string
+      updated: 
+        type: string
+      description: 
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      groups:
+        type: array
+        items:
+          type: string
+  
         
   ResultResponse:
     required:

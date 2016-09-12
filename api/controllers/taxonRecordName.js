@@ -106,8 +106,6 @@ function postTaxonRecordName(req, res) {
 }
 
 function getTaxonRecordName(req, res) {
-	console.log("****");
-
   	var id_rc = req.swagger.params.id.value;
   	var version = req.swagger.params.version.value;
 
