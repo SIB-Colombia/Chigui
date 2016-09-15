@@ -5,10 +5,16 @@ var ad_objects = require('./additionalModels.js');
 
 var Group = new Schema ({
 	users : [String],
-	admin : [String],
+	admins : [{type: String, validate: [arrayLimit, '{PATH} exceeds the limit of 10'] }], //***************
 	image : String,
 	created : { type: Date, default: Date.now },
 	description : String,
 	tags : [String],
-	collections : [{ type: Schema.Types.ObjectId, ref: 'Collections' }]
+	listRecords : [{ type: Schema.Types.ObjectId, ref: 'ListRecords' }]
 },{ collection: 'Groups' });
+
+function arrayLimit(val) {
+  return val.length <= 10;
+}
+
+module.exports = mongoose.model('Group', Group );

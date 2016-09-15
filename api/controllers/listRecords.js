@@ -1,40 +1,41 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import Collection from '../models/collection.js';
+import ListRecords from '../models/listRecords.js';
+import Group from '../models/group.js';
 import add_objects from '../models/additionalModels.js';
 
-function postCollection(req, res) {
-	var collection  = req.body;
+function postListRecords(req, res) {
+	var listRecords  = req.body;
 	var object_id = mongoose.Types.ObjectId();
-	collection._id = mongoose.Types.ObjectId();
-	collection.created=Date();
+	listRecords._id = mongoose.Types.ObjectId();
+	listRecords.created=Date();
 	//console.log(collection);
 	//console.log("*** "+collection.records.length);
 	
 	var isValidArr = true; 
 	var reg_id = new RegExp("^[0-9a-fA-F]{24}$");
-	for(var i =0; i < collection.records.length; i++){
-		console.log(reg_id.test(collection.records[i]));
-		if (!reg_id.test(collection.records[i])){
+	for(var i =0; i < listRecords.records.length; i++){
+		console.log(reg_id.test(listRecords.records[i]));
+		if (!reg_id.test(listRecords.records[i])){
 			isValidArr = false;
 			break;
 		}else{
-			collection.records[i] = mongoose.Types.ObjectId(collection.records[i]); 
+			listRecords.records[i] = mongoose.Types.ObjectId(listRecords.records[i]); 
 		}
 	}
 
-	collection = new Collection(collection);
+	listRecords = new ListRecords(listRecords);
 
-	console.log(collection);
+	console.log(listRecords);
 
-	console.log(collection.records.length);
+	console.log(listRecords.records.length);
 
 	if(isValidArr){
-		if(collection.records.length > 0){
-			console.log(collection.records.length);
+		if(listRecords.records.length > 0){
+			console.log(listRecords.records.length);
 			async.waterfall([
 				function(callback){
-					async.eachSeries(collection.records, function(id_record, callback){
+					async.eachSeries(listRecords.records, function(id_record, callback){
 						console.log(id_record);
 						add_objects.RecordVersion.count({ _id : id_record }, function (err, count){
             				if(err){
@@ -50,17 +51,28 @@ function postCollection(req, res) {
 							//console.error("Error finding a Record: "+err.message);
 							callback(new Error("Error finding a Record: "+err.message));
 						}else{
-							console.log("All Records are in the dataBase");
+							console.log("All Records are in the Data Base");
 							callback();
 						}
 					});
 				},
 				function(callback){
-					collection.save(function(err){
+					console.log(listRecords.group);
+					Group.count({ group : listRecords.group }, function (err, count){
                   		if(err){
-                      		callback(new Error("failed saving the collection:" + err.message));
+              				callback(new Error("The Group (Ficha) with id: " + listRecords.group +" doesn't exist.:" + err.message));
+           			 	}else if(count === 0){
+           			 		callback(new Error("The Record (Ficha) with id: " + listRecords.group + " doesn't exist"));
+           			 	}else{
+           			 		callback();
+           			 	}
+                	});
+				},
+				function(callback){
+					listRecords.save(function(err){
+                  		if(err){
+                      		callback(new Error("failed saving the list of records:" + err.message));
                   		}else{
-                  			console.log("!!!!");
                       		callback(null);
                   		}
                 	});
@@ -73,7 +85,7 @@ function postCollection(req, res) {
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
-            			res.json({ message: 'Save Collection', collection_id: collection._id  });
+            			res.json({ message: 'Save list of records', listRecords_id: listRecords._id  });
          			}
 				}
 			);
@@ -89,19 +101,19 @@ function postCollection(req, res) {
 	}
 }
 
-function getCollection(req, res) {
-  	var id_collection = req.swagger.params.id.value;
+function getListRecords(req, res) {
+  	var listRecords_id = req.swagger.params.id.value;
 
-  	Collection.findOne({ _id : id_collection }).exec(function (err, collection) {
+  	ListRecords.findOne({ _id : listRecords_id }).exec(function (err, listrecords) {
             if(err){
               res.status(400);
               res.send(err);
             }else{
-              if(collection){
-                res.json(collection);
+              if(listrecords){
+                res.json(listrecords);
               }else{
               	res.status(400);
-              	res.json({message: "Doesn't exist a Collection with id_record: " + id_rc });
+              	res.json({message: "Doesn't exist a ListRecords with id_record: " + id_rc });
               }
             }
     });
@@ -110,6 +122,6 @@ function getCollection(req, res) {
 
 
 module.exports = {
-  postCollection,
-  getCollection
+  postListRecords,
+  getListRecords
 };
