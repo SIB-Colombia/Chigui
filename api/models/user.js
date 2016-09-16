@@ -4,8 +4,11 @@ var Schema = mongoose.Schema;
 var ad_objects = require('./additionalModels.js');
 var Agent = require('mongoose').model('Agent').schema;
 
-var User = new Schema ({
-	id_user: String,
+
+//var User = new Schema ({
+var User = Agent.extend({
+	//id_user: { type: String, required: true, unique: true }, //***
+	id_user : String,
 	groups : [{ type: Schema.Types.ObjectId, ref: 'Groups' }]
 },{ collection: 'Users' });
 

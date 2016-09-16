@@ -4,13 +4,14 @@ import Group from '../models/group.js';
 import User from '../models/user.js';
 import add_objects from '../models/additionalModels.js';
 
+import winston from 'winston'
+winston.add(winston.transports.File, { filename: 'chigui.log' });
+
 function postGroup(req, res) {
 	var group  = req.body;
 	var object_id = mongoose.Types.ObjectId();
 	group._id = mongoose.Types.ObjectId();
 	group.created=Date();
-	//console.log(collection);
-	//console.log("*** "+collection.records.length);
 	
 	/*
 	var isValidArr = true; 
@@ -46,7 +47,6 @@ function postGroup(req, res) {
           				});
 					},function(err){
 						if(err){
-							//console.error("Error finding a Record: "+err.message);
 							callback(new Error("Error finding a User: "+err.message));
 						}else{
 							console.log("All Users are in the Data Base");
@@ -55,17 +55,31 @@ function postGroup(req, res) {
 					});
 				},
 				function(callback){
-					var existUser = false; 
 					var admins = group.admins;
 					var users = group.users;
-					for(var i=0; i < admins.length; i++){
-						for(var j=0; j < users.length; j++ ){
+					console.log(admins);
+					console.log(users);
+					var i = 0;
+					var j = 0;
+					var existUser = true;
+					while( i < admins.length && existUser){
+						j = 0;
+						//console.log(admins[i]);
+						while(j < users.length){
 							if(admins[i]==users[j]){
-								existUser = true;
 								break
-							} 
+							}
+							j ++;
 						}
+						console.log("len: "+users.length);
+						console.log("j: "+j);
+						if(j == users.length){
+							console.log("***"+admins[i]);
+							existUser = false;
+						}
+						i++;
 					}
+					console.log(existUser);
 					if(!existUser){
 						callback(new Error("One of the admins's id isn't in the list of users"));
 					}else{
@@ -86,10 +100,12 @@ function postGroup(req, res) {
           			if (err) {
             			console.log(err.message);
             			//res.status(406);
+            			winston.error("message: " + err );
             			res.status(400);
-            			res.json({ ErrorResponse: {message: ""+err }});
+            			res.json({ ErrorResponse: { message: ""+err }});
           			}else{
-            			res.json({ message: 'Save list of records', listRecords_id: listRecords._id  });
+          				winston.info('info', 'Saved group with _id: ' + group._id);
+            			res.json({ message: 'Saved group', _id: group._id  });
          			}
 				}
 		);
