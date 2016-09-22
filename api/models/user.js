@@ -8,7 +8,8 @@ var Agent = require('mongoose').model('Agent').schema;
 //var User = new Schema ({
 var User = Agent.extend({
 	//id_user: { type: String, required: true, unique: true }, //***
-	id_user : String,
+	id_user : { type: String, required: true },
+	role : { type: String, required: true },
 	groups : [{ type: Schema.Types.ObjectId, ref: 'Groups' }]
 },{ collection: 'Users' });
 

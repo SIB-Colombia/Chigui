@@ -8,6 +8,7 @@ function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
+    taxon_record_name_version.state="for review";
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -102,7 +103,86 @@ function postTaxonRecordName(req, res) {
   		res.status(400);
     	res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
+}
 
+function setAcceptedTaxonRecordName(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+
+  var id_v = taxon_record_name_version._id;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        /*
+        TaxonRecordNameVersion.find({ id_record : id_rc, state: "to review", version : version }).exec(function (err, elementVer) {
+
+        });
+        */
+        TaxonRecordNameVersion.update({ id_record : id_rc, state: "accepted" },{ state: "accepted" }, { multi: true },function (err, raw){
+
+        });
+        
+      },
+      function(callback){ 
+        TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "to review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback(null, elementVer);
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+
+}
+
+function getLastAcceptedTaxonRecordName(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  TaxonRecordNameVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer){
+        var len = elementVer.length;
+        res.json(elementVer.[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc+" and version: "+version});
+      }
+    }
+  });
+  /*
+  TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer){
+        res.json(elementVer);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc+" and version: "+version});
+      }
+    }
+  }
+  */
 }
 
 function getTaxonRecordName(req, res) {
