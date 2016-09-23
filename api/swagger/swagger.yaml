@@ -79,17 +79,96 @@ paths:
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/TaxonRecordName"
+            $ref: "#/definitions/TaxonRecordNameVersion"
         # responses may fall through to errors
         "400":
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
             
-  /records/{id}:/taxon_record_name:
+            
+  /records/to_review/{id}/taxon_record_name:
+    x-swagger-router-controller: taxonRecordName
+    get: 
+      description: Returns a list of TaxonRecordName version with state "to review"
+      tags:
+        - element
+      operationId: getToReviewTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TaxonRecordNameVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/taxon_record_name:
+    x-swagger-router-controller: taxonRecordName
+    get: 
+      description: Returns the taxonRecordName version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TaxonRecordNameVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/taxon_record_name/{version}:
+    x-swagger-router-controller: taxonRecordName
+    put: 
+      description: Update a TaxonRecordNameVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      
+      
+      
+            
+  /records/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
-      description: Save a new version of a taxonRecordName related with the a recrd with the id
+      description: Save a new version of a taxonRecordName related with the a record with the id
       tags:
         - element
       operationId: postTaxonRecordName
@@ -147,7 +226,7 @@ paths:
   /records/{id}/associated_party:
     x-swagger-router-controller: associatedParty
     post:
-      description: Save a new version of a AssociatedParty related with the a recrd with the id
+      description: Save a new version of a AssociatedParty related with the a record with the id
       tags:
         - element
       operationId: postAssociatedParty
@@ -2342,9 +2421,19 @@ definitions:
         
   #BaseElementsVersion:
   
-  TaxonRecordNameVersion:
+  TaxonRecordNameVersionList:
     properties:
-      id:
+      taxonRecordNameList:
+        type: array
+        items:
+          $ref: '#/definitions/TaxonRecordNameVersion'
+  
+  TaxonRecordNameVersion:
+    required:
+      - taxonRecordName
+      - id_user
+    properties:
+      _id:
         type: string
       id_record: 
         type: string
@@ -2360,6 +2449,7 @@ definitions:
         type: string
       taxonRecordName:
         $ref: '#/definitions/TaxonRecordName'
+    
         
   SynonymsAtomizedVersion:
     required:

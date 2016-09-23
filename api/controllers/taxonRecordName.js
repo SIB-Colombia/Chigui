@@ -8,7 +8,8 @@ function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
-    taxon_record_name_version.state="for review";
+    //taxon_record_name_version.state="to review";
+    taxon_record_name_version.state="accepted";
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -108,8 +109,6 @@ function postTaxonRecordName(req, res) {
 function setAcceptedTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   var version = req.swagger.params.version.value;
-
-  var id_v = taxon_record_name_version._id;
   var id_rc = req.swagger.params.id.value;
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
@@ -120,17 +119,22 @@ function setAcceptedTaxonRecordName(req, res) {
 
         });
         */
-        TaxonRecordNameVersion.update({ id_record : id_rc, state: "accepted" },{ state: "accepted" }, { multi: true },function (err, raw){
-
+        TaxonRecordNameVersion.update({ id_record : id_rc, state: "accepted" },{ state: "old-version" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
         });
         
       },
       function(callback){ 
-        TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "to review", version : version }).exec(function (err, elementVer) {
+        TaxonRecordNameVersion.update({ id_record : id_rc, state: "to review", version : version }, { state: "accepted" }, function (err, elementVer) {
           if(err){
             callback(new Error(err.message));
           }else{
-            callback(null, elementVer);
+            callback();
           }
         });
       }
@@ -141,7 +145,7 @@ function setAcceptedTaxonRecordName(req, res) {
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+        res.json({ message: 'Updated TaxonRecordNameVersion to accepted', element: 'taxonRecordName', version : version, id_record : id_rc });
       }      
     });
   }else{
@@ -150,6 +154,24 @@ function setAcceptedTaxonRecordName(req, res) {
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 
+}
+
+function getToReviewTaxonRecordName(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  TaxonRecordNameVersion.find({ id_record : id_rc, state: "to review" }).exec(function (err, elementList) {
+    if(err){
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        res.json(elementList);
+      }else{
+        res.status(406);
+        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc});
+      }
+    }
+  });
 }
 
 function getLastAcceptedTaxonRecordName(req, res) {
@@ -161,10 +183,10 @@ function getLastAcceptedTaxonRecordName(req, res) {
     }else{
       if(elementVer){
         var len = elementVer.length;
-        res.json(elementVer.[len-1]);
+        res.json(elementVer[len-1]);
       }else{
         res.status(400);
-        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc+" and version: "+version});
+        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc});
       }
     }
   });
@@ -186,6 +208,7 @@ function getLastAcceptedTaxonRecordName(req, res) {
 }
 
 function getTaxonRecordName(req, res) {
+    console.log("!!!");
   	var id_rc = req.swagger.params.id.value;
   	var version = req.swagger.params.version.value;
 
@@ -208,5 +231,8 @@ function getTaxonRecordName(req, res) {
 
 module.exports = {
   postTaxonRecordName,
-  getTaxonRecordName
+  getTaxonRecordName,
+  setAcceptedTaxonRecordName,
+  getToReviewTaxonRecordName,
+  getLastAcceptedTaxonRecordName
 };
