@@ -2,6 +2,7 @@
 //var mongoosePaginate = require('mongoose-paginate');
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import AssociatedPartyVersion from '../models/associatedParty.js';
 import BaseElementsVersion from '../models/baseElements.js';
@@ -38,12 +39,9 @@ import EnvironmentalEnvelopeVersion from '../models/environmentalEnvelope.js';
 import EcologicalSignificanceVersion from '../models/ecologicalSignificance.js';
 import InvasivenessVersion from '../models/invasiveness.js';
 import add_objects from '../models/additionalModels.js';
-//import RecordVersion from 'mongoose'.model('RecordVersion').schema; //*******
-/*
-import elasticsearch from 'elasticsearch';
-import { config } from '../../config/application-config';
-const debug = require('debug')('dataportal-api:occurrences');
-*/
+
+winston.add(winston.transports.File, { filename: 'chigui.log' });
+
 
 /*
   Returns the last version of a record according to id
@@ -56,6 +54,8 @@ function lastRecord(req, res) {
   var id_rc=req.swagger.params.id.value;
   var ver=req.params.version;
   var lastRec={};
+
+  /*
   mongoose.connect('mongodb://localhost:27017/catalogoDb', function(err) {
     if(err) {
         console.log('connection error', err);
@@ -63,6 +63,7 @@ function lastRecord(req, res) {
         console.log('connection successful');
     }
   });
+  */
   
     add_objects.RecordVersion.findOne({ _id : id_rc }).exec(function (err, record) {
       if (err){
@@ -73,7 +74,7 @@ function lastRecord(req, res) {
       var lenBasEl=record.baseElementsVersion.length;
       var lenComNameAt=record.commonNamesAtomizedVersion.length;
       var lenSyAt=record.synonymsAtomizedVersion.length;
-      var lenTaxRecNam=record.taxonRecordNameVersion.length;
+      //var lenTaxRecNam=record.taxonRecordNameVersion.length;
       var lenLifCyc= record.lifeCycleVersion.length;
       var lenLifFor= record.lifeFormVersion.length; 
       var lenIdeKey= record.identificationKeysVersion.length;
@@ -154,7 +155,19 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
+          /*
           TaxonRecordNameVersion.findOne({ id_record : id_rc, version: lenTaxRecNam }).exec(function (err, elementVer) {
+            if(err){
+              callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
+            }else{
+              if(elementVer){
+                lastRec.taxonRecordName = elementVer.taxonRecordName;
+              }
+              callback();
+            }
+          });
+          */
+          TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -528,9 +541,11 @@ function lastRecord(req, res) {
         ],function(err, result) {
           if (err) {
             console.log("Error: "+err);
+            winston.error("message: " + err );
             res.status(406);
             res.json({ message: ""+err });
           }else{
+            winston.info('info', 'Get Record with _id: ' + id_rc);
             res.json(lastRec);
           }
         });

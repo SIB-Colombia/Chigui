@@ -152,6 +152,12 @@ paths:
           type: integer
           in: path
           required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
       responses:
         "200":
           description: Success

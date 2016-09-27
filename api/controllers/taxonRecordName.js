@@ -1,15 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import add_objects from '../models/additionalModels.js';
 
+winston.add(winston.transports.File, { filename: 'chigui.log' });
 
 function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
-    //taxon_record_name_version.state="to review";
-    taxon_record_name_version.state="accepted";
+    //taxon_record_name_version.state="to_review";
+    //taxon_record_name_version.state="accepted";
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -87,20 +89,24 @@ function postTaxonRecordName(req, res) {
           			if (err) {
             			console.log("Error: "+err);
             			//res.status(406);
+                  winston.error("message: " + err );
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
+                  winston.info('info', 'Save TaxonRecordNameVersion version: ' + ver + " for the Record: " + id_rc);
             			res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
          			 }			
         		});
 
   		}else{
     		//res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
     		res.status(400);
     		res.json({message: "Empty data in version of the element"});
    		}
   	}else{
   		//res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
   		res.status(400);
     	res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
@@ -114,12 +120,18 @@ function setAcceptedTaxonRecordName(req, res) {
   if(typeof  id_rc!=="undefined" && id_rc!=""){
     async.waterfall([
       function(callback){ 
-        /*
-        TaxonRecordNameVersion.find({ id_record : id_rc, state: "to review", version : version }).exec(function (err, elementVer) {
-
+        TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a TaxonRecordNameVersion with the properties sent."));
+          }else{
+            callback();
+          }
         });
-        */
-        TaxonRecordNameVersion.update({ id_record : id_rc, state: "accepted" },{ state: "old-version" }, { multi: true },function (err, raw){
+      },
+      function(callback){ 
+        TaxonRecordNameVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
           if(err){
             callback(new Error(err.message));
           }else{
@@ -130,7 +142,8 @@ function setAcceptedTaxonRecordName(req, res) {
         
       },
       function(callback){ 
-        TaxonRecordNameVersion.update({ id_record : id_rc, state: "to review", version : version }, { state: "accepted" }, function (err, elementVer) {
+        //console.log("VERSION:" + version);
+        TaxonRecordNameVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
           if(err){
             callback(new Error(err.message));
           }else{
@@ -142,14 +155,17 @@ function setAcceptedTaxonRecordName(req, res) {
     function(err, result) {
       if (err) {
         console.log("Error: "+err);
+        winston.error("message: " + err );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
+        winston.info('info', 'Updated TaxonRecordNameVersion to accepted, version: ' + version + " for the Record: " + id_rc);
         res.json({ message: 'Updated TaxonRecordNameVersion to accepted', element: 'taxonRecordName', version : version, id_record : id_rc });
       }      
     });
   }else{
     //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -158,15 +174,18 @@ function setAcceptedTaxonRecordName(req, res) {
 
 function getToReviewTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
-  TaxonRecordNameVersion.find({ id_record : id_rc, state: "to review" }).exec(function (err, elementList) {
+  TaxonRecordNameVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
+      winston.error("message: " + err );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
+        winston.info('info', 'Get list of TaxonRecordNameVersion with state to_review, function getToReviewTaxonRecordName');
         res.json(elementList);
       }else{
+        winston.error("message: " + err );
         res.status(406);
         res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc});
       }
@@ -208,7 +227,6 @@ function getLastAcceptedTaxonRecordName(req, res) {
 }
 
 function getTaxonRecordName(req, res) {
-    console.log("!!!");
   	var id_rc = req.swagger.params.id.value;
   	var version = req.swagger.params.version.value;
 
