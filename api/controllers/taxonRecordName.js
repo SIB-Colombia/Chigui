@@ -10,7 +10,7 @@ function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
-    //taxon_record_name_version.state="to_review";
+    taxon_record_name_version.state="to_review";
     //taxon_record_name_version.state="accepted";
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
@@ -142,7 +142,6 @@ function setAcceptedTaxonRecordName(req, res) {
         
       },
       function(callback){ 
-        //console.log("VERSION:" + version);
         TaxonRecordNameVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
           if(err){
             callback(new Error(err.message));
@@ -169,7 +168,6 @@ function setAcceptedTaxonRecordName(req, res) {
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
-
 }
 
 function getToReviewTaxonRecordName(req, res) {
@@ -187,7 +185,7 @@ function getToReviewTaxonRecordName(req, res) {
       }else{
         winston.error("message: " + err );
         res.status(406);
-        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc});
+        res.json({message: "Doesn't exist a TaxonRecordNameVersion with id_record: "+id_rc});
       }
     }
   });
@@ -197,6 +195,7 @@ function getLastAcceptedTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   TaxonRecordNameVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
+      winston.error("message: " + err );
       res.status(400);
       res.send(err);
     }else{
@@ -205,7 +204,7 @@ function getLastAcceptedTaxonRecordName(req, res) {
         res.json(elementVer[len-1]);
       }else{
         res.status(400);
-        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc});
+        res.json({message: "Doesn't exist a TaxonRecordNameVersion with id_record: "+id_rc});
       }
     }
   });
@@ -232,6 +231,7 @@ function getTaxonRecordName(req, res) {
 
   	TaxonRecordNameVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
@@ -243,7 +243,6 @@ function getTaxonRecordName(req, res) {
               }
             }
     });
-
 }
 
 

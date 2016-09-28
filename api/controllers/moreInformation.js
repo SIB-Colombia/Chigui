@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import MoreInformation from '../models/moreInformation.js';
 import add_objects from '../models/additionalModels.js';
 
+winston.add(winston.transports.File, { filename: 'chigui.log' });
 
 function postMoreInformation(req, res) {
   var more_information_version  = req.body; 
@@ -84,21 +86,22 @@ function postMoreInformation(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  res.json({ message: 'Save MoreInformation', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
+                  winston.info('info', 'Save MoreInformationVersion, version: ' + ver + " for the Record: " + id_rc);
+                  res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -111,6 +114,7 @@ function getMoreInformation(req, res) {
 
     MoreInformation.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
@@ -118,6 +122,7 @@ function getMoreInformation(req, res) {
                 res.json(elementVer);
               }else{
                 res.status(400);
+                winston.error("message: Doesn't exist a MoreInformation with id_record " + id_rc+" and version: "+version );
                 res.json({message: "Doesn't exist a MoreInformation with id_record: "+id_rc+" and version: "+version});
               }
             }
@@ -126,7 +131,108 @@ function getMoreInformation(req, res) {
 }
 
 
+function setAcceptedMoreInformation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        MoreInformationVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a MoreInformationVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        MoreInformationVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        MoreInformationVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated MoreInformationVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated MoreInformationVersion to accepted', element: 'moreInformation', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewMoreInformation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  MoreInformationVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of MoreInformationVersion with state to_review, function getToReviewMoreInformation');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedMoreInformation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  MoreInformationVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postMoreInformation,
-  getMoreInformation
+  getMoreInformation,
+  setAcceptedMoreInformation,
+  getToReviewMoreInformation,
+  getLastAcceptedMoreInformation
 };

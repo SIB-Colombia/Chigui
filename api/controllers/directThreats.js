@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import DirectThreatsVersion from '../models/directThreats.js';
 import add_objects from '../models/additionalModels.js';
 
+//winston.add(winston.transports.File, { filename: 'chigui.log' });
 
 function postDirectThreats(req, res) {
   var direct_threats_version  = req.body; 
     direct_threats_version._id = mongoose.Types.ObjectId();
     direct_threats_version.created=Date();
+    direct_threats_version.state="to_review";
     direct_threats_version.element="directThreats";
     var elementValue = direct_threats_version.directThreats;
     direct_threats_version = new DirectThreatsVersion(direct_threats_version);
@@ -84,21 +87,22 @@ function postDirectThreats(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save DirectThreatsVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save DirectThreatsVersion', element: 'directThreats', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -126,7 +130,107 @@ function getDirectThreats(req, res) {
 }
 
 
+function setAcceptedDirectThreats(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        DirectThreatsVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a DirectThreatsVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        DirectThreatsVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        DirectThreatsVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated DirectThreatsVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated DirectThreatsVersion to accepted', element: 'directThreats', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewDirectThreats(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  DirectThreatsVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of DirectThreatsVersion with state to_review, function getToReviewDirectThreats');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a DirectThreatsVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedDirectThreats(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  DirectThreatsVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a DirectThreatsVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postDirectThreats,
-  getDirectThreats
+  getDirectThreats,
+  setAcceptedDirectThreats,
+  getToReviewDirectThreats,
+  getLastAcceptedDirectThreats
 };

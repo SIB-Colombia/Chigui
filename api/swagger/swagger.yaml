@@ -90,7 +90,7 @@ paths:
   /records/to_review/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     get: 
-      description: Returns a list of TaxonRecordName version with state "to review"
+      description: Returns a list of TaxonRecordName version with state "to_review"
       tags:
         - element
       operationId: getToReviewTaxonRecordName
@@ -168,9 +168,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
       
-      
-      
-            
   /records/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
@@ -259,6 +256,88 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/associated_party:
+    x-swagger-router-controller: associatedParty
+    get: 
+      description: Returns a list of AssociatedParty version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewAssociatedParty
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AssociatedPartyVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/associated_party:
+    x-swagger-router-controller: associatedParty
+    get: 
+      description: Returns the associatedParty version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedAssociatedParty
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AssociatedPartyVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/associated_party/{version}:
+    x-swagger-router-controller: associatedParty
+    put: 
+      description: Update a AssociatedPartyVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedAssociatedParty
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+            
   /records/{id}/common_names_atomized/{version}:
     x-swagger-router-controller: commonNamesAtomized
     get: 
@@ -311,6 +390,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/common_names_atomized:
+    x-swagger-router-controller: commonNamesAtomized
+    get: 
+      description: Returns a list of CommonNamesAtomized version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewCommonNamesAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CommonNamesAtomizedVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/common_names_atomized:
+    x-swagger-router-controller: commonNamesAtomized
+    get: 
+      description: Returns the commonNamesAtomized version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedCommonNamesAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CommonNamesAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/common_names_atomized/{version}:
+    x-swagger-router-controller: commonNamesAtomized
+    put: 
+      description: Update a CommonNamesAtomizedVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedCommonNamesAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -375,6 +535,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"   
+            
+  /records/to_review/{id}/synonyms_atomized:
+    x-swagger-router-controller: synonymsAtomized
+    get: 
+      description: Returns a list of SynonymsAtomized version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewSynonymsAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SynonymsAtomizedVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/synonyms_atomized:
+    x-swagger-router-controller: synonymsAtomized
+    get: 
+      description: Returns the synonymsAtomized version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedSynonymsAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SynonymsAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/synonyms_atomized/{version}:
+    x-swagger-router-controller: synonymsAtomized
+    put: 
+      description: Update a SynonymsAtomizedVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedSynonymsAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /records/{id}/life_cycle/{version}:
     x-swagger-router-controller: lifeCycle
@@ -1651,6 +1892,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/direct_threats:
+    x-swagger-router-controller: directThreats
+    get: 
+      description: Returns a list of DirectThreats version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewDirectThreats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DirectThreatsVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/direct_threats:
+    x-swagger-router-controller: directThreats
+    get: 
+      description: Returns the directThreats version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedDirectThreats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DirectThreatsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/direct_threats/{version}:
+    x-swagger-router-controller: directThreats
+    put: 
+      description: Update a DirectThreatsVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedDirectThreats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
               
   /records/{id}/endemic_atomized/{version}:
     x-swagger-router-controller: endemicAtomized
@@ -1994,6 +2316,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/more_information:
+    x-swagger-router-controller: moreInformation
+    get: 
+      description: Returns a list of MoreInformation version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewMoreInformation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MoreInformationVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/more_information:
+    x-swagger-router-controller: moreInformation
+    get: 
+      description: Returns the moreInformation version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedMoreInformation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MoreInformationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/more_information/{version}:
+    x-swagger-router-controller: moreInformation
+    put: 
+      description: Update a MoreInformationVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedMoreInformation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -2433,6 +2836,41 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/TaxonRecordNameVersion'
+          
+  AssociatedPartyVersionList:
+    properties:
+      associatedPartyList:
+        type: array
+        items:
+          $ref: '#/definitions/AssociatedPartyVersion'
+          
+  DirectThreatsVersionList:
+    properties:
+      directThreatsList:
+        type: array
+        items:
+          $ref: '#/definitions/DirectThreatsVersion'
+          
+  MoreInformationVersionList:
+    properties:
+      moreInformationList:
+        type: array
+        items:
+          $ref: '#/definitions/MoreInformationVersion'
+          
+  SynonymsAtomizedVersionList:
+    properties:
+      synonymsAtomizedList:
+        type: array
+        items:
+          $ref: '#/definitions/SynonymsAtomizedVersion'
+          
+  CommonNamesAtomizedVersionList:
+    properties:
+      commonNamesAtomizedList:
+        type: array
+        items:
+          $ref: '#/definitions/CommonNamesAtomizedVersion'
   
   TaxonRecordNameVersion:
     required:

@@ -70,10 +70,10 @@ function lastRecord(req, res) {
         res.send(err);
       }
       lastRec._id=record._id;
-      var lenAsPar=record.associatedPartyVersion.length;
-      var lenBasEl=record.baseElementsVersion.length;
-      var lenComNameAt=record.commonNamesAtomizedVersion.length;
-      var lenSyAt=record.synonymsAtomizedVersion.length;
+      //var lenAsPar=record.associatedPartyVersion.length;
+      //var lenBasEl=record.baseElementsVersion.length;
+      //var lenComNameAt=record.commonNamesAtomizedVersion.length;
+      //var lenSyAt=record.synonymsAtomizedVersion.length;
       //var lenTaxRecNam=record.taxonRecordNameVersion.length;
       var lenLifCyc= record.lifeCycleVersion.length;
       var lenLifFor= record.lifeFormVersion.length; 
@@ -94,11 +94,11 @@ function lastRecord(req, res) {
       var lenDistr = record.distributionVersion.length; 
       var lenTerr = record.territoryVersion.length; 
       var lenPopBio = record.populationBiologyVersion.length; 
-      var lenMorInf = record.moreInformationVersion.length; 
+      //var lenMorInf = record.moreInformationVersion.length; 
       var lenThrSta = record.threatStatusVersion.length; 
       var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
-      var lenDirThr = record.directThreatsVersion.length;
+      //var lenDirThr = record.directThreatsVersion.length;
       var lenAncDat = record.ancillaryDataVersion.length;
       var lenEndAt = record.endemicAtomizedVersion.length;
       var lenRefe = record.referencesVersion.length; 
@@ -107,7 +107,7 @@ function lastRecord(req, res) {
       var lenInva = record.invasivenessVersion.length;
       async.waterfall([
         function(callback){
-          AssociatedPartyVersion.findOne({ id_record : id_rc, version: lenAsPar }).exec(function (err, elementVer) {
+          AssociatedPartyVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get AssociatedParty element for the record with id: "+id_rc+" : " + err.message));
              }else{ 
@@ -118,6 +118,7 @@ function lastRecord(req, res) {
             }
           });
         },
+        /*
         function(callback){
           BaseElementsVersion.findOne({ id_record : id_rc, version: lenBasEl }).exec(function (err, elementVer) {
             if(err){
@@ -129,9 +130,9 @@ function lastRecord(req, res) {
               callback();
             }
           });
-        },
+        },*/
         function(callback){
-          CommonNamesAtomizedVersion.findOne({ id_record : id_rc, version: lenComNameAt }).exec(function (err, elementVer) {
+          CommonNamesAtomizedVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get CommonNamesAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -143,7 +144,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          SynonymsAtomizedVersion.findOne({ id_record : id_rc, version: lenSyAt }).exec(function (err, elementVer) {
+          SynonymsAtomizedVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
              if(err){
               callback(new Error("Error to get SynonymsAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -407,7 +408,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          MoreInformationVersion.findOne({ id_record : id_rc, version: lenMorInf }).exec(function (err, elementVer) {
+          MoreInformationVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -455,7 +456,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          DirectThreatsVersion.findOne({ id_record : id_rc, version: lenDirThr }).exec(function (err, elementVer) {
+          DirectThreatsVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get DirectThreats element for the record with id: "+id_rc+" : " + err.message));
             }else{
