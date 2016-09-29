@@ -40,7 +40,7 @@ import EcologicalSignificanceVersion from '../models/ecologicalSignificance.js';
 import InvasivenessVersion from '../models/invasiveness.js';
 import add_objects from '../models/additionalModels.js';
 
-winston.add(winston.transports.File, { filename: 'chigui.log' });
+//winston.add(winston.transports.File, { filename: 'chigui.log' });
 
 
 /*
@@ -81,7 +81,7 @@ function lastRecord(req, res) {
       var lenFulDes= record.fullDescriptionVersion.length;
       var lenBrfDes= record.briefDescriptionVersion.length;
       var lenAbs= record.abstractVersion.length;
-      var lenHie= record.hierarchyVersion.length;
+      //var lenHie= record.hierarchyVersion.length;
       var lenRep= record.reproductionVersion.length; 
       var lenAnnCyc= record.annualCyclesVersion.length;
       var lenFed= record.feedingVersion.length;
@@ -252,7 +252,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          HierarchyVersion.findOne({ id_record : id_rc, version: lenHie }).exec(function (err, elementVer) {
+          HierarchyVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Hierarchy element for the record with id: "+id_rc+" : " + err.message));
             }else{

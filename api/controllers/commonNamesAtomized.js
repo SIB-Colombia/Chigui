@@ -9,6 +9,7 @@ function postCommonNamesAtomized(req, res) {
   var common_names_atomized  = req.body; 
     common_names_atomized._id = mongoose.Types.ObjectId();
     common_names_atomized.created=Date();
+    common_names_atomized.state="to_review";
     common_names_atomized.element="commonNamesAtomized";
     var elementValue = common_names_atomized.commonNamesAtomized;
     common_names_atomized = new CommonNamesAtomizedVersion(common_names_atomized);
@@ -120,8 +121,8 @@ function getCommonNamesAtomized(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                res.status(400);
                 winston.error("message: Doesn't exist a CommonNamesAtomizedVersion with id_record " + id_rc+" and version: "+version );
+                res.status(400);
                 res.json({message: "Doesn't exist a CommonNamesAtomizedVersion with id_record: "+id_rc+" and version: "+version});
               }
             }

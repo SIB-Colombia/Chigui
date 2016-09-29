@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import async from 'async';
 import winston from 'winston';
-import MoreInformation from '../models/moreInformation.js';
+import MoreInformationVersion from '../models/moreInformation.js';
 import add_objects from '../models/additionalModels.js';
 
 winston.add(winston.transports.File, { filename: 'chigui.log' });
@@ -10,9 +10,10 @@ function postMoreInformation(req, res) {
   var more_information_version  = req.body; 
     more_information_version._id = mongoose.Types.ObjectId();
     more_information_version.created=Date();
+    more_information_version.state="to_review";
     more_information_version.element="moreInformation";
     var elementValue = more_information_version.moreInformation;
-    more_information_version = new MoreInformation(more_information_version);
+    more_information_version = new MoreInformationVersion(more_information_version);
     var id_v = more_information_version._id;
     var id_rc = req.swagger.params.id.value;
 
@@ -35,32 +36,33 @@ function postMoreInformation(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenmoreInformation= data.moreInformation.length;
-                if( lenmoreInformation!=0 ){
-                  var idLast = data.moreInformation[lenmoreInformation-1];
-                  MoreInformation.findById(idLast , function (err, doc){
+                if(data.moreInformationVersion && data.moreInformationVersion.length !=0){
+                  var lenmoreInformation = data.moreInformationVersion.length;
+                  var idLast = data.moreInformationVersion[lenmoreInformation-1];
+                  MoreInformationVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of moreInformation:" + err.message));
-                        }else{
-                          var prev = doc.moreInformation;
-                            var next = more_information_version.moreInformation;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              more_information_version.id_record=id_rc;
-                              more_information_version.version=lenmoreInformation+1;
-                              callback(null, more_information_version);
-                            }else{
-                              callback(new Error("The data in moreInformation is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of moreInformationVersion:" + err.message));
+                    }else{
+                      var prev = doc.moreInformationVersion;
+                      var next = more_information_version.moreInformationVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        more_information_version.id_record=id_rc;
+                        more_information_version.version=lenmoreInformation+1;
+                        callback(null, more_information_version);
+                      }else{
+                        callback(new Error("The data in moreInformationVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   more_information_version.id_record=id_rc;
-                      more_information_version.version=1;
-                      callback(null, more_information_version);
+                  more_information_version.version=1;
+                  console.log("!!");
+                  callback(null, more_information_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(more_information_version, callback){ 
@@ -74,7 +76,7 @@ function postMoreInformation(req, res) {
                 });
             },
             function(more_information_version, callback){ 
-                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformation": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));
                   }else{
@@ -112,7 +114,7 @@ function getMoreInformation(req, res) {
     var id_rc = req.swagger.params.id.value;
     var version = req.swagger.params.version.value;
 
-    MoreInformation.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
+    MoreInformationVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
               winston.error("message: " + err );
               res.status(400);
@@ -122,8 +124,8 @@ function getMoreInformation(req, res) {
                 res.json(elementVer);
               }else{
                 res.status(400);
-                winston.error("message: Doesn't exist a MoreInformation with id_record " + id_rc+" and version: "+version );
-                res.json({message: "Doesn't exist a MoreInformation with id_record: "+id_rc+" and version: "+version});
+                winston.error("message: Doesn't exist a MoreInformationVersion with id_record " + id_rc+" and version: "+version );
+                res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc+" and version: "+version});
               }
             }
     });
@@ -218,12 +220,12 @@ function getLastAcceptedMoreInformation(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer){
+      if(elementVer.length !== 0){
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
         res.status(400);
-        res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc});
+        res.json({message: "Doesn't exist an accepted MoreInformationVersion with id_record: "+id_rc});
       }
     }
   });

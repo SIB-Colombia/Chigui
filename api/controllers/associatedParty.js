@@ -42,7 +42,7 @@ function postAssociatedParty(req, res) {
                   AssociatedPartyVersion.findById(idLast , function (err, doc){
                     if(err){
                             callback(new Error("failed getting the last version of associatedPartyVersion:" + err.message));
-                        }else{
+                        }else if(doc){
                           var prev = doc.associatedParty;
                             var next = associated_party_version.associatedParty;
                             //if(!compare.isEqual(prev,next)){ //TODO
@@ -53,6 +53,8 @@ function postAssociatedParty(req, res) {
                             }else{
                               callback(new Error("The data in associatedParty is equal to last version of this element in the database"));
                             }
+                        }else{
+                          callback(new Error("An _id was registered for the Record, but the corresponding AssociatedPartyVersion wasn't created"));
                         }
                   });
                 }else{

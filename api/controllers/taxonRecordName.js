@@ -43,8 +43,8 @@ function postTaxonRecordName(req, res) {
         					TaxonRecordNameVersion.findById(idLast , function (err, doc){
         						if(err){
                   					callback(new Error("failed getting the last version of taxonRecordNameVersion:" + err.message));
-                				}else{
-                					var prev = doc.taxonRecordName;
+                				}else if(doc){
+                					  var prev = doc.taxonRecordName;
                   					var next = taxon_record_name_version.taxonRecordName;
                   					//if(!compare.isEqual(prev,next)){ //TODO
                   					if(true){
@@ -54,7 +54,9 @@ function postTaxonRecordName(req, res) {
                   					}else{
                   						callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
                   					}
-                				}
+                				}else{
+                          callback(new Error("An _id was registered for the Record, but the corresponding TaxonRecordNameVersion wasn't created"));
+                        }
         					});
         				}else{
         					taxon_record_name_version.id_record=id_rc;
@@ -199,7 +201,7 @@ function getLastAcceptedTaxonRecordName(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer){
+      if(elementVer.length !== 0){
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
