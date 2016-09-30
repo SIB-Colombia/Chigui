@@ -2542,6 +2542,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/brief_description:
+    x-swagger-router-controller: briefDescription
+    get: 
+      description: Returns a list of BriefDescription version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewBriefDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BriefDescriptionVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/brief_description:
+    x-swagger-router-controller: briefDescription
+    get: 
+      description: Returns the briefDescription version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedBriefDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BriefDescriptionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/brief_description/{version}:
+    x-swagger-router-controller: briefDescription
+    put: 
+      description: Update a BriefDescriptionVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedBriefDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/ancillary_data/{version}:
     x-swagger-router-controller: ancillaryData
     get: 
@@ -2959,6 +3040,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/HierarchyVersion'
+          
+  BriefDescriptionVersionList:
+    properties:
+      briefDescriptionList:
+        type: array
+        items:
+          $ref: '#/definitions/BriefDescriptionVersion'
   
   TaxonRecordNameVersion:
     required:

@@ -36,37 +36,35 @@ function postTaxonRecordName(req, res) {
           			});
         		},
         		function(data,callback){
-        			if(data){
-        				var lentaxonRecordName = data.taxonRecordNameVersion.length;
-        				if( lentaxonRecordName !=0 ){
-        					var idLast = data.taxonRecordNameVersion[lentaxonRecordName-1];
-        					TaxonRecordNameVersion.findById(idLast , function (err, doc){
-        						if(err){
-                  					callback(new Error("failed getting the last version of taxonRecordNameVersion:" + err.message));
-                				}else if(doc){
-                					  var prev = doc.taxonRecordName;
-                  					var next = taxon_record_name_version.taxonRecordName;
-                  					//if(!compare.isEqual(prev,next)){ //TODO
-                  					if(true){
-                  						taxon_record_name_version.id_record=id_rc;
-                    					taxon_record_name_version.version=lentaxonRecordName+1;
-                    					callback(null, taxon_record_name_version);
-                  					}else{
-                  						callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
-                  					}
-                				}else{
-                          callback(new Error("An _id was registered for the Record, but the corresponding TaxonRecordNameVersion wasn't created"));
-                        }
-        					});
-        				}else{
-        					taxon_record_name_version.id_record=id_rc;
-              				taxon_record_name_version.version=1;
-              				callback(null, taxon_record_name_version);
-        				}
-        			}else{
-          				callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
-        			}
-        		},
+              if(data){
+                if(data.taxonRecordNameVersion && data.taxonRecordNameVersion.length !=0){
+                  var lentaxonRecordName = data.taxonRecordNameVersion.length;
+                  var idLast = data.taxonRecordNameVersion[lentaxonRecordName-1];
+                  TaxonRecordNameVersion.findById(idLast , function (err, doc){
+                    if(err){
+                      callback(new Error("failed getting the last version of taxonRecordNameVersion:" + err.message));
+                    }else{
+                      var prev = doc.taxonRecordNameVersion;
+                      var next = taxon_record_name_version.taxonRecordNameVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        taxon_record_name_version.id_record=id_rc;
+                        taxon_record_name_version.version=lentaxonRecordName+1;
+                        callback(null, taxon_record_name_version);
+                      }else{
+                        callback(new Error("The data in TaxonRecordNameVersion is equal to last version of this element in the database"));
+                      }
+                    }
+                  });
+                }else{
+                  taxon_record_name_version.id_record=id_rc;
+                  taxon_record_name_version.version=1;
+                  callback(null, taxon_record_name_version);
+                }
+              }else{
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+              }
+            },
         		function(taxon_record_name_version, callback){ 
           			ver = taxon_record_name_version.version;
           			taxon_record_name_version.save(function(err){

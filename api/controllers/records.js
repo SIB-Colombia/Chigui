@@ -79,7 +79,7 @@ function lastRecord(req, res) {
       var lenLifFor= record.lifeFormVersion.length; 
       var lenIdeKey= record.identificationKeysVersion.length;
       var lenFulDes= record.fullDescriptionVersion.length;
-      var lenBrfDes= record.briefDescriptionVersion.length;
+      //var lenBrfDes= record.briefDescriptionVersion.length;
       var lenAbs= record.abstractVersion.length;
       //var lenHie= record.hierarchyVersion.length;
       var lenRep= record.reproductionVersion.length; 
@@ -228,7 +228,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          BriefDescriptionVersion.findOne({ id_record : id_rc, version: lenBrfDes }).exec(function (err, elementVer) {
+          BriefDescriptionVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get BriefDescription element for the record with id: "+id_rc+" : " + err.message));
             }else{

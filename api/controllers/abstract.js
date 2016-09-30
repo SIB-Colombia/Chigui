@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import AbstractVersion from '../models/abstract.js';
 import add_objects from '../models/additionalModels.js';
 
