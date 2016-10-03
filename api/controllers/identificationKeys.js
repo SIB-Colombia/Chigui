@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import IdentificationKeysVersion from '../models/identificationKeys.js';
 import add_objects from '../models/additionalModels.js';
 
@@ -8,6 +9,7 @@ function postIdentificationKeys(req, res) {
   var identification_keys_version  = req.body; 
     identification_keys_version._id = mongoose.Types.ObjectId();
     identification_keys_version.created=Date();
+    identification_keys_version.state="to_review";
     identification_keys_version.element="identificationKeys";
     var elementValue = identification_keys_version.identificationKeys;
     identification_keys_version = new IdentificationKeysVersion(identification_keys_version);
@@ -33,32 +35,32 @@ function postIdentificationKeys(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenidentificationKeys = data.identificationKeysVersion.length;
-                if( lenidentificationKeys !=0 ){
+                if(data.identificationKeysVersion && data.identificationKeysVersion.length !=0){
+                  var lenidentificationKeys = data.identificationKeysVersion.length;
                   var idLast = data.identificationKeysVersion[lenidentificationKeys-1];
                   IdentificationKeysVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of identificationKeysVersion:" + err.message));
-                        }else{
-                          var prev = doc.identificationKeys;
-                            var next = identification_keys_version.identificationKeys;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              identification_keys_version.id_record=id_rc;
-                              identification_keys_version.version=lenidentificationKeys+1;
-                              callback(null, identification_keys_version);
-                            }else{
-                              callback(new Error("The data in identificationKeys is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of identificationKeysVersion:" + err.message));
+                    }else{
+                      var prev = doc.identificationKeysVersion;
+                      var next = identification_keys_version.identificationKeysVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        identification_keys_version.id_record=id_rc;
+                        identification_keys_version.version=lenidentificationKeys+1;
+                        callback(null, identification_keys_version);
+                      }else{
+                        callback(new Error("The data in identificationKeysVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   identification_keys_version.id_record=id_rc;
-                      identification_keys_version.version=1;
-                      callback(null, identification_keys_version);
+                  identification_keys_version.version=1;
+                  callback(null, identification_keys_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(identification_keys_version, callback){ 
@@ -84,21 +86,22 @@ function postIdentificationKeys(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save IdentificationKeysVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save IdentificationKeysVersion', element: 'identificationKeys', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -111,12 +114,14 @@ function getIdentificationKeys(req, res) {
 
     IdentificationKeysVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                winston.error("message: Doesn't exist a AbstractVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a IdentificationKeysVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -126,7 +131,108 @@ function getIdentificationKeys(req, res) {
 }
 
 
+function setAcceptedIdentificationKeys(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        IdentificationKeysVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a IdentificationKeysVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        IdentificationKeysVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        IdentificationKeysVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated IdentificationKeysVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated IdentificationKeysVersion to accepted', element: 'identificationKeys', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewIdentificationKeys(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  IdentificationKeysVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of IdentificationKeysVersion with state to_review, function getToReviewIdentificationKeys');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a IdentificationKeysVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedIdentificationKeys(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  IdentificationKeysVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+    winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer.length !== 0){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a IdentificationKeysVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postIdentificationKeys,
-  getIdentificationKeys
+  getIdentificationKeys,
+  setAcceptedIdentificationKeys,
+  getToReviewIdentificationKeys,
+  getLastAcceptedIdentificationKeys
 };

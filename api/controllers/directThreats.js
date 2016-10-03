@@ -36,32 +36,32 @@ function postDirectThreats(req, res) {
             },
             function(data,callback){
               if(data){
-                var lendirectThreats = data.directThreatsVersion.length;
-                if( lendirectThreats !=0 ){
+                if(data.directThreatsVersion && data.directThreatsVersion.length !=0){
+                  var lendirectThreats = data.directThreatsVersion.length;
                   var idLast = data.directThreatsVersion[lendirectThreats-1];
                   DirectThreatsVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of directThreatsVersion:" + err.message));
-                        }else{
-                          var prev = doc.directThreats;
-                            var next = direct_threats_version.directThreats;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              direct_threats_version.id_record=id_rc;
-                              direct_threats_version.version=lendirectThreats+1;
-                              callback(null, direct_threats_version);
-                            }else{
-                              callback(new Error("The data in directThreats is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of directThreatsVersion:" + err.message));
+                    }else{
+                      var prev = doc.directThreatsVersion;
+                      var next = direct_threats_version.directThreatsVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        direct_threats_version.id_record=id_rc;
+                        direct_threats_version.version=lendirectThreats+1;
+                        callback(null, direct_threats_version);
+                      }else{
+                        callback(new Error("The data in directThreatsVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   direct_threats_version.id_record=id_rc;
-                      direct_threats_version.version=1;
-                      callback(null, direct_threats_version);
+                  direct_threats_version.version=1;
+                  callback(null, direct_threats_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(direct_threats_version, callback){ 

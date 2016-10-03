@@ -76,11 +76,11 @@ function lastRecord(req, res) {
       //var lenSyAt=record.synonymsAtomizedVersion.length;
       //var lenTaxRecNam=record.taxonRecordNameVersion.length;
       var lenLifCyc= record.lifeCycleVersion.length;
-      var lenLifFor= record.lifeFormVersion.length; 
-      var lenIdeKey= record.identificationKeysVersion.length;
+      //var lenLifFor= record.lifeFormVersion.length; 
+      //var lenIdeKey= record.identificationKeysVersion.length;
       var lenFulDes= record.fullDescriptionVersion.length;
       //var lenBrfDes= record.briefDescriptionVersion.length;
-      var lenAbs= record.abstractVersion.length;
+      //var lenAbs= record.abstractVersion.length;
       //var lenHie= record.hierarchyVersion.length;
       var lenRep= record.reproductionVersion.length; 
       var lenAnnCyc= record.annualCyclesVersion.length;
@@ -192,7 +192,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          LifeFormVersion.findOne({ id_record : id_rc, version: lenLifFor }).exec(function (err, elementVer) {
+          LifeFormVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get LifeForm element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -204,7 +204,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          IdentificationKeysVersion.findOne({ id_record : id_rc, version: lenIdeKey }).exec(function (err, elementVer) {
+          IdentificationKeysVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get IdentificationKeys element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -216,7 +216,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          FullDescriptionVersion.findOne({ id_record : id_rc, version: lenFulDes }).exec(function (err, elementVer) {
+          FullDescriptionVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get FullDescription element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -240,7 +240,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          AbstractVersion.findOne({ id_record : id_rc, version: lenAbs }).exec(function (err, elementVer) {
+          AbstractVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Abstract element for the record with id: "+id_rc+" : " + err.message));
             }else{

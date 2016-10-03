@@ -9,6 +9,7 @@ function postBriefDescription(req, res) {
   var brief_description_version  = req.body; 
     brief_description_version._id = mongoose.Types.ObjectId();
     brief_description_version.created=Date();
+    brief_description_version.state="to_review";
     brief_description_version.element="briefDescription";
     var elementValue = brief_description_version.briefDescription;
     brief_description_version = new BriefDescription(brief_description_version);
@@ -120,8 +121,8 @@ function getBriefDescription(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                res.status(400);
                 winston.error("message: Doesn't exist a BriefDescriptionVersion with id_record " + id_rc+" and version: "+version );
+                res.status(400);
                 res.json({message: "Doesn't exist a BriefDescription with id_record: "+id_rc+" and version: "+version});
               }
             }

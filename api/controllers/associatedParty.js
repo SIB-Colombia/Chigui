@@ -36,34 +36,32 @@ function postAssociatedParty(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenassociatedParty = data.associatedPartyVersion.length;
-                if( lenassociatedParty !=0 ){
+                if(data.associatedPartyVersion && data.associatedPartyVersion.length !=0){
+                  var lenassociatedParty = data.associatedPartyVersion.length;
                   var idLast = data.associatedPartyVersion[lenassociatedParty-1];
                   AssociatedPartyVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of associatedPartyVersion:" + err.message));
-                        }else if(doc){
-                          var prev = doc.associatedParty;
-                            var next = associated_party_version.associatedParty;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              associated_party_version.id_record=id_rc;
-                              associated_party_version.version=lenassociatedParty+1;
-                              callback(null, associated_party_version);
-                            }else{
-                              callback(new Error("The data in associatedParty is equal to last version of this element in the database"));
-                            }
-                        }else{
-                          callback(new Error("An _id was registered for the Record, but the corresponding AssociatedPartyVersion wasn't created"));
-                        }
+                      callback(new Error("failed getting the last version of associatedPartyVersion:" + err.message));
+                    }else{
+                      var prev = doc.associatedPartyVersion;
+                      var next = associated_party_version.associatedPartyVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        associated_party_version.id_record=id_rc;
+                        associated_party_version.version=lenassociatedParty+1;
+                        callback(null, associated_party_version);
+                      }else{
+                        callback(new Error("The data in associatedPartyVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   associated_party_version.id_record=id_rc;
-                      associated_party_version.version=1;
-                      callback(null, associated_party_version);
+                  associated_party_version.version=1;
+                  callback(null, associated_party_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(associated_party_version, callback){ 

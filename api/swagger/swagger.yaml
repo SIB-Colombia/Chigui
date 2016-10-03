@@ -733,6 +733,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/life_form:
+    x-swagger-router-controller: lifeForm
+    get: 
+      description: Returns a list of LifeForm version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewLifeForm
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeFormVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/life_form:
+    x-swagger-router-controller: lifeForm
+    get: 
+      description: Returns the lifeForm version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedLifeForm
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeFormVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/life_form/{version}:
+    x-swagger-router-controller: lifeForm
+    put: 
+      description: Update a LifeFormVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedLifeForm
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/identification_keys/{version}:
     x-swagger-router-controller: identificationKeys
     get: 
@@ -789,7 +870,88 @@ paths:
         "400":
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"          
+            $ref: "#/definitions/ErrorResponse"     
+            
+  /records/to_review/{id}/identification_keys:
+    x-swagger-router-controller: identificationKeys
+    get: 
+      description: Returns a list of IdentificationKeys version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewIdentificationKeys
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/IdentificationKeysVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/identification_keys:
+    x-swagger-router-controller: identificationKeys
+    get: 
+      description: Returns the identificationKeys version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedIdentificationKeys
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/IdentificationKeysVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/identification_keys/{version}:
+    x-swagger-router-controller: identificationKeys
+    put: 
+      description: Update a IdentificationKeysVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedIdentificationKeys
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /records/{id}/full_description/{version}:
     x-swagger-router-controller: fullDescription
@@ -847,7 +1009,89 @@ paths:
         "400":
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"          
+            $ref: "#/definitions/ErrorResponse"   
+            
+  /records/to_review/{id}/full_description:
+    x-swagger-router-controller: fullDescription
+    get: 
+      description: Returns a list of FullDescription version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewFullDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FullDescriptionVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/full_description:
+    x-swagger-router-controller: fullDescription
+    get: 
+      description: Returns the fullDescription version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedFullDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FullDescriptionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/full_description/{version}:
+    x-swagger-router-controller: fullDescription
+    put: 
+      description: Update a FullDescriptionVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedFullDescription
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"    
+            
   /records/{id}/abstract/{version}:
     x-swagger-router-controller: abstract
     get: 
@@ -905,6 +1149,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"  
+            
+  /records/to_review/{id}/abstract:
+    x-swagger-router-controller: abstract
+    get: 
+      description: Returns a list of Abstract version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewAbstract
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AbstractVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/abstract:
+    x-swagger-router-controller: abstract
+    get: 
+      description: Returns the abstract version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedAbstract
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AbstractVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/abstract/{version}:
+    x-swagger-router-controller: abstract
+    put: 
+      description: Update a AbstractVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedAbstract
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /records/{id}/hierarchy/{version}:
     x-swagger-router-controller: hierarchy
@@ -3047,6 +3372,34 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/BriefDescriptionVersion'
+          
+  AbstractVersionList:
+    properties:
+      abstractList:
+        type: array
+        items:
+          $ref: '#/definitions/AbstractVersion'
+          
+  FullDescriptionVersionList:
+    properties:
+      fullDescriptionList:
+        type: array
+        items:
+          $ref: '#/definitions/FullDescriptionVersion'
+          
+  IdentificationKeysVersionList:
+    properties:
+      identificationKeysList:
+        type: array
+        items:
+          $ref: '#/definitions/IdentificationKeysVersion'
+          
+  LifeFormVersionList:
+    properties:
+      lifeFormList:
+        type: array
+        items:
+          $ref: '#/definitions/LifeFormVersion'
   
   TaxonRecordNameVersion:
     required:

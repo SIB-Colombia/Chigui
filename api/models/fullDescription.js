@@ -20,6 +20,6 @@ var FullDescription = Element.extend({
 
 var FullDescriptionVersion = ElementVersion.extend({
 	fullDescription : FullDescription
-},{ collection: 'FullDescription', versionKey: false });
+},{ collection: 'FullDescriptionVersion', versionKey: false });
 
 module.exports = mongoose.model('FullDescriptionVersion', FullDescriptionVersion );
