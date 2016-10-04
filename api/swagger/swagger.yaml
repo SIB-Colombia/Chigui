@@ -673,7 +673,88 @@ paths:
         "400":
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"     
+            $ref: "#/definitions/ErrorResponse"  
+            
+  /records/to_review/{id}/life_cycle:
+    x-swagger-router-controller: lifeCycle
+    get: 
+      description: Returns a list of LifeCycle version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewLifeCycle
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeCycleVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/life_cycle:
+    x-swagger-router-controller: lifeCycle
+    get: 
+      description: Returns the lifeCycle version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedLifeCycle
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LifeCycleVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/life_cycle/{version}:
+    x-swagger-router-controller: lifeCycle
+    put: 
+      description: Update a LifeCycleVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedLifeCycle
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /records/{id}/life_form/{version}:
     x-swagger-router-controller: lifeForm
@@ -1428,6 +1509,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/reproduction:
+    x-swagger-router-controller: reproduction
+    get: 
+      description: Returns a list of Reproduction version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewReproduction
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReproductionVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/reproduction:
+    x-swagger-router-controller: reproduction
+    get: 
+      description: Returns the reproduction version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedReproduction
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReproductionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/reproduction/{version}:
+    x-swagger-router-controller: reproduction
+    put: 
+      description: Update a ReproductionVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedReproduction
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/annual_cycles/{version}:
     x-swagger-router-controller: annualCycles
     get: 
@@ -1480,6 +1642,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/annual_cycles:
+    x-swagger-router-controller: annualCycles
+    get: 
+      description: Returns a list of AnnualCycles version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewAnnualCycles
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AnnualCyclesVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/annual_cycles:
+    x-swagger-router-controller: annualCycles
+    get: 
+      description: Returns the annualCycles version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedAnnualCycles
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AnnualCyclesVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/annual_cycles/{version}:
+    x-swagger-router-controller: annualCycles
+    put: 
+      description: Update a AnnualCyclesVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedAnnualCycles
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -3400,6 +3643,27 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/LifeFormVersion'
+          
+  LifeCycleVersionList:
+    properties:
+      lifeCycleList:
+        type: array
+        items:
+          $ref: '#/definitions/LifeCycleVersion'
+          
+  ReproductionVersionList:
+    properties:
+      reproductionList:
+        type: array
+        items:
+          $ref: '#/definitions/ReproductionVersion'
+          
+  AnnualCyclesVersionList:
+    properties:
+      annualCyclesList:
+        type: array
+        items:
+          $ref: '#/definitions/AnnualCyclesVersion'
   
   TaxonRecordNameVersion:
     required:

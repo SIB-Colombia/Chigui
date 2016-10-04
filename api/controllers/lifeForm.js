@@ -9,6 +9,7 @@ function postLifeForm(req, res) {
   var life_form  = req.body; 
     life_form._id = mongoose.Types.ObjectId();
     life_form.created=Date();
+    life_form.state="to_review";
     life_form.element="lifeForm";
     var elementValue = life_form.lifeForm;
     life_form = new LifeFormVersion(life_form);
@@ -42,21 +43,21 @@ function postLifeForm(req, res) {
                       callback(new Error("failed getting the last version of lifeFormVersion:" + err.message));
                     }else{
                       var prev = doc.lifeFormVersion;
-                      var next = life_form_version.lifeFormVersion;
+                      var next = life_form.lifeFormVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
-                        life_form_version.id_record=id_rc;
-                        life_form_version.version=lenlifeForm+1;
-                        callback(null, life_form_version);
+                        life_form.id_record=id_rc;
+                        life_form.version=lenlifeForm+1;
+                        callback(null, life_form);
                       }else{
                         callback(new Error("The data in lifeFormVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
                 }else{
-                  life_form_version.id_record=id_rc;
-                  life_form_version.version=1;
-                  callback(null, life_form_version);
+                  life_form.id_record=id_rc;
+                  life_form.version=1;
+                  callback(null, life_form);
                 }
               }else{
                 callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
@@ -120,7 +121,7 @@ function getLifeForm(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a AbstractVersion with id_record " + id_rc+" and version: "+version );
+                winston.error("message: Doesn't exist a LifeFormVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a LifeFormVersion with id_record: "+id_rc+" and version: "+version});
               }

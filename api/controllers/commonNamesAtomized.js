@@ -35,32 +35,32 @@ function postCommonNamesAtomized(req, res) {
             },
             function(data,callback){
               if(data){
-                var lencommonNamesAtomized = data.commonNamesAtomizedVersion.length;
-                if( lencommonNamesAtomized !=0 ){
+                if(data.commonNamesAtomizedVersion && data.commonNamesAtomizedVersion.length !=0){
+                  var lencommonNamesAtomized = data.commonNamesAtomizedVersion.length;
                   var idLast = data.commonNamesAtomizedVersion[lencommonNamesAtomized-1];
                   CommonNamesAtomizedVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of commonNamesAtomizedVersion:" + err.message));
-                        }else{
-                          var prev = doc.commonNamesAtomized;
-                            var next = common_names_atomized.commonNamesAtomized;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              common_names_atomized.id_record=id_rc;
-                              common_names_atomized.version=lencommonNamesAtomized+1;
-                              callback(null, common_names_atomized);
-                            }else{
-                              callback(new Error("The data in commonNamesAtomized is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of CommonNamesAtomizedVersion:" + err.message));
+                    }else{
+                      var prev = doc.commonNamesAtomizedVersion;
+                      var next = common_names_atomized.commonNamesAtomizedVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        common_names_atomized.id_record=id_rc;
+                        common_names_atomized.version=lencommonNamesAtomized+1;
+                        callback(null, common_names_atomized);
+                      }else{
+                        callback(new Error("The data in CommonNamesAtomizedVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   common_names_atomized.id_record=id_rc;
-                      common_names_atomized.version=1;
-                      callback(null, common_names_atomized);
+                  common_names_atomized.version=1;
+                  callback(null, common_names_atomized);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(common_names_atomized, callback){ 

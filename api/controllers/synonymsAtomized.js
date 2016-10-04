@@ -37,32 +37,32 @@ function postSynonymsAtomized(req, res) {
             },
             function(data,callback){
               if(data){
-                var lensynonymsAtomized = data.synonymsAtomizedVersion.length;
-                if( lensynonymsAtomized !=0 ){
+                if(data.synonymsAtomizedVersion && data.synonymsAtomizedVersion.length !=0){
+                  var lensynonymsAtomized = data.synonymsAtomizedVersion.length;
                   var idLast = data.synonymsAtomizedVersion[lensynonymsAtomized-1];
                   SynonymsAtomizedVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of synonymsAtomizedVersion:" + err.message));
-                        }else{
-                          var prev = doc.synonymsAtomized;
-                            var next = synonyms_atomized.synonymsAtomized;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              synonyms_atomized.id_record=id_rc;
-                              synonyms_atomized.version=lensynonymsAtomized+1;
-                              callback(null, synonyms_atomized);
-                            }else{
-                              callback(new Error("The data in synonymsAtomized is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of synonymsAtomizedVersion:" + err.message));
+                    }else{
+                      var prev = doc.synonymsAtomizedVersion;
+                      var next = synonyms_atomized_version.synonymsAtomizedVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        synonyms_atomized_version.id_record=id_rc;
+                        synonyms_atomized_version.version=lensynonymsAtomized+1;
+                        callback(null, synonyms_atomized_version);
+                      }else{
+                        callback(new Error("The data in synonymsAtomizedVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
-                  synonyms_atomized.id_record=id_rc;
-                      synonyms_atomized.version=1;
-                      callback(null, synonyms_atomized);
+                  synonyms_atomized_version.id_record=id_rc;
+                  synonyms_atomized_version.version=1;
+                  callback(null, synonyms_atomized_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(synonyms_atomized, callback){ 

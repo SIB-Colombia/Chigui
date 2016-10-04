@@ -75,15 +75,15 @@ function lastRecord(req, res) {
       //var lenComNameAt=record.commonNamesAtomizedVersion.length;
       //var lenSyAt=record.synonymsAtomizedVersion.length;
       //var lenTaxRecNam=record.taxonRecordNameVersion.length;
-      var lenLifCyc= record.lifeCycleVersion.length;
+      //var lenLifCyc= record.lifeCycleVersion.length;
       //var lenLifFor= record.lifeFormVersion.length; 
       //var lenIdeKey= record.identificationKeysVersion.length;
-      var lenFulDes= record.fullDescriptionVersion.length;
+      //var lenFulDes= record.fullDescriptionVersion.length;
       //var lenBrfDes= record.briefDescriptionVersion.length;
       //var lenAbs= record.abstractVersion.length;
       //var lenHie= record.hierarchyVersion.length;
-      var lenRep= record.reproductionVersion.length; 
-      var lenAnnCyc= record.annualCyclesVersion.length;
+      //var lenRep= record.reproductionVersion.length; 
+      //var lenAnnCyc= record.annualCyclesVersion.length;
       var lenFed= record.feedingVersion.length;
       var lenDis= record.dispersalVersion.length;
       var lenBeh= record.behaviorVersion.length; 
@@ -180,7 +180,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          LifeCycleVersion.findOne({ id_record : id_rc, version: lenLifCyc }).exec(function (err, elementVer) {
+          LifeCycleVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get LifeCycle element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -264,7 +264,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          ReproductionVersion.findOne({ id_record : id_rc, version: lenRep }).exec(function (err, elementVer) {
+          ReproductionVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Reproduction element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -276,7 +276,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          AnnualCyclesVersion.findOne({ id_record : id_rc, version: lenAnnCyc }).exec(function (err, elementVer) {
+          AnnualCyclesVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get AnnualCycles element for the record with id: "+id_rc+" : " + err.message));
             }else{

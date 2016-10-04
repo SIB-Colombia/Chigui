@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import AnnualCyclesVersion from '../models/annualCycles.js';
 import add_objects from '../models/additionalModels.js';
 
@@ -8,6 +9,7 @@ function postAnnualCycles(req, res) {
   var annual_cycles_version  = req.body; 
     annual_cycles_version._id = mongoose.Types.ObjectId();
     annual_cycles_version.created=Date();
+    reproduction_version.state="to_review";
     annual_cycles_version.element="annualCycles";
     var elementValue = annual_cycles_version.annualCycles;
     annual_cycles_version = new AnnualCyclesVersion(annual_cycles_version);
@@ -33,32 +35,32 @@ function postAnnualCycles(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenannualCycles = data.annualCyclesVersion.length;
-                if( lenannualCycles !=0 ){
+                if(data.annualCyclesVersion && data.annualCyclesVersion.length !=0){
+                  var lenannualCycles = data.annualCyclesVersion.length;
                   var idLast = data.annualCyclesVersion[lenannualCycles-1];
                   AnnualCyclesVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of annualCyclesVersion:" + err.message));
-                        }else{
-                          var prev = doc.annualCycles;
-                            var next = annual_cycles_version.annualCycles;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              annual_cycles_version.id_record=id_rc;
-                              annual_cycles_version.version=lenannualCycles+1;
-                              callback(null, annual_cycles_version);
-                            }else{
-                              callback(new Error("The data in annualCycles is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of AnnualCyclesVersion:" + err.message));
+                    }else{
+                      var prev = doc.annualCyclesVersion;
+                      var next = annual_cycles_version.annualCyclesVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        annual_cycles_version.id_record=id_rc;
+                        annual_cycles_version.version=lenannualCycles+1;
+                        callback(null, annual_cycles_version);
+                      }else{
+                        callback(new Error("The data in AnnualCyclesVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   annual_cycles_version.id_record=id_rc;
-                      annual_cycles_version.version=1;
-                      callback(null, annual_cycles_version);
+                  annual_cycles_version.version=1;
+                  callback(null, annual_cycles_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(annual_cycles_version, callback){ 
@@ -84,21 +86,22 @@ function postAnnualCycles(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save AnnualCyclesVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save AnnualCyclesVersion', element: 'annualCycles', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -111,12 +114,14 @@ function getAnnualCycles(req, res) {
 
     AnnualCyclesVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                winston.error("message: Doesn't exist a AnnualCyclesVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a AnnualCyclesVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -126,7 +131,108 @@ function getAnnualCycles(req, res) {
 }
 
 
+function setAcceptedAnnualCycles(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        AnnualCyclesVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a AnnualCyclesVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        AnnualCyclesVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        AnnualCyclesVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated AnnualCyclesVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated AnnualCyclesVersion to accepted', element: 'annualCycles', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewAnnualCycles(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  AnnualCyclesVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of AnnualCyclesVersion with state to_review, function getToReviewAnnualCycles');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a AnnualCyclesVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedAnnualCycles(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  AnnualCyclesVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+    winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer.length !== 0){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a AnnualCyclesVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postAnnualCycles,
-  getAnnualCycles
+  getAnnualCycles,
+  setAcceptedAnnualCycles,
+  getToReviewAnnualCycles,
+  getLastAcceptedAnnualCycles
 };
