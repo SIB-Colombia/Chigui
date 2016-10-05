@@ -245,6 +245,23 @@ function getTaxonRecordName(req, res) {
     });
 }
 
+function postTaxonRecordName(req, res) {
+  var element_version  = req.body; 
+    //taxon_record_name_version._id = mongoose.Types.ObjectId();
+    //taxon_record_name_version.created=Date();
+    //taxon_record_name_version.state="to_review";
+    //taxon_record_name_version.state="accepted";
+    //var element = element_version.element;
+    //taxon_record_name_version.element="taxonRecordName";
+    //var elementValue = taxon_record_name_version.taxonRecordName;
+    //taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
+    //var id_v = taxon_record_name_version._id;
+  var id_rc = req.swagger.params.id.value;
+
+  var response = postElementVersion();
+
+}
+
 
 module.exports = {
   postTaxonRecordName,

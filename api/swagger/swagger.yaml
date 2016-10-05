@@ -198,6 +198,36 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/test/{id}/taxon_record_name:
+    x-swagger-router-controller: taxonRecordName
+    post:
+      description: Save a new version of a taxonRecordName related with the a record with the id
+      tags:
+        - element
+      operationId: postTestTaxonRecordName
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: taxonRecordNameVersion
+          description: taxonRecordNameVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaxonRecordNameVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/associated_party/{version}:
     x-swagger-router-controller: associatedParty
     get: 
@@ -2019,6 +2049,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/molecular_data:
+    x-swagger-router-controller: molecularData
+    get: 
+      description: Returns a list of MolecularData version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewMolecularData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MolecularDataVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/molecular_data:
+    x-swagger-router-controller: molecularData
+    get: 
+      description: Returns the molecularData version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedMolecularData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MolecularDataVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/molecular_data/{version}:
+    x-swagger-router-controller: molecularData
+    put: 
+      description: Update a MolecularDataVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedMolecularData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/migratory/{version}:
     x-swagger-router-controller: migratory
     get: 
@@ -3664,6 +3775,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/AnnualCyclesVersion'
+          
+  MolecularDataVersionList:
+    properties:
+      molecularDataList:
+        type: array
+        items:
+          $ref: '#/definitions/MolecularDataVersion'
   
   TaxonRecordNameVersion:
     required:

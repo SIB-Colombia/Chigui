@@ -35,32 +35,32 @@ function postAbstract(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenabstract = data.abstractVersion.length;
-                if( lenabstract !=0 ){
-                  var idLast = data.abstractVersion[lenabstract-1];
+                if(data.abstractVersion && data.abstractVersion.length !=0){
+                  var lenAbstract = data.abstractVersion.length;
+                  var idLast = data.abstractVersion[lenAbstract-1];
                   AbstractVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of abstractVersion:" + err.message));
-                        }else{
-                          var prev = doc.abstract;
-                            var next = abstract_version.abstract;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              abstract_version.id_record=id_rc;
-                              abstract_version.version=lenabstract+1;
-                              callback(null, abstract_version);
-                            }else{
-                              callback(new Error("The data in abstract is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of AbstractVersion:" + err.message));
+                    }else{
+                      var prev = doc.abstractVersion;
+                      var next = abstract_version.abstractVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        abstract_version.id_record=id_rc;
+                        abstract_version.version=lenAbstract+1;
+                        callback(null, abstract_version);
+                      }else{
+                        callback(new Error("The data in AbstractVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   abstract_version.id_record=id_rc;
-                      abstract_version.version=1;
-                      callback(null, abstract_version);
+                  abstract_version.version=1;
+                  callback(null, abstract_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(abstract_version, callback){ 

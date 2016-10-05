@@ -36,34 +36,32 @@ function postHierarchy(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenhierarchy = data.hierarchyVersion.length;
-                if( lenhierarchy !=0 ){
-                  var idLast = data.hierarchyVersion[lenhierarchy-1];
+                if(data.hierarchyVersion && data.hierarchyVersion.length !=0){
+                  var lenHierarchy = data.hierarchyVersion.length;
+                  var idLast = data.hierarchyVersion[lenHierarchy-1];
                   HierarchyVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of hierarchyVersion:" + err.message));
-                        }else if(doc){
-                          var prev = doc.hierarchy;
-                            var next = hierarchy_version.hierarchy;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              hierarchy_version.id_record=id_rc;
-                              hierarchy_version.version=lenhierarchy+1;
-                              callback(null, hierarchy_version);
-                            }else{
-                              callback(new Error("The data in hierarchy is equal to last version of this element in the database"));
-                            }
-                        }else{
-                          callback(new Error("An _id was registered for the Record, but the corresponding HierarchyVersion wasn't created"));
-                        }
+                      callback(new Error("failed getting the last version of HierarchyVersion:" + err.message));
+                    }else{
+                      var prev = doc.hierarchyVersion;
+                      var next = hierarchy_version.hierarchyVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        hierarchy_version.id_record=id_rc;
+                        hierarchy_version.version=lenHierarchy+1;
+                        callback(null, hierarchy_version);
+                      }else{
+                        callback(new Error("The data in HierarchyVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   hierarchy_version.id_record=id_rc;
-                      hierarchy_version.version=1;
-                      callback(null, hierarchy_version);
+                  hierarchy_version.version=1;
+                  callback(null, hierarchy_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(hierarchy_version, callback){ 

@@ -88,13 +88,13 @@ function lastRecord(req, res) {
       var lenDis= record.dispersalVersion.length;
       var lenBeh= record.behaviorVersion.length; 
       var lenInt=record.interactionsVersion.length;
-      var lenMolDat=record.molecularDataVersion.length; 
+      //var lenMolDat=record.molecularDataVersion.length; 
       var lenMig = record.migratoryVersion.length; 
       var lenHab = record.habitatsVersion.length; 
       var lenDistr = record.distributionVersion.length; 
       var lenTerr = record.territoryVersion.length; 
       var lenPopBio = record.populationBiologyVersion.length; 
-      //var lenMorInf = record.moreInformationVersion.length; 
+      var lenMorInf = record.moreInformationVersion.length; 
       var lenThrSta = record.threatStatusVersion.length; 
       var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
@@ -336,7 +336,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          MolecularDataVersion.findOne({ id_record : id_rc, version: lenMolDat }).exec(function (err, elementVer) {
+          MolecularDataVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get MolecularData element for the record with id: "+id_rc+" : " + err.message));
             }else{
