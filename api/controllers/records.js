@@ -89,7 +89,7 @@ function lastRecord(req, res) {
       var lenBeh= record.behaviorVersion.length; 
       var lenInt=record.interactionsVersion.length;
       //var lenMolDat=record.molecularDataVersion.length; 
-      var lenMig = record.migratoryVersion.length; 
+      //var lenMig = record.migratoryVersion.length; 
       var lenHab = record.habitatsVersion.length; 
       var lenDistr = record.distributionVersion.length; 
       var lenTerr = record.territoryVersion.length; 
@@ -348,7 +348,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          MigratoryVersion.findOne({ id_record : id_rc, version: lenMig }).exec(function (err, elementVer) {
+          MigratoryVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Migratory element for the record with id: "+id_rc+" : " + err.message));
             }else{

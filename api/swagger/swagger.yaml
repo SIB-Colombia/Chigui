@@ -2187,6 +2187,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"   
+          
+  /records/to_review/{id}/migratory:
+    x-swagger-router-controller: migratory
+    get: 
+      description: Returns a list of Migratory version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewMigratory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MigratoryVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/migratory:
+    x-swagger-router-controller: migratory
+    get: 
+      description: Returns the migratory version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedMigratory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MigratoryVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/migratory/{version}:
+    x-swagger-router-controller: migratory
+    put: 
+      description: Update a MigratoryVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedMigratory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /records/{id}/habitats/{version}:
     x-swagger-router-controller: habitats
@@ -2965,6 +3046,88 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/ecological_significance:
+    x-swagger-router-controller: ecologicalSignificance
+    get: 
+      description: Returns a list of EcologicalSignificance version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewEcologicalSignificance
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EcologicalSignificanceVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/ecological_significance:
+    x-swagger-router-controller: ecologicalSignificance
+    get: 
+      description: Returns the ecologicalSignificance version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedEcologicalSignificance
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EcologicalSignificanceVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/ecological_significance/{version}:
+    x-swagger-router-controller: ecologicalSignificance
+    put: 
+      description: Update a EcologicalSignificanceVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedEcologicalSignificance
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+			
             
   /records/{id}/invasiveness/{version}:
     x-swagger-router-controller: invasiveness
@@ -3782,6 +3945,20 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/MolecularDataVersion'
+          
+  MigratoryVersionList:
+    properties:
+      migratoryList:
+        type: array
+        items:
+          $ref: '#/definitions/MigratoryVersion'
+          
+  EcologicalSignificanceVersionList:
+    properties:
+      ecologicalSignificanceList:
+        type: array
+        items:
+          $ref: '#/definitions/EcologicalSignificanceVersion'
   
   TaxonRecordNameVersion:
     required:

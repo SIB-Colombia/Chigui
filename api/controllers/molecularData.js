@@ -121,7 +121,7 @@ function getMolecularData(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a AnnualCyclesVersion with id_record " + id_rc+" and version: "+version );
+                winston.error("message: Doesn't exist a MolecularDataVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a MolecularDataVersion with id_record: "+id_rc+" and version: "+version});
               }

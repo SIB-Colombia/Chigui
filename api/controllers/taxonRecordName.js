@@ -3,6 +3,7 @@ import async from 'async';
 import winston from 'winston';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import add_objects from '../models/additionalModels.js';
+import generalController from './generalController.js';
 
 winston.add(winston.transports.File, { filename: 'chigui.log' });
 
@@ -245,7 +246,7 @@ function getTaxonRecordName(req, res) {
     });
 }
 
-function postTaxonRecordName(req, res) {
+function postTestTaxonRecordName(req, res) {
   var element_version  = req.body; 
     //taxon_record_name_version._id = mongoose.Types.ObjectId();
     //taxon_record_name_version.created=Date();
@@ -258,7 +259,10 @@ function postTaxonRecordName(req, res) {
     //var id_v = taxon_record_name_version._id;
   var id_rc = req.swagger.params.id.value;
 
-  var response = postElementVersion();
+
+
+  var response = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
+  console.log(response);
 
 }
 
@@ -268,5 +272,6 @@ module.exports = {
   getTaxonRecordName,
   setAcceptedTaxonRecordName,
   getToReviewTaxonRecordName,
-  getLastAcceptedTaxonRecordName
+  getLastAcceptedTaxonRecordName,
+  postTestTaxonRecordName
 };
