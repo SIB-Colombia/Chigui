@@ -58,9 +58,9 @@ function postElementVersion(Element_model, element_version, id_rc) {
                     				if(err){
                       					callback(new Error("failed getting the last version of"+ element_text_up +":" + err.message));
                     				}else{
-                    					/*
-                      					var prev = doc[element_text_version];
-                      					var next = element_version[element_text_version];
+                    				
+                      					//var prev = doc[element_text_version];
+                      					//ar next = element_version[element_text_version];
                       					//if(!compare.isEqual(prev,next)){ //TODO
                       					if(true){
                         					element_version.id_record = id_rc;
@@ -69,9 +69,10 @@ function postElementVersion(Element_model, element_version, id_rc) {
                       					}else{
                         					callback(new Error("The data in "+ element_text_version +" is equal to last version of this element in the database"));
                       					}
-                      					*/
+                      					/*
                       					var next = element_version[element_text_version];
                       					callback(null, element_version);
+                      					*/
                     				}
                   				});
                 			}else{
@@ -85,6 +86,7 @@ function postElementVersion(Element_model, element_version, id_rc) {
             		},
             		function(element_version, callback){ 
           				ver = element_version.version;
+          				console.log("version: "+ver);
           				element_version.save(function(err){
             				if(err){
               					callback(new Error("failed saving the element version:" + err.message));
@@ -94,7 +96,9 @@ function postElementVersion(Element_model, element_version, id_rc) {
           				});
       				},
       				function(taxon_record_name_version, callback){ 
-          				add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { ""+element_text_version: id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+      					var push_val = {};
+      					push_val[element_text_version] = id_v;
+          				add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: push_val },{ safe: true, upsert: true }).exec(function (err, record) {
             				if(err){
               					callback(new Error("failed added _id to RecordVersion:" + err.message));
             				}else{
@@ -116,15 +120,18 @@ function postElementVersion(Element_model, element_version, id_rc) {
             			resr.status = 400;
             			resr.message = "Error" + err;
           			}else{
-                  		winston.info('info', 'Saved '+ element_text_up +' version: ' + ver + " for the Record: " + id_rc);
+                  		//winston.info('info', 'Saved '+ element_text_up +' version: ' + ver + " for the Record: " + id_rc);
                   		resr.message = 'Save ' + element_text_up;
                   		resr.element = element_text_version;
                   		resr.version = ver;
                   		resr._id = id_v;
                   		resr.id_record = id_rc;
+                  		resr.status = 200;
             			//res.json({ message: 'Save ' + element_text_up, element: element_text_version, version : ver, _id: id_v, id_record : id_rc });
-            			return result;
-         			 }			
+            			
+         			 }	
+         			console.log("$$$"+Object.keys(resr));	
+         			return resr; 	
         		}
   			);
   		}else{
@@ -137,6 +144,12 @@ function postElementVersion(Element_model, element_version, id_rc) {
   	  res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
+  	/*
+  	console.log("----"+resr);
+  	console.log("----"+Object.keys(resr));
+  	console.log(JSON.stringify(resr));
+  	*/
+  	//return resr;
 }
 
 module.exports = {

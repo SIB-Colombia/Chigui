@@ -102,8 +102,8 @@ function lastRecord(req, res) {
       var lenAncDat = record.ancillaryDataVersion.length;
       var lenEndAt = record.endemicAtomizedVersion.length;
       var lenRefe = record.referencesVersion.length; 
-      var lenEnv = record.environmentalEnvelopeVersion.length;
-      var lenEcol = record.ecologicalSignificanceVersion.length;
+      //var lenEnv = record.environmentalEnvelopeVersion.length;
+      //var lenEcol = record.ecologicalSignificanceVersion.length;
       var lenInva = record.invasivenessVersion.length;
       async.waterfall([
         function(callback){
@@ -504,7 +504,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          EnvironmentalEnvelopeVersion.findOne({ id_record : id_rc, version: lenEnv }).exec(function (err, elementVer) {
+          EnvironmentalEnvelopeVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get EnvironmentalEnvelope element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -516,7 +516,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          EcologicalSignificanceVersion.findOne({ id_record : id_rc, version: lenEcol}).exec(function (err, elementVer) {
+          EcologicalSignificanceVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get EcologicalSignificance element for the record with id: "+id_rc+" : " + err.message));
             }else{

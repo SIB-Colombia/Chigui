@@ -2989,6 +2989,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/environmental_envelope:
+    x-swagger-router-controller: environmentalEnvelope
+    get: 
+      description: Returns a list of EnvironmentalEnvelope version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewEnvironmentalEnvelope
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EnvironmentalEnvelopeVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/environmental_envelope:
+    x-swagger-router-controller: environmentalEnvelope
+    get: 
+      description: Returns the environmentalEnvelope version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedEnvironmentalEnvelope
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EnvironmentalEnvelopeVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/environmental_envelope/{version}:
+    x-swagger-router-controller: environmentalEnvelope
+    put: 
+      description: Update a EnvironmentalEnvelopeVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedEnvironmentalEnvelope
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/ecological_significance/{version}:
     x-swagger-router-controller: ecologicalSignificance
     get: 
@@ -3959,6 +4040,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/EcologicalSignificanceVersion'
+          
+  EnvironmentalEnvelopeVersionList:
+    properties:
+      environmentalEnvelopeList:
+        type: array
+        items:
+          $ref: '#/definitions/EnvironmentalEnvelopeVersion'
   
   TaxonRecordNameVersion:
     required:

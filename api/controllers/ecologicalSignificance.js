@@ -37,7 +37,7 @@ function postEcologicalSignificance(req, res) {
               if(data){
                 if(data.ecologicalSignificanceVersion && data.ecologicalSignificanceVersion.length !=0){
                   var lenEcologicalSignificance = data.ecologicalSignificanceVersion.length;
-                  var idLast = data.ecologicalSignificance[lenEcologicalSignificance-1];
+                  var idLast = data.ecologicalSignificanceVersion[lenEcologicalSignificance-1];
                   EcologicalSignificanceVersion.findById(idLast , function (err, doc){
                     if(err){
                       callback(new Error("failed getting the last version of EcologicalSignificanceVersion:" + err.message));
