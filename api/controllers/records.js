@@ -84,8 +84,8 @@ function lastRecord(req, res) {
       //var lenHie= record.hierarchyVersion.length;
       //var lenRep= record.reproductionVersion.length; 
       //var lenAnnCyc= record.annualCyclesVersion.length;
-      var lenFed= record.feedingVersion.length;
-      var lenDis= record.dispersalVersion.length;
+      //var lenFed= record.feedingVersion.length;
+      //var lenDis= record.dispersalVersion.length;
       var lenBeh= record.behaviorVersion.length; 
       var lenInt=record.interactionsVersion.length;
       //var lenMolDat=record.molecularDataVersion.length; 
@@ -104,7 +104,7 @@ function lastRecord(req, res) {
       var lenRefe = record.referencesVersion.length; 
       //var lenEnv = record.environmentalEnvelopeVersion.length;
       //var lenEcol = record.ecologicalSignificanceVersion.length;
-      var lenInva = record.invasivenessVersion.length;
+      //var lenInva = record.invasivenessVersion.length;
       async.waterfall([
         function(callback){
           AssociatedPartyVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
@@ -288,7 +288,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          FeedingVersion.findOne({ id_record : id_rc, version: lenFed }).exec(function (err, elementVer) {
+          FeedingVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Feeding element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -300,7 +300,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          DispersalVersion.findOne({ id_record : id_rc, version: lenDis }).exec(function (err, elementVer) {
+          DispersalVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Dispersal element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -528,7 +528,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          InvasivenessVersion.findOne({ id_record : id_rc, version: lenInva}).exec(function (err, elementVer) {
+          InvasivenessVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Invasiveness element for the record with id: "+id_rc+" : " + err.message));
             }else{

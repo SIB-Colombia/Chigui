@@ -8,17 +8,17 @@ function postElementVersion(Element_model, element_version, id_rc) {
 	element_version.created=Date();
 	element_version.state="to_review";
 	var elementName = element_version.element;
-	console.log("Element: "+element_version);
-	console.log("Element: "+Object.keys(element_version));
-	console.log(elementName);
+	//console.log("Element: "+element_version);
+	//console.log("Element: "+Object.keys(element_version));
+	//console.log(elementName);
 	//var elementValue = taxon_record_name_version.taxonRecordName;
 	var elementValue = element_version[elementName];
 
 	//taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
 	element_version = new Element_model(element_version);
 
-	console.log("Element!: "+Object.keys(element_version));
-	console.log("Element!: "+Object.keys(element_version._doc));
+	//console.log("Element!: "+Object.keys(element_version));
+	//console.log("Element!: "+Object.keys(element_version._doc));
 
 	//var id_v = taxon_record_name_version._id;
     //var id_rc = req.swagger.params.id.value;
@@ -31,8 +31,8 @@ function postElementVersion(Element_model, element_version, id_rc) {
   	var element_text_version = elementName + 'Version';
   	var element_text_up = element_text_version.charAt(0).toUpperCase() + element_text_version.slice(1);
 
-  	console.log(element_text_version);
-  	console.log(element_text_up);
+  	//console.log(element_text_version);
+  	//console.log(element_text_up);
 
   	var resr = {};
 
@@ -50,7 +50,7 @@ function postElementVersion(Element_model, element_version, id_rc) {
         			},
         			function(data,callback){
               			if(data){
-              				console.log(data[element_text_version]);
+              				//console.log(data[element_text_version]);
                 			if(data[element_text_version] && data[element_text_version].length !=0){
                   				var lenElement = data[element_text_version].length;
                   				var idLast = data[element_text_version][lenElement-1];
@@ -128,22 +128,26 @@ function postElementVersion(Element_model, element_version, id_rc) {
                   		resr.id_record = id_rc;
                   		resr.status = 200;
             			//res.json({ message: 'Save ' + element_text_up, element: element_text_version, version : ver, _id: id_v, id_record : id_rc });
-            			
-         			 }	
+            			console.log("response: "+JSON.stringify(resr));
+            			return resr;
+         			 }
+         			 /*	
          			console.log("$$$"+Object.keys(resr));	
-         			return resr; 	
+         			return resr; 
+         			*/	
         		}
   			);
   		}else{
         winston.error("message: " + "Empty data in version of the element" );
-    	res.status(400);
-    	res.json({message: "Empty data in version of the element"});
+    	//res.status(400);
+    	//res.json({message: "Empty data in version of the element"});
    		}
   	}else{
       winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
-  	  res.status(400);
-      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  	  //res.status(400);
+      //res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
+  	console.log("response: "+JSON.stringify(resr));
   	/*
   	console.log("----"+resr);
   	console.log("----"+Object.keys(resr));

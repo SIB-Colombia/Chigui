@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import FeedingVersion from '../models/feeding.js';
 import add_objects from '../models/additionalModels.js';
 
@@ -8,6 +9,7 @@ function postFeeding(req, res) {
   var feeding_version  = req.body; 
     feeding_version._id = mongoose.Types.ObjectId();
     feeding_version.created=Date();
+    feeding_version.state="to_review";
     feeding_version.element="feeding";
     var elementValue = feeding_version.feeding;
     feeding_version = new FeedingVersion(feeding_version);
@@ -33,32 +35,32 @@ function postFeeding(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenfeeding = data.feedingVersion.length;
-                if( lenfeeding !=0 ){
-                  var idLast = data.feedingVersion[lenfeeding-1];
+                if(data.feedingVersion && data.feedingVersion.length !=0){
+                  var lenFeeding = data.feedingVersion.length;
+                  var idLast = data.feedingVersion[lenFeeding-1];
                   FeedingVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of feedingVersion:" + err.message));
-                        }else{
-                          var prev = doc.feeding;
-                            var next = feeding_version.feeding;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              feeding_version.id_record=id_rc;
-                              feeding_version.version=lenfeeding+1;
-                              callback(null, feeding_version);
-                            }else{
-                              callback(new Error("The data in feeding is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of FeedingVersion:" + err.message));
+                    }else{
+                      var prev = doc.feedingVersion;
+                      var next = feeding_version.feedingVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        feeding_version.id_record=id_rc;
+                        feeding_version.version=lenFeeding+1;
+                        callback(null, feeding_version);
+                      }else{
+                        callback(new Error("The data in FeedingVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   feeding_version.id_record=id_rc;
-                      feeding_version.version=1;
-                      callback(null, feeding_version);
+                  feeding_version.version=1;
+                  callback(null, feeding_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(feeding_version, callback){ 
@@ -84,21 +86,22 @@ function postFeeding(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save FeedingVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save FeedingVersion', element: 'feeding', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -111,12 +114,14 @@ function getFeeding(req, res) {
 
     FeedingVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                winston.error("message: Doesn't exist a FeedingVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a FeedingVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -126,7 +131,108 @@ function getFeeding(req, res) {
 }
 
 
+function setAcceptedFeeding(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        FeedingVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a FeedingVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        FeedingVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        FeedingVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated FeedingVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated FeedingVersion to accepted', element: 'feeding', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewFeeding(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  FeedingVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of FeedingVersion with state to_review, function getToReviewFeeding');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a FeedingVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedFeeding(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  FeedingVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+    winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer.length !== 0){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a FeedingVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postFeeding,
-  getFeeding
+  getFeeding,
+  setAcceptedFeeding,
+  getToReviewFeeding,
+  getLastAcceptedFeeding
 };

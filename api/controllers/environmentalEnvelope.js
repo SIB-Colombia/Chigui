@@ -114,6 +114,7 @@ function getEnvironmentalEnvelope(req, res) {
 
     EnvironmentalEnvelopeVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{

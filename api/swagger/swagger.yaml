@@ -1817,6 +1817,88 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+        
+  /records/to_review/{id}/feeding:
+    x-swagger-router-controller: feeding
+    get: 
+      description: Returns a list of Feeding version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewFeeding
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FeedingVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/feeding:
+    x-swagger-router-controller: feeding
+    get: 
+      description: Returns the feeding version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedFeeding
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FeedingVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/feeding/{version}:
+    x-swagger-router-controller: feeding
+    put: 
+      description: Update a FeedingVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedFeeding
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/dispersal/{version}:
     x-swagger-router-controller: dispersal
     get: 
@@ -1869,6 +1951,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/dispersal:
+    x-swagger-router-controller: dispersal
+    get: 
+      description: Returns a list of Dispersal version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewDispersal
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DispersalVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/dispersal:
+    x-swagger-router-controller: dispersal
+    get: 
+      description: Returns the dispersal version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedDispersal
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DispersalVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/dispersal/{version}:
+    x-swagger-router-controller: dispersal
+    put: 
+      description: Update a DispersalVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedDispersal
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -3268,6 +3431,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/invasiveness:
+    x-swagger-router-controller: invasiveness
+    get: 
+      description: Returns a list of Invasiveness version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewInvasiveness
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InvasivenessVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/invasiveness:
+    x-swagger-router-controller: invasiveness
+    get: 
+      description: Returns the invasiveness version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedInvasiveness
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InvasivenessVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/invasiveness/{version}:
+    x-swagger-router-controller: invasiveness
+    put: 
+      description: Update a InvasivenessVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedInvasiveness
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/more_information/{version}:
     x-swagger-router-controller: moreInformation
     get: 
@@ -4047,6 +4291,27 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/EnvironmentalEnvelopeVersion'
+          
+  InvasivenessVersionList:
+    properties:
+      invasivenessList:
+        type: array
+        items:
+          $ref: '#/definitions/InvasivenessVersion'
+          
+  FeedingVersionList:
+    properties:
+      feedingList:
+        type: array
+        items:
+          $ref: '#/definitions/FeedingVersion'
+          
+  DispersalVersionList:
+    properties:
+      dispersalList:
+        type: array
+        items:
+          $ref: '#/definitions/DispersalVersion'
   
   TaxonRecordNameVersion:
     required:

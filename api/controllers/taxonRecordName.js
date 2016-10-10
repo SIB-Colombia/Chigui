@@ -263,22 +263,37 @@ function postTestTaxonRecordName(req, res) {
 
   //var response = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
   //console.log("***"+response);
-  console.log("***"+generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
+  //console.log("***"+generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
 
   async.waterfall([
       function(callback){ 
-        var result = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
+        var result = "-";
+        /*
+        result = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
+        //console.log("***" + generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
+        console.log("***"+result);
+        */
         callback(null, result);
-      }
+      },
+      function(result,callback){ 
+        console.log(result);
+        //result = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
+        callback(null, generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
+      },
+      function(result,callback){ 
+        console.log("*"+result);
+        callback(null, result);
+      },
     ],function(err, result) {
       if (err) {
         winston.error("message: " + err );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        res.status(result[status]);
-        delete result[status];
-        res.json(result);
+        console.log("!!"+result);
+        //res.status(result[status]);
+        //delete result[status];
+        //res.json(result);
       }      
     });
   /*
