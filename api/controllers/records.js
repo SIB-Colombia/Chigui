@@ -86,11 +86,11 @@ function lastRecord(req, res) {
       //var lenAnnCyc= record.annualCyclesVersion.length;
       //var lenFed= record.feedingVersion.length;
       //var lenDis= record.dispersalVersion.length;
-      var lenBeh= record.behaviorVersion.length; 
-      var lenInt=record.interactionsVersion.length;
+      //var lenBeh= record.behaviorVersion.length; 
+      //var lenInt=record.interactionsVersion.length;
       //var lenMolDat=record.molecularDataVersion.length; 
       //var lenMig = record.migratoryVersion.length; 
-      var lenHab = record.habitatsVersion.length; 
+      //var lenHab = record.habitatsVersion.length; 
       var lenDistr = record.distributionVersion.length; 
       var lenTerr = record.territoryVersion.length; 
       var lenPopBio = record.populationBiologyVersion.length; 
@@ -312,7 +312,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          BehaviorVersion.findOne({ id_record : id_rc, version: lenBeh }).exec(function (err, elementVer) {
+          BehaviorVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Behavior element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -324,7 +324,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          InteractionsVersion.findOne({ id_record : id_rc, version: lenInt }).exec(function (err, elementVer) {
+          InteractionsVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Interactions element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -360,7 +360,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          HabitatsVersion.findOne({ id_record : id_rc, version: lenHab }).exec(function (err, elementVer) {
+          HabitatsVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Habitats element for the record with id: "+id_rc+" : " + err.message));
             }else{

@@ -16,10 +16,6 @@ host: localhost:8000
 # basePath prefixes all resource paths
 basePath: /api/v1.5
 tags:
-  - name: registry
-    description: This API works against the SiB Colombia Registry, which makes all registered Datasets and Organizations discoverable.
-  - name: occurrence
-    description: This API works against the SiB Colombia Occurrence data store, which handles occurrence records and makes them available through the web service.
   - name: record
     description: This API works against the SiB Colombia Records data store, which store all species records registered through Mamut editor.
 schemes:
@@ -2096,6 +2092,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/behavior:
+    x-swagger-router-controller: behavior
+    get: 
+      description: Returns a list of Behavior version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewBehavior
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BehaviorVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/behavior:
+    x-swagger-router-controller: behavior
+    get: 
+      description: Returns the behavior version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedBehavior
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/BehaviorVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/behavior/{version}:
+    x-swagger-router-controller: behavior
+    put: 
+      description: Update a BehaviorVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedBehavior
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/interactions/{version}:
     x-swagger-router-controller: interactions
     get: 
@@ -2148,6 +2225,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/interactions:
+    x-swagger-router-controller: interactions
+    get: 
+      description: Returns a list of Interactions version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewInteractions
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InteractionsVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/interactions:
+    x-swagger-router-controller: interactions
+    get: 
+      description: Returns the interactions version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedInteractions
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/InteractionsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/interactions/{version}:
+    x-swagger-router-controller: interactions
+    put: 
+      description: Update a InteractionsVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedInteractions
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -2484,6 +2642,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/habitats:
+    x-swagger-router-controller: habitats
+    get: 
+      description: Returns a list of Habitats version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewHabitats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HabitatsVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/habitats:
+    x-swagger-router-controller: habitats
+    get: 
+      description: Returns the habitats version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedHabitats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HabitatsVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/habitats/{version}:
+    x-swagger-router-controller: habitats
+    put: 
+      description: Update a HabitatsVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedHabitats
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -4312,6 +4551,27 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/DispersalVersion'
+          
+  BehaviorVersionList:
+    properties:
+      behaviorList:
+        type: array
+        items:
+          $ref: '#/definitions/BehaviorVersion'
+          
+  InteractionsVersionList:
+    properties:
+      interactionsList:
+        type: array
+        items:
+          $ref: '#/definitions/InteractionsVersion'
+          
+  HabitatsVersionList:
+    properties:
+      habitatsList:
+        type: array
+        items:
+          $ref: '#/definitions/HabitatsVersion'
   
   TaxonRecordNameVersion:
     required:

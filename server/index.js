@@ -27,6 +27,8 @@ app.use(bodyParser.json({
   limit: '100kb'
 }));
 
+console.log("CONFIG: "+config);
+
 // connect to db
 db(λ => {
   // internal middleware
@@ -46,6 +48,10 @@ db(λ => {
   SwaggerExpress.create(swaggerConfig, (err, swaggerExpress) => {
     if (err) { throw err; }
 
+    console.log("Config: "+swaggerConfig);
+    console.log("Config: "+Object.keys(swaggerConfig));
+    console.log("Config!: "+swaggerConfig.appRoot);
+    console.log("Config!!: "+swaggerConfig.configDir);
     // install middleware
     swaggerExpress.register(app);
 

@@ -32,7 +32,8 @@
     "winston": "^2.2.0",
     "mongoose": "~4.2.7",
     "mongoose-schema-extend": "0.2.0",
-    "async" : "latest"
+    "async" : "latest",
+    "mongoose-unique-validator" : "latest"
   },
   "bugs": {
     "url": ""
