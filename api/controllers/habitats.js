@@ -90,6 +90,7 @@ function postHabitats(req, res) {
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save HabitatsVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save HabitatsVersion', element: 'habitats', version : ver, _id: id_v, id_record : id_rc });
                }      
             });

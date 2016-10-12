@@ -91,11 +91,11 @@ function lastRecord(req, res) {
       //var lenMolDat=record.molecularDataVersion.length; 
       //var lenMig = record.migratoryVersion.length; 
       //var lenHab = record.habitatsVersion.length; 
-      var lenDistr = record.distributionVersion.length; 
-      var lenTerr = record.territoryVersion.length; 
-      var lenPopBio = record.populationBiologyVersion.length; 
-      var lenMorInf = record.moreInformationVersion.length; 
-      var lenThrSta = record.threatStatusVersion.length; 
+      //var lenDistr = record.distributionVersion.length; 
+      //var lenTerr = record.territoryVersion.length; 
+      //var lenPopBio = record.populationBiologyVersion.length; 
+      //var lenMorInf = record.moreInformationVersion.length; 
+      //var lenThrSta = record.threatStatusVersion.length; 
       var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
       //var lenDirThr = record.directThreatsVersion.length;
@@ -372,7 +372,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          DistributionVersion.findOne({ id_record : id_rc, version: lenDistr}).exec(function (err, elementVer) {
+          DistributionVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Distribution element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -384,7 +384,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          TerritoryVersion.findOne({ id_record : id_rc, version: lenTerr }).exec(function (err, elementVer) {
+          TerritoryVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Territory element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -396,7 +396,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          PopulationBiologyVersion.findOne({ id_record : id_rc, version: lenPopBio}).exec(function (err, elementVer) {
+          PopulationBiologyVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get PopulationBiology element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -420,7 +420,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          ThreatStatusVersion.findOne({ id_record : id_rc, version: lenThrSta}).exec(function (err, elementVer) {
+          ThreatStatusVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get ThreatStatus element for the record with id: "+id_rc+" : " + err.message));
             }else{

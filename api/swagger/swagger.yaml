@@ -2787,6 +2787,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/distribution:
+    x-swagger-router-controller: distribution
+    get: 
+      description: Returns a list of Distribution version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewDistribution
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DistributionVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/distribution:
+    x-swagger-router-controller: distribution
+    get: 
+      description: Returns the distribution version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedDistribution
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DistributionVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/distribution/{version}:
+    x-swagger-router-controller: distribution
+    put: 
+      description: Update a DistributionVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedDistribution
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/territory/{version}:
     x-swagger-router-controller: territory
     get: 
@@ -2839,6 +2920,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/territory:
+    x-swagger-router-controller: territory
+    get: 
+      description: Returns a list of Territory version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewTerritory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TerritoryVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/territory:
+    x-swagger-router-controller: territory
+    get: 
+      description: Returns the territory version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedTerritory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TerritoryVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/territory/{version}:
+    x-swagger-router-controller: territory
+    put: 
+      description: Update a TerritoryVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedTerritory
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -2903,6 +3065,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/population_biology:
+    x-swagger-router-controller: populationBiology
+    get: 
+      description: Returns a list of PopulationBiology version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewPopulationBiology
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PopulationBiologyVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/population_biology:
+    x-swagger-router-controller: populationBiology
+    get: 
+      description: Returns the populationBiology version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedPopulationBiology
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PopulationBiologyVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/population_biology/{version}:
+    x-swagger-router-controller: populationBiology
+    put: 
+      description: Update a PopulationBiologyVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedPopulationBiology
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/threat_status/{version}:
     x-swagger-router-controller: threatStatus
     get: 
@@ -2955,6 +3198,87 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/to_review/{id}/threat_status:
+    x-swagger-router-controller: threatStatus
+    get: 
+      description: Returns a list of ThreatStatus version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewThreatStatus
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ThreatStatusVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/threat_status:
+    x-swagger-router-controller: threatStatus
+    get: 
+      description: Returns the threatStatus version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedThreatStatus
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ThreatStatusVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/threat_status/{version}:
+    x-swagger-router-controller: threatStatus
+    put: 
+      description: Update a ThreatStatusVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedThreatStatus
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
         # responses may fall through to errors
         "400":
           description: Error
@@ -4572,6 +4896,35 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/HabitatsVersion'
+          
+  DistributionVersionList:
+    properties:
+      distributionList:
+        type: array
+        items:
+          $ref: '#/definitions/DistributionVersion'
+          
+  TerritoryVersionList:
+    properties:
+      territoryList:
+        type: array
+        items:
+          $ref: '#/definitions/TerritoryVersion'
+          
+  PopulationBiologyVersionList:
+    properties:
+      populationBiologyList:
+        type: array
+        items:
+          $ref: '#/definitions/PopulationBiologyVersion'
+          
+  ThreatStatusVersionList:
+    properties:
+      threatStatusList:
+        type: array
+        items:
+          $ref: '#/definitions/ThreatStatusVersion'
+          
   
   TaxonRecordNameVersion:
     required:

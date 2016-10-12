@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import TerritoryVersion from '../models/territory.js';
 import add_objects from '../models/additionalModels.js';
 
@@ -8,6 +9,7 @@ function postTerritory(req, res) {
   var territory_version  = req.body; 
     territory_version._id = mongoose.Types.ObjectId();
     territory_version.created=Date();
+    territory_version.state="to_review";
     territory_version.element="territory";
     var elementValue = territory_version.territory;
     territory_version = new TerritoryVersion(territory_version);
@@ -33,32 +35,32 @@ function postTerritory(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenterritory = data.territoryVersion.length;
-                if( lenterritory !=0 ){
-                  var idLast = data.territoryVersion[lenterritory-1];
+                if(data.territoryVersion && data.territoryVersion.length !=0){
+                  var lenTerritory = data.territoryVersion.length;
+                  var idLast = data.territoryVersion[lenTerritory-1];
                   TerritoryVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of territoryVersion:" + err.message));
-                        }else{
-                          var prev = doc.territory;
-                            var next = territory_version.territory;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              territory_version.id_record=id_rc;
-                              territory_version.version=lenterritory+1;
-                              callback(null, territory_version);
-                            }else{
-                              callback(new Error("The data in territory is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of TerritoryVersion:" + err.message));
+                    }else{
+                      var prev = doc.territoryVersion;
+                      var next = territory_version.territoryVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        territory_version.id_record=id_rc;
+                        territory_version.version=lenTerritory+1;
+                        callback(null, territory_version);
+                      }else{
+                        callback(new Error("The data in TerritoryVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   territory_version.id_record=id_rc;
-                      territory_version.version=1;
-                      callback(null, territory_version);
+                  territory_version.version=1;
+                  callback(null, territory_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(territory_version, callback){ 
@@ -84,21 +86,22 @@ function postTerritory(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save TerritoryVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save TerritoryVersion', element: 'territory', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -111,12 +114,14 @@ function getTerritory(req, res) {
 
     TerritoryVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                winston.error("message: Doesn't exist a TerritoryVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a TerritoryVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -126,7 +131,108 @@ function getTerritory(req, res) {
 }
 
 
+function setAcceptedTerritory(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        TerritoryVersion.findOne({ id_record : id_rc, state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a TerritoryVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        TerritoryVersion.update({ id_record : id_rc, state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        TerritoryVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated TerritoryVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated TerritoryVersion to accepted', element: 'territory', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewTerritory(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  TerritoryVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        //var len = elementVer.length;
+        winston.info('info', 'Get list of TerritoryVersion with state to_review, function getToReviewTerritory');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a TerritoryVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedTerritory(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  TerritoryVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+    winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer.length !== 0){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a TerritoryVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postTerritory,
-  getTerritory
+  getTerritory,
+  setAcceptedTerritory,
+  getToReviewTerritory,
+  getLastAcceptedTerritory
 };
