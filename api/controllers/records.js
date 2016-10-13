@@ -96,7 +96,7 @@ function lastRecord(req, res) {
       //var lenPopBio = record.populationBiologyVersion.length; 
       //var lenMorInf = record.moreInformationVersion.length; 
       //var lenThrSta = record.threatStatusVersion.length; 
-      var lenLegs = record.legislationVersion.length;
+      //var lenLegs = record.legislationVersion.length;
       var lenUseCon = record.usesManagementAndConservationVersion.length;
       //var lenDirThr = record.directThreatsVersion.length;
       var lenAncDat = record.ancillaryDataVersion.length;
@@ -432,7 +432,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          LegislationVersion.findOne({ id_record : id_rc, version: lenLegs }).exec(function (err, elementVer) {
+          LegislationVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get Legislation element for the record with id: "+id_rc+" : " + err.message));
             }else{

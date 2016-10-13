@@ -3342,6 +3342,88 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /records/to_review/{id}/legislation:
+    x-swagger-router-controller: legislation
+    get: 
+      description: Returns a list of Legislation version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewLegislation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LegislationVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/legislation:
+    x-swagger-router-controller: legislation
+    get: 
+      description: Returns the legislation version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedLegislation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/LegislationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/legislation/{version}:
+    x-swagger-router-controller: legislation
+    put: 
+      description: Update a LegislationVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedLegislation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+                
             
   /records/{id}/uses_management_conservation/{version}:
     x-swagger-router-controller: usesManagementAndConservation
@@ -4924,6 +5006,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ThreatStatusVersion'
+
+  LegislationVersionList:
+    properties:
+      legislationList:
+        type: array
+        items:
+          $ref: '#/definitions/LegislationVersion'
           
   
   TaxonRecordNameVersion:
