@@ -97,11 +97,11 @@ function lastRecord(req, res) {
       //var lenMorInf = record.moreInformationVersion.length; 
       //var lenThrSta = record.threatStatusVersion.length; 
       //var lenLegs = record.legislationVersion.length;
-      var lenUseCon = record.usesManagementAndConservationVersion.length;
+      //var lenUseCon = record.usesManagementAndConservationVersion.length;
       //var lenDirThr = record.directThreatsVersion.length;
       var lenAncDat = record.ancillaryDataVersion.length;
       var lenEndAt = record.endemicAtomizedVersion.length;
-      var lenRefe = record.referencesVersion.length; 
+      //var lenRefe = record.referencesVersion.length; 
       //var lenEnv = record.environmentalEnvelopeVersion.length;
       //var lenEcol = record.ecologicalSignificanceVersion.length;
       //var lenInva = record.invasivenessVersion.length;
@@ -444,12 +444,13 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          UsesManagementAndConservationVersion.findOne({ id_record : id_rc, version: lenUseCon }).exec(function (err, elementVer) {
+          console.log(id_rc);
+          UsesManagementAndConservationVersion.findOne({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get UsesManagementAndConservation element for the record with id: "+id_rc+" : " + err.message));
             }else{
               if(elementVer){
-                lastRec.usesManagementAndConservation = elementVer.usesManagementAndConservation;
+                lastRec.usesManagementAndConservation = elementVer._doc.usesManagementAndConservation;
               }
               callback();
             }
@@ -492,7 +493,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          ReferencesVersion.findOne({ id_record : id_rc, version: lenRefe}).exec(function (err, elementVer) {
+          ReferencesVersion.findOne({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "accepted" }).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get References element for the record with id: "+id_rc+" : " + err.message));
             }else{

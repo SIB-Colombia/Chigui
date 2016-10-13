@@ -3483,6 +3483,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/uses_management_conservation:
+    x-swagger-router-controller: usesManagementAndConservation
+    get: 
+      description: Returns a list of UsesManagementAndConservation version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewUsesManagementAndConservation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UsesManagementAndConservationVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/uses_management_conservation:
+    x-swagger-router-controller: usesManagementAndConservation
+    get: 
+      description: Returns the usesManagementAndConservation version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedUsesManagementAndConservation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UsesManagementAndConservationVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/uses_management_conservation/{version}:
+    x-swagger-router-controller: usesManagementAndConservation
+    put: 
+      description: Update a UsesManagementAndConservationVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedUsesManagementAndConservation
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
             
   /records/{id}/direct_threats/{version}:
     x-swagger-router-controller: directThreats
@@ -5013,6 +5094,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/LegislationVersion'
+          
+  UsesManagementAndConservationVersionList:
+    properties:
+      usesManagementAndConservationList:
+        type: array
+        items:
+          $ref: '#/definitions/UsesManagementAndConservationVersion'
           
   
   TaxonRecordNameVersion:

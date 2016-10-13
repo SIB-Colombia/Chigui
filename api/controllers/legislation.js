@@ -9,6 +9,7 @@ function postLegislation(req, res) {
   var legislation_version  = req.body; 
     legislation_version._id = mongoose.Types.ObjectId();
     legislation_version.created=Date();
+    legislation_version.state="to_review";
     legislation_version.element="legislation";
     var elementValue = legislation_version.legislation;
     legislation_version = new LegislationVersion(legislation_version);
@@ -130,7 +131,7 @@ function getLegislation(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a PopulationBiologyVersion with id_record " + id_rc+" and version: "+version );
+                winston.error("message: Doesn't exist a LegislationVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a LegislationVersion with id_record: "+id_rc+" and version: "+version});
               }

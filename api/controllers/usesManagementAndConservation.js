@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import async from 'async';
+import winston from 'winston';
 import UsesManagementAndConservationVersion from '../models/usesManagementAndConservation.js';
 import add_objects from '../models/additionalModels.js';
 
@@ -8,6 +9,7 @@ function postUsesManagementAndConservation(req, res) {
   var uses_management_conservation_version  = req.body; 
     uses_management_conservation_version._id = mongoose.Types.ObjectId();
     uses_management_conservation_version.created=Date();
+    uses_management_conservation_version.state="to_review";
     uses_management_conservation_version.version=0;
     uses_management_conservation_version.id_record= mongoose.Types.ObjectId();
     uses_management_conservation_version.element="usesManagementAndConservation";
@@ -35,32 +37,32 @@ function postUsesManagementAndConservation(req, res) {
             },
             function(data,callback){
               if(data){
-                var lenusesManagementAndConservation = data.usesManagementAndConservationVersion.length;
-                if( lenusesManagementAndConservation !=0 ){
-                  var idLast = data.usesManagementAndConservationVersion[lenusesManagementAndConservation-1];
+                if(data.usesManagementAndConservationVersion && data.usesManagementAndConservationVersion.length !=0){
+                  var lenUsesManagementAndConservation = data.usesManagementAndConservationVersion.length;
+                  var idLast = data.usesManagementAndConservationVersion[lenUsesManagementAndConservation-1];
                   UsesManagementAndConservationVersion.findById(idLast , function (err, doc){
                     if(err){
-                            callback(new Error("failed getting the last version of usesManagementAndConservationVersion:" + err.message));
-                        }else{
-                          var prev = doc.usesManagementAndConservation;
-                            var next = uses_management_conservation_version.usesManagementAndConservation;
-                            //if(!compare.isEqual(prev,next)){ //TODO
-                            if(true){
-                              uses_management_conservation_version.id_record=mongoose.Types.ObjectId(id_rc);
-                              uses_management_conservation_version.version=lenusesManagementAndConservation+1;
-                              callback(null, uses_management_conservation_version);
-                            }else{
-                              callback(new Error("The data in usesManagementAndConservation is equal to last version of this element in the database"));
-                            }
-                        }
+                      callback(new Error("failed getting the last version of UsesManagementAndConservationVersion:" + err.message));
+                    }else{
+                      var prev = doc.usesManagementAndConservationVersion;
+                      var next = uses_management_conservation_version.usesManagementAndConservationVersion;
+                      //if(!compare.isEqual(prev,next)){ //TODO
+                      if(true){
+                        uses_management_conservation_version.id_record=mongoose.Types.ObjectId(id_rc);
+                        uses_management_conservation_version.version=lenUsesManagementAndConservation+1;
+                        callback(null, uses_management_conservation_version);
+                      }else{
+                        callback(new Error("The data in UsesManagementAndConservationVersion is equal to last version of this element in the database"));
+                      }
+                    }
                   });
                 }else{
                   uses_management_conservation_version.id_record=id_rc;
-                      uses_management_conservation_version.version=1;
-                      callback(null, uses_management_conservation_version);
+                  uses_management_conservation_version.version=1;
+                  callback(null, uses_management_conservation_version);
                 }
               }else{
-                  callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+                callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
             function(uses_management_conservation_version, callback){ 
@@ -86,21 +88,22 @@ function postUsesManagementAndConservation(req, res) {
             function(err, result) {
                 if (err) {
                   console.log("Error: "+err);
-                  //res.status(406);
+                  winston.error("message: " + err );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
+                  winston.info('info', 'Save UsesManagementAndConservationVersion, version: ' + ver + " for the Record: " + id_rc);
                   res.json({ message: 'Save UsesManagementAndConservationVersion', element: 'usesManagementAndConservation', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
+        winston.error("message: " + "Empty data in version of the element" );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,11 +117,11 @@ function getUsesManagementAndConservation(req, res) {
     UsesManagementAndConservationVersion.findOne({ "id_record" : mongoose.Types.ObjectId(id_rc), version: version }).exec(function (err, elementVer) {
             
             if(err){
+              winston.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
-                //if(elementVer.usesManagementAndConservation.usesAtomized){
                 if(!(elementVer._doc.usesManagementAndConservation === undefined || elementVer._doc.usesManagementAndConservation === null)){
                   for(var i=0;i<elementVer._doc.usesManagementAndConservation.usesAtomized.length;i++){
                     for(var j=0;j<elementVer._doc.usesManagementAndConservation.usesAtomized[i].ancillaryData.length;j++){
@@ -153,6 +156,7 @@ function getUsesManagementAndConservation(req, res) {
                 }
                 res.json(elementVer);
               }else{
+                winston.error("message: Doesn't exist a UsesManagementAndConservationVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
                 res.json({message: "Doesn't exist a UsesManagementAndConservationVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -162,7 +166,107 @@ function getUsesManagementAndConservation(req, res) {
 }
 
 
+function setAcceptedUsesManagementAndConservation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  var version = req.swagger.params.version.value;
+  var id_rc = req.swagger.params.id.value;
+
+  if(typeof  id_rc!=="undefined" && id_rc!=""){
+    async.waterfall([
+      function(callback){ 
+        UsesManagementAndConservationVersion.findOne({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "to_review", version : version }).exec(function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else if(elementVer == null){
+            callback(new Error("Doesn't exist a UsesManagementAndConservationVersion with the properties sent."));
+          }else{
+            callback();
+          }
+        });
+      },
+      function(callback){ 
+        UsesManagementAndConservationVersion.update({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "accepted" },{ state: "deprecated" }, { multi: true },function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log("response: "+raw);
+            callback();
+          }
+        });
+        
+      },
+      function(callback){ 
+        UsesManagementAndConservationVersion.update({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback();
+          }
+        });
+      }
+    ],
+    function(err, result) {
+      if (err) {
+        console.log("Error: "+err);
+        winston.error("message: " + err );
+        res.status(400);
+        res.json({ ErrorResponse: {message: ""+err }});
+      }else{
+        winston.info('info', 'Updated UsesManagementAndConservationVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        res.json({ message: 'Updated UsesManagementAndConservationVersion to accepted', element: 'UsesManagementAndConservation', version : version, id_record : id_rc });
+      }      
+    });
+  }else{
+    //res.status(406);
+      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+  }
+}
+
+function getToReviewUsesManagementAndConservation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  UsesManagementAndConservationVersion.find({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "to_review" }).exec(function (err, elementList) {
+    if(err){
+      winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementList){
+        winston.info('info', 'Get list of UsesManagementAndConservationVersion with state to_review, function getToReviewUsesManagementAndConservation');
+        res.json(elementList);
+      }else{
+        winston.error("message: " + err );
+        res.status(406);
+        res.json({message: "Doesn't exist a UsesManagementAndConservationVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
+function getLastAcceptedUsesManagementAndConservation(req, res) {
+  var id_rc = req.swagger.params.id.value;
+  UsesManagementAndConservationVersion.find({ "id_record" : mongoose.Types.ObjectId(id_rc), state: "accepted" }).exec(function (err, elementVer) {
+    if(err){
+    winston.error("message: " + err );
+      res.status(400);
+      res.send(err);
+    }else{
+      if(elementVer.length !== 0){
+        var len = elementVer.length;
+        res.json(elementVer[len-1]);
+      }else{
+        res.status(400);
+        res.json({message: "Doesn't exist a UsesManagementAndConservationVersion with id_record: "+id_rc});
+      }
+    }
+  });
+}
+
 module.exports = {
   postUsesManagementAndConservation,
-  getUsesManagementAndConservation
+  getUsesManagementAndConservation,
+  setAcceptedUsesManagementAndConservation,
+  getToReviewUsesManagementAndConservation,
+  getLastAcceptedUsesManagementAndConservation
 };
