@@ -17,7 +17,7 @@ function postUser(req, res) {
 	user.save(function(err){
         if(err){
             res.status(400);
-    		res.json({message: "The array of the id's of Records have an incorrect id"});
+    		res.json({message: err});
         }else{
         	winston.info('info', 'Saved user with id_user: ' + user.id_user);
             res.json({ message: 'Saved user', id_user: user.id_user  });

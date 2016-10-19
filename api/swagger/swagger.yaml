@@ -3901,6 +3901,87 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records/to_review/{id}/references:
+    x-swagger-router-controller: references
+    get: 
+      description: Returns a list of References version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewReferences
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReferencesVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/references:
+    x-swagger-router-controller: references
+    get: 
+      description: Returns the references version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedReferences
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ReferencesVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/references/{version}:
+    x-swagger-router-controller: references
+    put: 
+      description: Update a ReferencesVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedReferences
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /records/{id}/environmental_envelope/{version}:
     x-swagger-router-controller: environmentalEnvelope
     get: 
@@ -4597,6 +4678,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+            
   /records/{id}/ancillary_data/{version}:
     x-swagger-router-controller: ancillaryData
     get: 
@@ -4654,7 +4736,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
+            
   /records/to_review/{id}/ancillary_data:
     x-swagger-router-controller: ancillaryData
     get: 
@@ -4735,6 +4817,9 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  
+            
             
   /list_records/{id}:
     x-swagger-router-controller: listRecords
@@ -5270,6 +5355,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/AncillaryDataVersion'
+          
+  ReferencesVersionList:
+    properties:
+      referencesList:
+        type: array
+        items:
+          $ref: '#/definitions/ReferencesVersion'
 
   EndemicAtomizedVersionList:
     properties:

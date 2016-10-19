@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import async from 'async';
 import winston from 'winston';
-import AncillaryData from '../models/ancillaryData.js';
+import AncillaryDataVersion from '../models/ancillaryData.js';
 import add_objects from '../models/additionalModels.js';
 
 
@@ -12,7 +12,7 @@ function postAncillaryData(req, res) {
     ancillary_data_version.state="to_review";
     ancillary_data_version.element="ancillaryData";
     var elementValue = ancillary_data_version.ancillaryData;
-    ancillary_data_version = new AncillaryData(ancillary_data_version);
+    ancillary_data_version = new AncillaryDataVersion(ancillary_data_version);
     var id_v = ancillary_data_version._id;
     var id_rc = req.swagger.params.id.value;
 
@@ -91,7 +91,7 @@ function postAncillaryData(req, res) {
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
                   winston.info('info', 'Save AncillaryDataVersion, version: ' + ver + " for the Record: " + id_rc);
-                  res.json({ message: 'Save AncillaryData', element: 'ancillaryData', version : ver, _id: id_v, id_record : id_rc });
+                  res.json({ message: 'Save AncillaryDataVersion', element: 'ancillaryData', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
@@ -112,7 +112,7 @@ function getAncillaryData(req, res) {
     var id_rc = req.swagger.params.id.value;
     var version = req.swagger.params.version.value;
 
-    AncillaryData.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
+    AncillaryDataVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
               winston.error("message: " + err );
               res.status(400);
@@ -121,9 +121,9 @@ function getAncillaryData(req, res) {
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a AncillaryData with id_record " + id_rc+" and version: "+version );
+                winston.error("message: Doesn't exist a AncillaryDataVersion with id_record " + id_rc+" and version: "+version );
                 res.status(400);
-                res.json({message: "Doesn't exist a AncillaryData with id_record: "+id_rc+" and version: "+version});
+                res.json({message: "Doesn't exist a AncillaryDataVersion with id_record: "+id_rc+" and version: "+version});
               }
             }
     });
