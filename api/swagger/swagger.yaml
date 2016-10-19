@@ -3761,6 +3761,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /records/to_review/{id}/endemic_atomized:
+    x-swagger-router-controller: endemicAtomized
+    get: 
+      description: Returns a list of EndemicAtomized version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewEndemicAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EndemicAtomizedVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/endemic_atomized:
+    x-swagger-router-controller: endemicAtomized
+    get: 
+      description: Returns the endemicAtomized version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedEndemicAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/EndemicAtomizedVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/endemic_atomized/{version}:
+    x-swagger-router-controller: endemicAtomized
+    put: 
+      description: Update a EndemicAtomizedVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedEndemicAtomized
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /records/{id}/references/{version}:
     x-swagger-router-controller: references
@@ -4573,6 +4654,87 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /records/to_review/{id}/ancillary_data:
+    x-swagger-router-controller: ancillaryData
+    get: 
+      description: Returns a list of AncillaryData version with state "to_review"
+      tags:
+        - element
+      operationId: getToReviewAncillaryData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AncillaryDataVersionList"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
+  /records/accepted/{id}/ancillary_data:
+    x-swagger-router-controller: ancillaryData
+    get: 
+      description: Returns the ancillaryData version accepted #**
+      tags:
+        - element
+      operationId: getLastAcceptedAncillaryData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AncillaryDataVersion"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /records/accepted/{id}/ancillary_data/{version}:
+    x-swagger-router-controller: ancillaryData
+    put: 
+      description: Update a AncillaryDataVersion state to accepted
+      tags:
+        - element
+      operationId: setAcceptedAncillaryData
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: version
+          type: integer
+          in: path
+          required: true
+        - name: user
+          description: User object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
             
   /list_records/{id}:
     x-swagger-router-controller: listRecords
@@ -5101,6 +5263,20 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/UsesManagementAndConservationVersion'
+
+  AncillaryDataVersionList:
+    properties:
+      ancillaryDataList:
+        type: array
+        items:
+          $ref: '#/definitions/AncillaryDataVersion'
+
+  EndemicAtomizedVersionList:
+    properties:
+      endemicAtomizedList:
+        type: array
+        items:
+          $ref: '#/definitions/EndemicAtomizedVersion'
           
   
   TaxonRecordNameVersion:

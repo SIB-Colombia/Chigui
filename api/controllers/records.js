@@ -99,9 +99,9 @@ function lastRecord(req, res) {
       //var lenLegs = record.legislationVersion.length;
       //var lenUseCon = record.usesManagementAndConservationVersion.length;
       //var lenDirThr = record.directThreatsVersion.length;
-      var lenAncDat = record.ancillaryDataVersion.length;
-      var lenEndAt = record.endemicAtomizedVersion.length;
-      //var lenRefe = record.referencesVersion.length; 
+      //var lenAncDat = record.ancillaryDataancillaryDataVersion.length;
+      //var lenEndAt = record.endemicAtomizedVersion.length;
+      //var lenRefe = record.refancillaryDataerencesVersion.length; 
       //var lenEnv = record.environmentalEnvelopeVersion.length;
       //var lenEcol = record.ecologicalSignificanceVersion.length;
       //var lenInva = record.invasivenessVersion.length;
@@ -469,7 +469,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          AncillaryDataVersion.findOne({ id_record : id_rc, version: lenAncDat}).exec(function (err, elementVer) {
+          AncillaryDataVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get AncillaryData element for the record with id: "+id_rc+" : " + err.message));
             }else{
@@ -481,7 +481,7 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          EndemicAtomizedVersion.findOne({ id_record : id_rc, version: lenEndAt }).exec(function (err, elementVer) {
+          EndemicAtomizedVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get EndemicAtomized element for the record with id: "+id_rc+" : " + err.message));
             }else{

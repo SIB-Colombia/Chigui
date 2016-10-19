@@ -74,16 +74,6 @@ function postLegislation(req, res) {
                 });
             },
             function(legislation_version, callback){ 
-                ver = legislation_version.version;
-                legislation_version.save(function(err){
-                  if(err){
-                      callback(new Error("failed saving the element version:" + err.message));
-                  }else{
-                      callback(null, legislation_version);
-                  }
-                });
-            },
-            function(legislation_version, callback){ 
                 add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "legislationVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));
