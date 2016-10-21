@@ -31,9 +31,10 @@ function postGroup(req, res) {
 	*/
 
 	group = new Group(group);
-	if(group.users.length > 0){
+	if(group.users.length > 0 &&  group.admins.length > 0 ){
 		async.waterfall([
 				function(callback){
+					//search each user in the database
 					async.eachSeries(group.users, function(id_user, callback){
 						console.log(id_user);
 						User.count({ id_user : id_user }, function (err, count){
