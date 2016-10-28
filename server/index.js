@@ -35,18 +35,19 @@ db(λ => {
 
   // api router
   // app.use('/api', api());
-
-  mongoose.connect('mongodb://localhost:27017/catalogoDb', (err) => {
+  
+  mongoose.connect('mongodb://'+config.get('database.mongoDb.url'), (err) => {
       if(err) {
-          console.log('connection error', err);
+          logger.error('connection error', err);
       } else {
-          console.log('connection successful');
+          logger.info('connection successful');
       }
   });
 
   SwaggerExpress.create(swaggerConfig, (err, swaggerExpress) => {
     if (err) { throw err; }
     // install middleware
+    
     swaggerExpress.register(app);
 
     swaggerUiMiddleware.hostUI(app, { path: '/api-doc', overrides: __dirname+'/swagger-ui' });

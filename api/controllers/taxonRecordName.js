@@ -1,18 +1,16 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import add_objects from '../models/additionalModels.js';
 import generalController from './generalController.js';
+import logger  from 'winston';
 
-winston.add(winston.transports.File, { filename: 'chigui.log' });
 
 function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
     taxon_record_name_version.state="to_review";
-    //taxon_record_name_version.state="accepted";
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -89,28 +87,75 @@ function postTaxonRecordName(req, res) {
         		function(err, result) {
           			if (err) {
             			console.log("Error: "+err);
-            			//res.status(406);
-                  winston.error("message: " + err );
+                  logger.error("message: " + err );
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
-                  winston.info('info', 'Save TaxonRecordNameVersion version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('info', 'Save TaxonRecordNameVersion version: ' + ver + " for the Record: " + id_rc);
             			res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
          			 }			
         		});
 
   		}else{
-    		//res.status(406);
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.error("message: " + "Empty data in version of the element" );
     		res.status(400);
     		res.json({message: "Empty data in version of the element"});
    		}
   	}else{
-  		//res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
   		res.status(400);
     	res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
+}
+
+function postRecord(req, res) {
+  var taxon_record_name_version  = req.body; 
+  taxon_record_name_version._id = mongoose.Types.ObjectId();
+  taxon_record_name_version.id_record=mongoose.Types.ObjectId();
+  taxon_record_name_version.created=Date();
+  taxon_record_name_version.state="to_review";
+  taxon_record_name_version.element="taxonRecordName";
+  var elementValue = taxon_record_name_version.taxonRecordName;
+  taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
+  var id_v = taxon_record_name_version._id;
+  var id_rc = taxon_record_name_version.id_record;
+  var ver = 1;
+  var ob_ids= new Array();
+  ob_ids.push(id_v);
+
+  if(typeof  elementValue!=="undefined" && elementValue!=""){
+    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){
+      if(count==0){
+        add_objects.RecordVersion.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
+          if(err){
+            logger.error("message: " + err );
+            res.status(400);
+            res.json({message: err });
+          }else{
+            taxon_record_name_version.version=1;
+            taxon_record_name_version.save(function(err){
+              if(err){
+                logger.error("message: " + err );
+                res.status(400);
+                res.json({message: err });
+              }else{
+                logger.info('message: ' + 'Created a new Record and Save TaxonRecordNameVersion');
+                res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+              }
+            });
+          }
+        });
+      }else{
+        logger.error("message: " + "Already exists a Record(Ficha) with id: " + id_rc );
+        res.status(400);
+        res.json({message: "Already exists a Record(Ficha) with id: "+id_rc });
+      }
+    });
+  }else{
+    logger.error("message: " + "Empty data in version of TaxonRecordName" );
+    res.status(400);
+    res.json({message: "Empty data in version of TaxonRecordName" });
+  }
 }
 
 function setAcceptedTaxonRecordName(req, res) {
@@ -155,17 +200,16 @@ function setAcceptedTaxonRecordName(req, res) {
     function(err, result) {
       if (err) {
         console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error("message: " + err );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated TaxonRecordNameVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('info', 'Updated TaxonRecordNameVersion to accepted, version: ' + version + " for the Record: " + id_rc);
         res.json({ message: 'Updated TaxonRecordNameVersion to accepted', element: 'taxonRecordName', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -175,16 +219,15 @@ function getToReviewTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   TaxonRecordNameVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error("message: " + err );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
-        //var len = elementVer.length;
-        winston.info('info', 'Get list of TaxonRecordNameVersion with state to_review, function getToReviewTaxonRecordName');
+        logger.info('info', 'Get list of TaxonRecordNameVersion with state to_review, function getToReviewTaxonRecordName');
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.error("message: " + err );
         res.status(406);
         res.json({message: "Doesn't exist a TaxonRecordNameVersion with id_record: "+id_rc});
       }
@@ -196,7 +239,7 @@ function getLastAcceptedTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   TaxonRecordNameVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-      winston.error("message: " + err );
+      logger.error("message: " + err );
       res.status(400);
       res.send(err);
     }else{
@@ -209,21 +252,6 @@ function getLastAcceptedTaxonRecordName(req, res) {
       }
     }
   });
-  /*
-  TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
-    if(err){
-      res.status(400);
-      res.send(err);
-    }else{
-      if(elementVer){
-        res.json(elementVer);
-      }else{
-        res.status(400);
-        res.json({message: "Doesn't exist a TaxonRecordVersion with id_record: "+id_rc+" and version: "+version});
-      }
-    }
-  }
-  */
 }
 
 function getTaxonRecordName(req, res) {
@@ -232,7 +260,7 @@ function getTaxonRecordName(req, res) {
 
   	TaxonRecordNameVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error("message: " + err );
               res.status(400);
               res.send(err);
             }else{
@@ -286,7 +314,7 @@ function postTestTaxonRecordName(req, res) {
       },
     ],function(err, result) {
       if (err) {
-        winston.error("message: " + err );
+        logger.error("message: " + err );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
@@ -325,5 +353,6 @@ module.exports = {
   setAcceptedTaxonRecordName,
   getToReviewTaxonRecordName,
   getLastAcceptedTaxonRecordName,
-  postTestTaxonRecordName
+  postTestTaxonRecordName,
+  postRecord
 };

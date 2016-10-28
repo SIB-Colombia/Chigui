@@ -35,11 +35,16 @@ export const config = convict({
     }
   },
   database: {
-    elasticSearch: {
+    mongoDb: {
       url: {
-        doc: 'ElasticSearch url to connect to (including db reference)',
-        default: ['localhost:9400'],
-        env: 'ELASTICSEARCH_URL'
+        doc: 'MongoDb url to connect',
+        default: ['localhost:27017/catalogoDb'],
+        env: 'MONGODB_URL'
+      },
+      password:{
+        doc: 'MongoDb password',
+        default: '',
+        env: 'MONGODB_PASS'
       }
     }
   }

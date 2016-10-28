@@ -18,6 +18,8 @@ basePath: /api/v1.5
 tags:
   - name: record
     description: This API works against the SiB Colombia Records data store, which store all species records registered through Mamut editor.
+  - name: taxonRecordName
+    description: A operation related with the element TaxonRecordName
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -54,20 +56,50 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /records:
+    x-swagger-router-controller: taxonRecordName
+    post:
+      description: Creates a new  Record with a taxonRecordNameVersion, that is the fisrt element and version of the created record.
+      tags:
+        - record
+      operationId: postRecord
+      parameters:
+        - name: taxonRecordNameVersion
+          description: taxonRecordNameVersion object
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TaxonRecordNameVersion'
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ResultResponse"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+            
   /records/{id}/taxon_record_name/{version}:
     x-swagger-router-controller: taxonRecordName
     get: 
-      description: Returns a version of a taxonRecordName element by record id and version
+      description: Returns a taxonRecordNameVersion by Record id and number of version
       tags:
-        - element
+        - taxonRecordName
       operationId: getTaxonRecordName
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -86,9 +118,9 @@ paths:
   /records/to_review/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     get: 
-      description: Returns a list of TaxonRecordName version with state "to_review"
+      description: Returns a list of TaxonRecordNameVersion with state "to_review"
       tags:
-        - element
+        - taxonRecordName
       operationId: getToReviewTaxonRecordName
       parameters:
         - name: id
@@ -111,9 +143,9 @@ paths:
   /records/accepted/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     get: 
-      description: Returns the taxonRecordName version accepted #**
+      description: Returns the taxonRecordNameVersion accepted 
       tags:
-        - element
+        - taxonRecordName
       operationId: getLastAcceptedTaxonRecordName
       parameters:
         - name: id
@@ -137,7 +169,7 @@ paths:
     put: 
       description: Update a TaxonRecordNameVersion state to accepted
       tags:
-        - element
+        - taxonRecordName
       operationId: setAcceptedTaxonRecordName
       parameters:
         - name: id
@@ -167,9 +199,9 @@ paths:
   /records/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
-      description: Save a new version of a taxonRecordName related with the a record with the id
+      description: Save a new taxonRecordNameVersion related with the a record with the id
       tags:
-        - element
+        - taxonRecordName
       operationId: postTaxonRecordName
       parameters:
         - name: id
@@ -197,9 +229,9 @@ paths:
   /records/test/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
-      description: Save a new version of a taxonRecordName related with the a record with the id
+      description: Save a new version of a taxonRecordNameVersion related with the a record with the id
       tags:
-        - element
+        - taxonRecordName
       operationId: postTestTaxonRecordName
       parameters:
         - name: id
@@ -227,17 +259,20 @@ paths:
   /records/{id}/associated_party/{version}:
     x-swagger-router-controller: associatedParty
     get: 
-      description: Returns a version of a AssociatedParty element by record id and version
+      description: Returns a AssociatedPartyVersion by record id and number of version
       tags:
-        - element
+        - AssociatedParty
       operationId: getAssociatedParty
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -255,9 +290,9 @@ paths:
   /records/{id}/associated_party:
     x-swagger-router-controller: associatedParty
     post:
-      description: Save a new version of a AssociatedParty related with the a record with the id
+      description: Save a new AssociatedPartyVersion related that belongs to the record with id
       tags:
-        - element
+        - AssociatedParty
       operationId: postAssociatedParty
       parameters:
         - name: id
@@ -285,9 +320,9 @@ paths:
   /records/to_review/{id}/associated_party:
     x-swagger-router-controller: associatedParty
     get: 
-      description: Returns a list of AssociatedParty version with state "to_review"
+      description: Returns a list of AssociatedPartyVersion with state "to_review"
       tags:
-        - element
+        - AssociatedParty
       operationId: getToReviewAssociatedParty
       parameters:
         - name: id
@@ -312,7 +347,7 @@ paths:
     get: 
       description: Returns the associatedParty version accepted #**
       tags:
-        - element
+        - AssociatedParty
       operationId: getLastAcceptedAssociatedParty
       parameters:
         - name: id
@@ -336,7 +371,7 @@ paths:
     put: 
       description: Update a AssociatedPartyVersion state to accepted
       tags:
-        - element
+        - AssociatedParty
       operationId: setAcceptedAssociatedParty
       parameters:
         - name: id
@@ -4259,7 +4294,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-			
+      
             
   /records/{id}/invasiveness/{version}:
     x-swagger-router-controller: invasiveness
@@ -5094,7 +5129,8 @@ definitions:
       id_record: 
         type: string
       created: 
-        type: string #****
+        type: string 
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       id_user:
         type: string
       version:
@@ -5382,6 +5418,8 @@ definitions:
         type: string
       created: 
         type: string #****
+        #pattern: '^(\d{4}-\d{2}-\d{2})$'
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       id_user:
         type: string
       version:
@@ -6908,8 +6946,10 @@ definitions:
           $ref: '#/definitions/Agent' 
       created:
         type: string
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       modified:
         type: string
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       title:
         type: string
       license:
@@ -6959,8 +6999,10 @@ definitions:
         type: string
       created:
         type: string
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       last_modified:
         type: string
+        pattern: '^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$'
       identifiers:
         type: array
         items:
