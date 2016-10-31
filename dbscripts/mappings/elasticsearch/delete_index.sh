@@ -1,1 +1,0 @@
-curl -XDELETE "$ESDBHOST:9200/sibdataportal/"

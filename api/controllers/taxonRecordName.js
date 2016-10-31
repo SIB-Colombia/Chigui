@@ -3,14 +3,15 @@ import async from 'async';
 import TaxonRecordNameVersion from '../models/taxonRecordName.js';
 import add_objects from '../models/additionalModels.js';
 import generalController from './generalController.js';
-import logger  from 'winston';
+import { logger }  from '../../server/log';
 
 
 function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
-    taxon_record_name_version.state="to_review";
+    //taxon_record_name_version.state="to_review";
+    taxon_record_name_version.state="accepted"
   	taxon_record_name_version.element="taxonRecordName";
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -86,23 +87,22 @@ function postTaxonRecordName(req, res) {
         		],
         		function(err, result) {
           			if (err) {
-            			console.log("Error: "+err);
-                  logger.error("message: " + err );
+            			logger.error('Error Creation of a new TaxonRecordNameVersion', JSON.stringify({ message:err }) );
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
-                  logger.info('info', 'Save TaxonRecordNameVersion version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, TaxonRecordNameVersion: ver, _id: id_v, id_user: user}));
             			res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
          			 }			
         		});
 
   		}else{
-        logger.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
     		res.status(400);
     		res.json({message: "Empty data in version of the element"});
    		}
   	}else{
-      logger.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
   		res.status(400);
     	res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
@@ -113,8 +113,10 @@ function postRecord(req, res) {
   taxon_record_name_version._id = mongoose.Types.ObjectId();
   taxon_record_name_version.id_record=mongoose.Types.ObjectId();
   taxon_record_name_version.created=Date();
-  taxon_record_name_version.state="to_review";
+  //taxon_record_name_version.state="to_review";
+  taxon_record_name_version.state="accepted"
   taxon_record_name_version.element="taxonRecordName";
+  var user = taxon_record_name_version.id_user;
   var elementValue = taxon_record_name_version.taxonRecordName;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
   var id_v = taxon_record_name_version._id;
@@ -128,31 +130,31 @@ function postRecord(req, res) {
       if(count==0){
         add_objects.RecordVersion.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
           if(err){
-            logger.error("message: " + err );
+            logger.error('Creation of a record error', JSON.stringify({ message:err }) );
             res.status(400);
             res.json({message: err });
           }else{
             taxon_record_name_version.version=1;
             taxon_record_name_version.save(function(err){
               if(err){
-                logger.error("message: " + err );
+                logger.error('Creation of a record error', JSON.stringify({ message:err }) );
                 res.status(400);
                 res.json({message: err });
               }else{
-                logger.info('message: ' + 'Created a new Record and Save TaxonRecordNameVersion');
-                res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+                logger.info('Creation new record and TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, TaxonRecordNameVersion: ver, _id: id_v, id_user: user}));
+                res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc, id_user: user });
               }
             });
           }
         });
       }else{
-        logger.error("message: " + "Already exists a Record(Ficha) with id: " + id_rc );
+        logger.warn('Already exists a Record with id', JSON.stringify({ id :id_rc }) );
         res.status(400);
         res.json({message: "Already exists a Record(Ficha) with id: "+id_rc });
       }
     });
   }else{
-    logger.error("message: " + "Empty data in version of TaxonRecordName" );
+    logger.warn('Empty data in version of TaxonRecordName');
     res.status(400);
     res.json({message: "Empty data in version of TaxonRecordName" });
   }
@@ -199,12 +201,11 @@ function setAcceptedTaxonRecordName(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        logger.error("message: " + err );
+        logger.error('Error to set TaxonRecordName accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        logger.info('info', 'Updated TaxonRecordNameVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated TaxonRecordNameVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated TaxonRecordNameVersion to accepted', element: 'taxonRecordName', version : version, id_record : id_rc });
       }      
     });
