@@ -210,7 +210,7 @@ function setAcceptedTaxonRecordName(req, res) {
       }      
     });
   }else{
-      logger.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -220,15 +220,15 @@ function getToReviewTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   TaxonRecordNameVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      logger.error("message: " + err );
+      logger.error('Error getting the list of TaxonRecordNameVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
-        logger.info('info', 'Get list of TaxonRecordNameVersion with state to_review, function getToReviewTaxonRecordName');
+        logger.info('Get list of TaxonRecordNameVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        logger.error("message: " + err );
+        logger.warn("Doesn't exist a TaxonRecordNameVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a TaxonRecordNameVersion with id_record: "+id_rc});
       }
@@ -240,11 +240,12 @@ function getLastAcceptedTaxonRecordName(req, res) {
   var id_rc = req.swagger.params.id.value;
   TaxonRecordNameVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-      logger.error("message: " + err );
+      logger.error('Error getting the last TaxonRecordNameVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer.length !== 0){
+        logger.info('Get last TaxonRecordNameVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
@@ -261,6 +262,7 @@ function getTaxonRecordName(req, res) {
 
   	TaxonRecordNameVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              logger.error('Error getting the indicated TaxonRecordNameVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               logger.error("message: " + err );
               res.status(400);
               res.send(err);

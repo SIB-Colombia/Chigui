@@ -1,17 +1,15 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import SynonymsAtomizedVersion from '../models/synonymsAtomized.js';
 import add_objects from '../models/additionalModels.js';
-
-winston.add(winston.transports.File, { filename: 'chigui.log' });
+import { logger }  from '../../server/log';
 
 function postSynonymsAtomized(req, res) {
   var synonyms_atomized  = req.body; 
     synonyms_atomized._id = mongoose.Types.ObjectId();
     synonyms_atomized.created=Date();
-    synonyms_atomized.state="to_review";
-    //synonyms_atomized.state="accepted";
+    //synonyms_atomized.state="to_review";
+    synonyms_atomized.state="accepted";
     synonyms_atomized.element="synonymsAtomized";
     var elementValue = synonyms_atomized.synonymsAtomized;
     synonyms_atomized = new SynonymsAtomizedVersion(synonyms_atomized);
@@ -87,23 +85,22 @@ function postSynonymsAtomized(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new SynonymsAtomizedVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save SynonymsAtomizedVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new SynonymsAtomizedVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save SynonymsAtomizedVersion', element: 'synonymsAtomized', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -116,15 +113,15 @@ function getSynonymsAtomized(req, res) {
 
     SynonymsAtomizedVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated SynonymsAtomizedVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                logger.warn("Doesn't exist a SynonymsAtomizedVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
-                winston.error("message: Doesn't exist a SynonymsAtomizedVersion with id_record " + id_rc+" and version: "+version );
                 res.json({message: "Doesn't exist a SynonymsAtomizedVersion with id_record: "+id_rc+" and version: "+version});
               }
             }
@@ -174,18 +171,16 @@ function setAcceptedSynonymsAtomized(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set SynonymsAtomizedVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated SynonymsAtomizedVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated SynonymsAtomizedVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated SynonymsAtomizedVersion to accepted', element: 'synonymsAtomized', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -195,16 +190,16 @@ function getToReviewSynonymsAtomized(req, res) {
   var id_rc = req.swagger.params.id.value;
   SynonymsAtomizedVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of SynonymsAtomizedVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of SynonymsAtomizedVersion with state to_review, function getToReviewSynonymsAtomized');
+        logger.info('Get list of SynonymsAtomizedVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a SynonymsAtomizedVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a SynonymsAtomizedVersion with id_record: "+id_rc});
       }
@@ -216,11 +211,12 @@ function getLastAcceptedSynonymsAtomized(req, res) {
   var id_rc = req.swagger.params.id.value;
   SynonymsAtomizedVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the last SynonymsAtomizedVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer){
+        logger.info('Get last SynonymsAtomizedVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

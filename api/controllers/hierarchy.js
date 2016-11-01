@@ -1,16 +1,15 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import HierarchyVersion from '../models/hierarchy.js';
 import add_objects from '../models/additionalModels.js';
-
-winston.add(winston.transports.File, { filename: 'chigui.log' });
+import { logger }  from '../../server/log';
 
 function postHierarchy(req, res) {
   var hierarchy_version  = req.body; 
     hierarchy_version._id = mongoose.Types.ObjectId();
     hierarchy_version.created=Date();
-    hierarchy_version.state="to_review";
+    //hierarchy_version.state="to_review";
+    hierarchy_version.state="accepted";
     hierarchy_version.element="hierarchy";
     var elementValue = hierarchy_version.hierarchy;
     hierarchy_version = new HierarchyVersion(hierarchy_version);
@@ -86,23 +85,22 @@ function postHierarchy(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new HierarchyVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save HierarchyVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new HierarchyVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save HierarchyVersion', element: 'hierarchy', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record " );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -115,14 +113,14 @@ function getHierarchy(req, res) {
 
     HierarchyVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated HierarchyVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a HierarchyVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a HierarchyVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a HierarchyVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -173,18 +171,16 @@ function setAcceptedHierarchy(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set HierarchyVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated HierarchyVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated HierarchyVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated HierarchyVersion to accepted', element: 'hierarchy', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -194,16 +190,16 @@ function getToReviewHierarchy(req, res) {
   var id_rc = req.swagger.params.id.value;
   HierarchyVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of HierarchyVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of HierarchyVersion with state to_review, function getToReviewHierarchy');
+        logger.info('Get list of HierarchyVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a HierarchyVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a HierarchyVersion with id_record: "+id_rc});
       }
@@ -215,11 +211,12 @@ function getLastAcceptedHierarchy(req, res) {
   var id_rc = req.swagger.params.id.value;
   HierarchyVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the last HierarchyVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer.length !== 0){
+        logger.info('Get last HierarchyVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

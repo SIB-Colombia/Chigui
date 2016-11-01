@@ -1,16 +1,15 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import MoreInformationVersion from '../models/moreInformation.js';
 import add_objects from '../models/additionalModels.js';
-
-winston.add(winston.transports.File, { filename: 'chigui.log' });
+import { logger }  from '../../server/log';
 
 function postMoreInformation(req, res) {
   var more_information_version  = req.body; 
     more_information_version._id = mongoose.Types.ObjectId();
     more_information_version.created=Date();
-    more_information_version.state="to_review";
+    //more_information_version.state="to_review";
+    more_information_version.state="accepted";
     more_information_version.element="moreInformation";
     var elementValue = more_information_version.moreInformation;
     more_information_version = new MoreInformationVersion(more_information_version);
@@ -58,7 +57,6 @@ function postMoreInformation(req, res) {
                 }else{
                   more_information_version.id_record=id_rc;
                   more_information_version.version=1;
-                  console.log("!!");
                   callback(null, more_information_version);
                 }
               }else{
@@ -87,23 +85,22 @@ function postMoreInformation(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new MoreInformationVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save MoreInformationVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new MoreInformationVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save MoreInformationVersion', element: 'moreInformation', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -116,15 +113,15 @@ function getMoreInformation(req, res) {
 
     MoreInformationVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated MoreInformationVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                logger.warn("Doesn't exist a MoreInformationVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
-                winston.error("message: Doesn't exist a MoreInformationVersion with id_record " + id_rc+" and version: "+version );
                 res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc+" and version: "+version});
               }
             }
@@ -175,17 +172,16 @@ function setAcceptedMoreInformation(req, res) {
     function(err, result) {
       if (err) {
         console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set MoreInformationVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated MoreInformationVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated MoreInformationVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated MoreInformationVersion to accepted', element: 'moreInformation', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -195,16 +191,16 @@ function getToReviewMoreInformation(req, res) {
   var id_rc = req.swagger.params.id.value;
   MoreInformationVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of MoreInformationVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of MoreInformationVersion with state to_review, function getToReviewMoreInformation');
+        logger.info('Get list of MoreInformationVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a MoreInformationVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a MoreInformationVersion with id_record: "+id_rc});
       }
@@ -216,11 +212,12 @@ function getLastAcceptedMoreInformation(req, res) {
   var id_rc = req.swagger.params.id.value;
   MoreInformationVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the last MoreInformationVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer.length !== 0){
+        logger.info('Get last MoreInformationVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

@@ -1,16 +1,15 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import AssociatedPartyVersion from '../models/associatedParty.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postAssociatedParty(req, res) {
   var associated_party_version  = req.body; 
     associated_party_version._id = mongoose.Types.ObjectId();
     associated_party_version.created=Date();
-    associated_party_version.state="to_review";
-    //associated_party_version.state="accepted";
+    //associated_party_version.state="to_review";
+    associated_party_version.state="accepted";
     associated_party_version.element="associatedParty";
     var elementValue = associated_party_version.associatedParty;
     associated_party_version = new AssociatedPartyVersion(associated_party_version);
@@ -86,26 +85,22 @@ function postAssociatedParty(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  //res.status(406);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new MoreInformationVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save AssociatedPartyVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new AssociatedPartyVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save AssociatedPartyVersion', element: 'associatedParty', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        //res.status(406);
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -152,18 +147,16 @@ function setAcceptedAssociatedParty(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set AssociatedPartyVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated AssociatedPartyVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated AssociatedPartyVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated AssociatedPartyVersion to accepted', element: 'associatedParty', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -173,16 +166,16 @@ function getToReviewAssociatedParty(req, res) {
   var id_rc = req.swagger.params.id.value;
   AssociatedPartyVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of AssociatedPartyVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of AssociatedPartyVersion with state to_review, function getToReviewAssociatedParty');
+        logger.info('Get list of AssociatedPartyVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a AssociatedPartyVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a AssociatedPartyVersion with id_record: "+id_rc});
       }
@@ -194,10 +187,12 @@ function getLastAcceptedAssociatedParty(req, res) {
   var id_rc = req.swagger.params.id.value;
   AssociatedPartyVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
+      logger.error('Error getting the last AssociatedPartyVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer){
+        logger.info('Get last AssociatedPartyVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
@@ -214,12 +209,14 @@ function getAssociatedParty(req, res) {
 
     AssociatedPartyVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
+              logger.error('Error getting the indicated AssociatedPartyVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
+                logger.warn("Doesn't exist a AssociatedPartyVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a AssociatedPartyVersion with id_record: "+id_rc+" and version: "+version});
               }

@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import CommonNamesAtomizedVersion from '../models/commonNamesAtomized.js';
 import add_objects from '../models/additionalModels.js';
+import { logger }  from '../../server/log';
 
 
 function postCommonNamesAtomized(req, res) {
   var common_names_atomized  = req.body; 
     common_names_atomized._id = mongoose.Types.ObjectId();
     common_names_atomized.created=Date();
-    common_names_atomized.state="to_review";
+    //common_names_atomized.state="to_review";
+    common_names_atomized.state="accepted";
     common_names_atomized.element="commonNamesAtomized";
     var elementValue = common_names_atomized.commonNamesAtomized;
     common_names_atomized = new CommonNamesAtomizedVersion(common_names_atomized);
@@ -85,23 +86,22 @@ function postCommonNamesAtomized(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new CommonNamesAtomizedVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save CommonNamesAtomizedVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new CommonNamesAtomizedVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save CommonNamesAtomizedVersion', element: 'commonNamesAtomized', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record " );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record "});
     }
@@ -114,14 +114,14 @@ function getCommonNamesAtomized(req, res) {
 
     CommonNamesAtomizedVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated CommonNamesAtomizedVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a CommonNamesAtomizedVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a CommonNamesAtomizedVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a CommonNamesAtomizedVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,20 +172,18 @@ function setAcceptedCommonNamesAtomized(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set CommonNamesAtomizedVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated CommonNamesAtomizedVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated CommonNamesAtomizedVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated CommonNamesAtomizedVersion to accepted', element: 'commonNamesAtomized', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
-      res.status(400);
-      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+    logger.warn("The url doesn't have the id for the Record (Ficha)");
+    res.status(400);
+    res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }
 
@@ -193,16 +191,16 @@ function getToReviewCommonNamesAtomized(req, res) {
   var id_rc = req.swagger.params.id.value;
   CommonNamesAtomizedVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of CommonNamesAtomizedVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of CommonNamesAtomizedVersion with state to_review, function getToReviewCommonNamesAtomized');
+        logger.info('Get list of CommonNamesAtomizedVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a CommonNamesAtomizedVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a CommonNamesAtomizedVersion with id_record: "+id_rc});
       }
@@ -214,10 +212,12 @@ function getLastAcceptedCommonNamesAtomized(req, res) {
   var id_rc = req.swagger.params.id.value;
   CommonNamesAtomizedVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
+      logger.error('Error getting the last CommonNamesAtomizedVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer){
+        logger.info('Get last CommonNamesAtomizedVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
