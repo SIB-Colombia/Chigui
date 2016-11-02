@@ -13,6 +13,7 @@ function postTaxonRecordName(req, res) {
     //taxon_record_name_version.state="to_review";
     taxon_record_name_version.state="accepted"
   	taxon_record_name_version.element="taxonRecordName";
+    var user = taxon_record_name_version.id_user;
   	var elementValue = taxon_record_name_version.taxonRecordName;
   	taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
   	var id_v = taxon_record_name_version._id;
@@ -64,6 +65,7 @@ function postTaxonRecordName(req, res) {
               }else{
                 callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
+              
             },
         		function(taxon_record_name_version, callback){ 
           			ver = taxon_record_name_version.version;
@@ -74,6 +76,7 @@ function postTaxonRecordName(req, res) {
               				callback(null, taxon_record_name_version);
            				}
           			});
+                
       			},
       			function(taxon_record_name_version, callback){ 
           			add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "taxonRecordNameVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
@@ -83,6 +86,7 @@ function postTaxonRecordName(req, res) {
               				callback();
             			}
           			});
+                
       			}
         		],
         		function(err, result) {
@@ -91,11 +95,11 @@ function postTaxonRecordName(req, res) {
             			res.status(400);
             			res.json({ ErrorResponse: {message: ""+err }});
           			}else{
-                  logger.info('Creation a new TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, TaxonRecordNameVersion: ver, _id: id_v, id_user: user}));
+                  logger.info('Creation a new TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
             			res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+                  
          			 }			
-        		});
-
+        		}); 
   		}else{
         logger.warn('Empty data in version of the element' );
     		res.status(400);
@@ -106,6 +110,7 @@ function postTaxonRecordName(req, res) {
   		res.status(400);
     	res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   	}
+    
 }
 
 function postRecord(req, res) {
@@ -183,7 +188,6 @@ function setAcceptedTaxonRecordName(req, res) {
           if(err){
             callback(new Error(err.message));
           }else{
-            console.log("response: "+raw);
             callback();
           }
         });

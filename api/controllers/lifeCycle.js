@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import LifeCycleVersion from '../models/lifeCycle.js';
 import add_objects from '../models/additionalModels.js';
+import { logger }  from '../../server/log';
 
 
 function postLifeCycle(req, res) {
   var life_cycle  = req.body; 
     life_cycle._id = mongoose.Types.ObjectId();
     life_cycle.created=Date();
-    life_cycle.state="to_review";
+    //life_cycle.state="to_review";
+    life_cycle.state="accepted";
     life_cycle.element="lifeCycle";
     var elementValue = life_cycle.lifeCycle;
     life_cycle = new LifeCycleVersion(life_cycle);
@@ -85,23 +86,22 @@ function postLifeCycle(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new LifeCycleVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save LifeCycleVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new LifeCycleVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save LifeCycleVersion', element: 'lifeCycle', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getLifeCycle(req, res) {
 
     LifeCycleVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated LifeCycleVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a LifeCycleVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a LifeCycleVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a LifeCycleVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedLifeCycle(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set LifeCycleVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated LifeCycleVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated LifeCycleVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated LifeCycleVersion to accepted', element: 'lifeCycle', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewLifeCycle(req, res) {
   var id_rc = req.swagger.params.id.value;
   LifeCycleVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of LifeCycleVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of LifeCycleVersion with state to_review, function getToReviewLifeCycle');
+        logger.info('Get list of LifeCycleVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a LifeCycleVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a LifeCycleVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedLifeCycle(req, res) {
   var id_rc = req.swagger.params.id.value;
   LifeCycleVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last LifeCycleVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer.length !== 0){
+        logger.info('Get last LifeCycleVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

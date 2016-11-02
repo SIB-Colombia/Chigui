@@ -11,6 +11,7 @@ function postMoreInformation(req, res) {
     //more_information_version.state="to_review";
     more_information_version.state="accepted";
     more_information_version.element="moreInformation";
+    var user = more_information_version.id_user;
     var elementValue = more_information_version.moreInformation;
     more_information_version = new MoreInformationVersion(more_information_version);
     var id_v = more_information_version._id;

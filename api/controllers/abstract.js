@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import AbstractVersion from '../models/abstract.js';
 import add_objects from '../models/additionalModels.js';
+import { logger }  from '../../server/log';
 
 
 function postAbstract(req, res) {
   var abstract_version  = req.body; 
     abstract_version._id = mongoose.Types.ObjectId();
     abstract_version.created=Date();
-    abstract_version.state="to_review";
+    //abstract_version.state="to_review";
+    abstract_version.state="accepted";
     abstract_version.element="abstract";
     var elementValue = abstract_version.abstract;
     abstract_version = new AbstractVersion(abstract_version);
@@ -85,23 +86,22 @@ function postAbstract(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new AbstractVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save AbstractVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new AbstractVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save AbstractVersion', element: 'abstract', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getAbstract(req, res) {
 
     AbstractVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated AbstractVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a AbstractVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a AbstractVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a AbstractVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedAbstract(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set AbstractVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated AbstractVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated AbstractVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated AbstractVersion to accepted', element: 'abstract', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewAbstract(req, res) {
   var id_rc = req.swagger.params.id.value;
   AbstractVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of AbstractVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of AbstractVersion with state to_review, function getToReviewAbstract');
+        logger.info('Get list of AbstractVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a AbstractVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a AbstractVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedAbstract(req, res) {
   var id_rc = req.swagger.params.id.value;
   AbstractVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last AbstractVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementVer.length !== 0){
+        logger.info('Get last AbstractVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
