@@ -5,15 +5,16 @@ import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
 function postSynonymsAtomized(req, res) {
-  var synonyms_atomized  = req.body; 
-    synonyms_atomized._id = mongoose.Types.ObjectId();
-    synonyms_atomized.created=Date();
-    //synonyms_atomized.state="to_review";
-    synonyms_atomized.state="accepted";
-    synonyms_atomized.element="synonymsAtomized";
-    var elementValue = synonyms_atomized.synonymsAtomized;
-    synonyms_atomized = new SynonymsAtomizedVersion(synonyms_atomized);
-    var id_v = synonyms_atomized._id;
+  var synonyms_atomized_version  = req.body; 
+    synonyms_atomized_version._id = mongoose.Types.ObjectId();
+    synonyms_atomized_version.created=Date();
+    //synonyms_atomized_version.state="to_review";
+    synonyms_atomized_version.state="accepted";
+    synonyms_atomized_version.element="synonymsAtomized";
+    var user = synonyms_atomized_version.id_user;
+    var elementValue = synonyms_atomized_version.synonymsAtomized;
+    synonyms_atomized_version = new SynonymsAtomizedVersion(synonyms_atomized_version);
+    var id_v = synonyms_atomized_version._id;
     var id_rc = req.swagger.params.id.value;
 
     var ob_ids= new Array();
@@ -63,17 +64,17 @@ function postSynonymsAtomized(req, res) {
                 callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
-            function(synonyms_atomized, callback){ 
-                ver = synonyms_atomized.version;
-                synonyms_atomized.save(function(err){
+            function(synonyms_atomized_version, callback){ 
+                ver = synonyms_atomized_version.version;
+                synonyms_atomized_version.save(function(err){
                   if(err){
                       callback(new Error("failed saving the element version:" + err.message));
                   }else{
-                      callback(null, synonyms_atomized);
+                      callback(null, synonyms_atomized_version);
                   }
                 });
             },
-            function(synonyms_atomized, callback){ 
+            function(synonyms_atomized_version, callback){ 
                 add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "synonymsAtomizedVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));

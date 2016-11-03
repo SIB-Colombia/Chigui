@@ -11,6 +11,7 @@ function postDirectThreats(req, res) {
     //direct_threats_version.state="to_review";
     direct_threats_version.state="accepted";
     direct_threats_version.element="directThreats";
+    var user = direct_threats_version.id_user;
     var elementValue = direct_threats_version.directThreats;
     direct_threats_version = new DirectThreatsVersion(direct_threats_version);
     var id_v = direct_threats_version._id;

@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import EnvironmentalEnvelopeVersion from '../models/environmentalEnvelope.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postEnvironmentalEnvelope(req, res) {
   var environmental_envelope_version  = req.body; 
     environmental_envelope_version._id = mongoose.Types.ObjectId();
     environmental_envelope_version.created=Date();
-    environmental_envelope_version.state="to_review";
+    //environmental_envelope_version.state="to_review";
+    environmental_envelope_version.state="accepted";
     environmental_envelope_version.element="environmentalEnvelope";
+    var user = environmental_envelope_version.id_user;
     var elementValue = environmental_envelope_version.environmentalEnvelope;
     environmental_envelope_version = new EnvironmentalEnvelopeVersion(environmental_envelope_version);
     var id_v = environmental_envelope_version._id;
@@ -36,21 +37,21 @@ function postEnvironmentalEnvelope(req, res) {
             function(data,callback){
               if(data){
                 if(data.environmentalEnvelopeVersion && data.environmentalEnvelopeVersion.length !=0){
-                  var lenEnvironmentalEnvelope = data.environmentalEnvelopeVersion.length;
-                  var idLast = data.environmentalEnvelopeVersion[lenEnvironmentalEnvelope-1];
+                  var lenenvironmentalEnvelope = data.environmentalEnvelopeVersion.length;
+                  var idLast = data.environmentalEnvelopeVersion[lenenvironmentalEnvelope-1];
                   EnvironmentalEnvelopeVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of EnvironmentalEnvelopeVersion:" + err.message));
+                      callback(new Error("failed getting the last version of environmentalEnvelopeVersion:" + err.message));
                     }else{
                       var prev = doc.environmentalEnvelopeVersion;
                       var next = environmental_envelope_version.environmentalEnvelopeVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         environmental_envelope_version.id_record=id_rc;
-                        environmental_envelope_version.version=lenEnvironmentalEnvelope+1;
+                        environmental_envelope_version.version=lenenvironmentalEnvelope+1;
                         callback(null, environmental_envelope_version);
                       }else{
-                        callback(new Error("The data in EnvironmentalEnvelopeVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in environmentalEnvelopeVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -85,23 +86,22 @@ function postEnvironmentalEnvelope(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new EnvironmentalEnvelopeVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save EnvironmentalEnvelopeVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new EnvironmentalEnvelopeVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save EnvironmentalEnvelopeVersion', element: 'environmentalEnvelope', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getEnvironmentalEnvelope(req, res) {
 
     EnvironmentalEnvelopeVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated EnvironmentalEnvelopeVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a EnvironmentalEnvelopeVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a EnvironmentalEnvelopeVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a EnvironmentalEnvelopeVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedEnvironmentalEnvelope(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set EnvironmentalEnvelopeVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated EnvironmentalEnvelopeVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated EnvironmentalEnvelopeVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated EnvironmentalEnvelopeVersion to accepted', element: 'environmentalEnvelope', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewEnvironmentalEnvelope(req, res) {
   var id_rc = req.swagger.params.id.value;
   EnvironmentalEnvelopeVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of EnvironmentalEnvelopeVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of EnvironmentalEnvelopeVersion with state to_review, function getToReviewEnvironmentalEnvelope');
+        logger.info('Get list of EnvironmentalEnvelopeVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a EnvironmentalEnvelopeVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a EnvironmentalEnvelopeVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedEnvironmentalEnvelope(req, res) {
   var id_rc = req.swagger.params.id.value;
   EnvironmentalEnvelopeVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last EnvironmentalEnvelopeVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
+        logger.info('Get last EnvironmentalEnvelopeVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

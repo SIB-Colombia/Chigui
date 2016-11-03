@@ -4,17 +4,17 @@ import LifeCycleVersion from '../models/lifeCycle.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postLifeCycle(req, res) {
-  var life_cycle  = req.body; 
-    life_cycle._id = mongoose.Types.ObjectId();
-    life_cycle.created=Date();
-    //life_cycle.state="to_review";
-    life_cycle.state="accepted";
-    life_cycle.element="lifeCycle";
-    var elementValue = life_cycle.lifeCycle;
-    life_cycle = new LifeCycleVersion(life_cycle);
-    var id_v = life_cycle._id;
+  var life_cycle_version  = req.body; 
+    life_cycle_version._id = mongoose.Types.ObjectId();
+    life_cycle_version.created=Date();
+    //life_cycle_version.state="to_review";
+    life_cycle_version.state="accepted";
+    life_cycle_version.element="lifeCycle";
+    var user = life_cycle_version.id_user;
+    var elementValue = life_cycle_version.lifeCycle;
+    life_cycle_version = new LifeCycleVersion(life_cycle_version);
+    var id_v = life_cycle_version._id;
     var id_rc = req.swagger.params.id.value;
 
     var ob_ids= new Array();
@@ -44,37 +44,37 @@ function postLifeCycle(req, res) {
                       callback(new Error("failed getting the last version of lifeCycleVersion:" + err.message));
                     }else{
                       var prev = doc.lifeCycleVersion;
-                      var next = life_cycle.lifeCycleVersion;
+                      var next = life_cycle_version.lifeCycleVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
-                        life_cycle.id_record=id_rc;
-                        life_cycle.version=lenlifeCycle+1;
-                        callback(null, life_cycle);
+                        life_cycle_version.id_record=id_rc;
+                        life_cycle_version.version=lenlifeCycle+1;
+                        callback(null, life_cycle_version);
                       }else{
                         callback(new Error("The data in lifeCycleVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
                 }else{
-                  life_cycle.id_record=id_rc;
-                  life_cycle.version=1;
-                  callback(null, life_cycle);
+                  life_cycle_version.id_record=id_rc;
+                  life_cycle_version.version=1;
+                  callback(null, life_cycle_version);
                 }
               }else{
                 callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
-            function(life_cycle, callback){ 
-                ver = life_cycle.version;
-                life_cycle.save(function(err){
+            function(life_cycle_version, callback){ 
+                ver = life_cycle_version.version;
+                life_cycle_version.save(function(err){
                   if(err){
                       callback(new Error("failed saving the element version:" + err.message));
                   }else{
-                      callback(null, life_cycle);
+                      callback(null, life_cycle_version);
                   }
                 });
             },
-            function(life_cycle, callback){ 
+            function(life_cycle_version, callback){ 
                 add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "lifeCycleVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));
@@ -216,7 +216,7 @@ function getLastAcceptedLifeCycle(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last LifeCycleVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

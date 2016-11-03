@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import InteractionsVersion from '../models/interactions.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postInteractions(req, res) {
   var interactions_version  = req.body; 
     interactions_version._id = mongoose.Types.ObjectId();
     interactions_version.created=Date();
-    interactions_version.state="to_review";
+    //interactions_version.state="to_review";
+    interactions_version.state="accepted";
     interactions_version.element="interactions";
+    var user = interactions_version.id_user;
     var elementValue = interactions_version.interactions;
     interactions_version = new InteractionsVersion(interactions_version);
     var id_v = interactions_version._id;
@@ -36,21 +37,21 @@ function postInteractions(req, res) {
             function(data,callback){
               if(data){
                 if(data.interactionsVersion && data.interactionsVersion.length !=0){
-                  var lenInteractions = data.interactionsVersion.length;
-                  var idLast = data.interactionsVersion[lenInteractions-1];
+                  var leninteractions = data.interactionsVersion.length;
+                  var idLast = data.interactionsVersion[leninteractions-1];
                   InteractionsVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of InteractionsVersion:" + err.message));
+                      callback(new Error("failed getting the last version of interactionsVersion:" + err.message));
                     }else{
                       var prev = doc.interactionsVersion;
                       var next = interactions_version.interactionsVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         interactions_version.id_record=id_rc;
-                        interactions_version.version=lenInteractions+1;
+                        interactions_version.version=leninteractions+1;
                         callback(null, interactions_version);
                       }else{
-                        callback(new Error("The data in InteractionsVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in interactionsVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -85,23 +86,22 @@ function postInteractions(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new InteractionsVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save InteractionsVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new InteractionsVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save InteractionsVersion', element: 'interactions', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getInteractions(req, res) {
 
     InteractionsVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated InteractionsVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a InteractionsVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a InteractionsVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a InteractionsVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedInteractions(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set InteractionsVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated InteractionsVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated InteractionsVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated InteractionsVersion to accepted', element: 'interactions', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewInteractions(req, res) {
   var id_rc = req.swagger.params.id.value;
   InteractionsVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of InteractionsVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of InteractionsVersion with state to_review, function getToReviewInteractions');
+        logger.info('Get list of InteractionsVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a InteractionsVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a InteractionsVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedInteractions(req, res) {
   var id_rc = req.swagger.params.id.value;
   InteractionsVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last InteractionsVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
+        logger.info('Get last InteractionsVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

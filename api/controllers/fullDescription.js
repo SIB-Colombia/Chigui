@@ -4,7 +4,6 @@ import FullDescriptionVersion from '../models/fullDescription.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postFullDescription(req, res) {
   var full_description_version  = req.body; 
     full_description_version._id = mongoose.Types.ObjectId();
@@ -12,6 +11,7 @@ function postFullDescription(req, res) {
     //full_description_version.state="to_review";
     full_description_version.state="accepted";
     full_description_version.element="fullDescription";
+    var user = full_description_version.id_user;
     var elementValue = full_description_version.fullDescription;
     full_description_version = new FullDescriptionVersion(full_description_version);
     var id_v = full_description_version._id;
@@ -181,7 +181,6 @@ function setAcceptedFullDescription(req, res) {
       }      
     });
   }else{
-    //res.status(406);
       logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
@@ -217,7 +216,7 @@ function getLastAcceptedFullDescription(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last FullDescriptionVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

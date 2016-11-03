@@ -4,7 +4,6 @@ import AbstractVersion from '../models/abstract.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postAbstract(req, res) {
   var abstract_version  = req.body; 
     abstract_version._id = mongoose.Types.ObjectId();
@@ -12,6 +11,7 @@ function postAbstract(req, res) {
     //abstract_version.state="to_review";
     abstract_version.state="accepted";
     abstract_version.element="abstract";
+    var user = abstract_version.id_user;
     var elementValue = abstract_version.abstract;
     abstract_version = new AbstractVersion(abstract_version);
     var id_v = abstract_version._id;
@@ -37,21 +37,21 @@ function postAbstract(req, res) {
             function(data,callback){
               if(data){
                 if(data.abstractVersion && data.abstractVersion.length !=0){
-                  var lenAbstract = data.abstractVersion.length;
-                  var idLast = data.abstractVersion[lenAbstract-1];
+                  var lenabstract = data.abstractVersion.length;
+                  var idLast = data.abstractVersion[lenabstract-1];
                   AbstractVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of AbstractVersion:" + err.message));
+                      callback(new Error("failed getting the last version of abstractVersion:" + err.message));
                     }else{
                       var prev = doc.abstractVersion;
                       var next = abstract_version.abstractVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         abstract_version.id_record=id_rc;
-                        abstract_version.version=lenAbstract+1;
+                        abstract_version.version=lenabstract+1;
                         callback(null, abstract_version);
                       }else{
-                        callback(new Error("The data in AbstractVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in abstractVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -216,7 +216,7 @@ function getLastAcceptedAbstract(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last AbstractVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

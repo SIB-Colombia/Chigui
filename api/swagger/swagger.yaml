@@ -5504,7 +5504,8 @@ definitions:
           
   BriefDescriptionVersion:
     required:
-      - -id
+      - briefDescription
+      - id_user
     properties:
       -id:
         type: string

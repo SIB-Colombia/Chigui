@@ -11,6 +11,7 @@ function postAssociatedParty(req, res) {
     //associated_party_version.state="to_review";
     associated_party_version.state="accepted";
     associated_party_version.element="associatedParty";
+    var user = associated_party_version.id_user;
     var elementValue = associated_party_version.associatedParty;
     associated_party_version = new AssociatedPartyVersion(associated_party_version);
     var id_v = associated_party_version._id;

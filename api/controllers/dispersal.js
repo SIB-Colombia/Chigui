@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import DispersalVersion from '../models/dispersal.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postDispersal(req, res) {
   var dispersal_version  = req.body; 
     dispersal_version._id = mongoose.Types.ObjectId();
     dispersal_version.created=Date();
-    dispersal_version.state="to_review";
+    //dispersal_version.state="to_review";
+    dispersal_version.state="accepted";
     dispersal_version.element="dispersal";
+    var user = dispersal_version.id_user;
     var elementValue = dispersal_version.dispersal;
     dispersal_version = new DispersalVersion(dispersal_version);
     var id_v = dispersal_version._id;
@@ -36,21 +37,21 @@ function postDispersal(req, res) {
             function(data,callback){
               if(data){
                 if(data.dispersalVersion && data.dispersalVersion.length !=0){
-                  var lenDispersal = data.dispersalVersion.length;
-                  var idLast = data.dispersalVersion[lenDispersal-1];
+                  var lendispersal = data.dispersalVersion.length;
+                  var idLast = data.dispersalVersion[lendispersal-1];
                   DispersalVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of DispersalVersion:" + err.message));
+                      callback(new Error("failed getting the last version of dispersalVersion:" + err.message));
                     }else{
                       var prev = doc.dispersalVersion;
                       var next = dispersal_version.dispersalVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         dispersal_version.id_record=id_rc;
-                        dispersal_version.version=lenDispersal+1;
+                        dispersal_version.version=lendispersal+1;
                         callback(null, dispersal_version);
                       }else{
-                        callback(new Error("The data in DispersalVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in dispersalVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -85,23 +86,22 @@ function postDispersal(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new DispersalVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save DispersalVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new DispersalVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save DispersalVersion', element: 'dispersal', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getDispersal(req, res) {
 
     DispersalVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated DispersalVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a DispersalVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a DispersalVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a DispersalVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedDispersal(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set DispersalVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated DispersalVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated DispersalVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated DispersalVersion to accepted', element: 'dispersal', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewDispersal(req, res) {
   var id_rc = req.swagger.params.id.value;
   DispersalVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of DispersalVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of DispersalVersion with state to_review, function getToReviewDispersal');
+        logger.info('Get list of DispersalVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a DispersalVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a DispersalVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedDispersal(req, res) {
   var id_rc = req.swagger.params.id.value;
   DispersalVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last DispersalVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
+        logger.info('Get last DispersalVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

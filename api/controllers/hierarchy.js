@@ -11,6 +11,7 @@ function postHierarchy(req, res) {
     //hierarchy_version.state="to_review";
     hierarchy_version.state="accepted";
     hierarchy_version.element="hierarchy";
+    var user = hierarchy_version.id_user;
     var elementValue = hierarchy_version.hierarchy;
     hierarchy_version = new HierarchyVersion(hierarchy_version);
     var id_v = hierarchy_version._id;
@@ -36,21 +37,21 @@ function postHierarchy(req, res) {
             function(data,callback){
               if(data){
                 if(data.hierarchyVersion && data.hierarchyVersion.length !=0){
-                  var lenHierarchy = data.hierarchyVersion.length;
-                  var idLast = data.hierarchyVersion[lenHierarchy-1];
+                  var lenhierarchy = data.hierarchyVersion.length;
+                  var idLast = data.hierarchyVersion[lenhierarchy-1];
                   HierarchyVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of HierarchyVersion:" + err.message));
+                      callback(new Error("failed getting the last version of hierarchyVersion:" + err.message));
                     }else{
                       var prev = doc.hierarchyVersion;
                       var next = hierarchy_version.hierarchyVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         hierarchy_version.id_record=id_rc;
-                        hierarchy_version.version=lenHierarchy+1;
+                        hierarchy_version.version=lenhierarchy+1;
                         callback(null, hierarchy_version);
                       }else{
-                        callback(new Error("The data in HierarchyVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in hierarchyVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -215,7 +216,7 @@ function getLastAcceptedHierarchy(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last HierarchyVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

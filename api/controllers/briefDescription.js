@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import BriefDescription from '../models/briefDescription.js';
+import BriefDescriptionVersion from '../models/briefDescription.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
-
 
 function postBriefDescription(req, res) {
   var brief_description_version  = req.body; 
@@ -12,8 +11,9 @@ function postBriefDescription(req, res) {
     //brief_description_version.state="to_review";
     brief_description_version.state="accepted";
     brief_description_version.element="briefDescription";
+    var user = brief_description_version.id_user;
     var elementValue = brief_description_version.briefDescription;
-    brief_description_version = new BriefDescription(brief_description_version);
+    brief_description_version = new BriefDescriptionVersion(brief_description_version);
     var id_v = brief_description_version._id;
     var id_rc = req.swagger.params.id.value;
 
@@ -75,7 +75,7 @@ function postBriefDescription(req, res) {
                 });
             },
             function(brief_description_version, callback){ 
-                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "briefDescription": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "briefDescriptionVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));
                   }else{
@@ -91,7 +91,7 @@ function postBriefDescription(req, res) {
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
                   logger.info('Creation a new BriefDescriptionVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
-                  res.json({ message: 'Save BriefDescription', element: 'briefDescription', version : ver, _id: id_v, id_record : id_rc });
+                  res.json({ message: 'Save BriefDescriptionVersion', element: 'briefDescription', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
@@ -112,7 +112,7 @@ function getBriefDescription(req, res) {
     var id_rc = req.swagger.params.id.value;
     var version = req.swagger.params.version.value;
 
-    BriefDescription.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
+    BriefDescriptionVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
               logger.error('Error getting the indicated BriefDescriptionVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
@@ -123,7 +123,7 @@ function getBriefDescription(req, res) {
               }else{
                 logger.warn("Doesn't exist a BriefDescriptionVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
-                res.json({message: "Doesn't exist a BriefDescription with id_record: "+id_rc+" and version: "+version});
+                res.json({message: "Doesn't exist a BriefDescriptionVersion with id_record: "+id_rc+" and version: "+version});
               }
             }
     });
@@ -216,7 +216,7 @@ function getLastAcceptedBriefDescription(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last BriefDescriptionVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

@@ -4,7 +4,6 @@ import IdentificationKeysVersion from '../models/identificationKeys.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postIdentificationKeys(req, res) {
   var identification_keys_version  = req.body; 
     identification_keys_version._id = mongoose.Types.ObjectId();
@@ -12,6 +11,7 @@ function postIdentificationKeys(req, res) {
     //identification_keys_version.state="to_review";
     identification_keys_version.state="accepted";
     identification_keys_version.element="identificationKeys";
+    var user = identification_keys_version.id_user;
     var elementValue = identification_keys_version.identificationKeys;
     identification_keys_version = new IdentificationKeysVersion(identification_keys_version);
     var id_v = identification_keys_version._id;
@@ -216,7 +216,7 @@ function getLastAcceptedIdentificationKeys(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last IdentificationKeysVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);

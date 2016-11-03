@@ -4,7 +4,6 @@ import CommonNamesAtomizedVersion from '../models/commonNamesAtomized.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postCommonNamesAtomized(req, res) {
   var common_names_atomized  = req.body; 
     common_names_atomized._id = mongoose.Types.ObjectId();
@@ -12,6 +11,7 @@ function postCommonNamesAtomized(req, res) {
     //common_names_atomized.state="to_review";
     common_names_atomized.state="accepted";
     common_names_atomized.element="commonNamesAtomized";
+    var user = common_names_atomized.id_user;
     var elementValue = common_names_atomized.commonNamesAtomized;
     common_names_atomized = new CommonNamesAtomizedVersion(common_names_atomized);
     var id_v = common_names_atomized._id;
@@ -41,7 +41,7 @@ function postCommonNamesAtomized(req, res) {
                   var idLast = data.commonNamesAtomizedVersion[lencommonNamesAtomized-1];
                   CommonNamesAtomizedVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of CommonNamesAtomizedVersion:" + err.message));
+                      callback(new Error("failed getting the last version of commonNamesAtomizedVersion:" + err.message));
                     }else{
                       var prev = doc.commonNamesAtomizedVersion;
                       var next = common_names_atomized.commonNamesAtomizedVersion;
@@ -51,7 +51,7 @@ function postCommonNamesAtomized(req, res) {
                         common_names_atomized.version=lencommonNamesAtomized+1;
                         callback(null, common_names_atomized);
                       }else{
-                        callback(new Error("The data in CommonNamesAtomizedVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in commonNamesAtomizedVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -103,7 +103,7 @@ function postCommonNamesAtomized(req, res) {
     }else{
       logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
-      res.json({message: "The url doesn't have the id for the Record "});
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
 
 }
@@ -181,9 +181,9 @@ function setAcceptedCommonNamesAtomized(req, res) {
       }      
     });
   }else{
-    logger.warn("The url doesn't have the id for the Record (Ficha)");
-    res.status(400);
-    res.json({message: "The url doesn't have the id for the Record (Ficha)"});
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
+      res.status(400);
+      res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 }
 

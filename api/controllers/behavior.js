@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import BehaviorVersion from '../models/behavior.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postBehavior(req, res) {
   var behavior_version  = req.body; 
     behavior_version._id = mongoose.Types.ObjectId();
     behavior_version.created=Date();
-    behavior_version.state="to_review";
+    //behavior_version.state="to_review";
+    behavior_version.state="accepted";
     behavior_version.element="behavior";
+    var user = behavior_version.id_user;
     var elementValue = behavior_version.behavior;
     behavior_version = new BehaviorVersion(behavior_version);
     var id_v = behavior_version._id;
@@ -36,21 +37,21 @@ function postBehavior(req, res) {
             function(data,callback){
               if(data){
                 if(data.behaviorVersion && data.behaviorVersion.length !=0){
-                  var lenBehavior = data.behaviorVersion.length;
-                  var idLast = data.behaviorVersion[lenBehavior-1];
+                  var lenbehavior = data.behaviorVersion.length;
+                  var idLast = data.behaviorVersion[lenbehavior-1];
                   BehaviorVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of BehaviorVersion:" + err.message));
+                      callback(new Error("failed getting the last version of behaviorVersion:" + err.message));
                     }else{
                       var prev = doc.behaviorVersion;
                       var next = behavior_version.behaviorVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         behavior_version.id_record=id_rc;
-                        behavior_version.version=lenBehavior+1;
+                        behavior_version.version=lenbehavior+1;
                         callback(null, behavior_version);
                       }else{
-                        callback(new Error("The data in BehaviorVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in behaviorVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -85,23 +86,22 @@ function postBehavior(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new BehaviorVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save BehaviorVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new BehaviorVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save BehaviorVersion', element: 'behavior', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getBehavior(req, res) {
 
     BehaviorVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated BehaviorVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a BehaviorVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a BehaviorVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a BehaviorVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedBehavior(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set BehaviorVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated BehaviorVersion to accepted, version: ' + version + " for the Record: " + id_rc);
+        logger.info('Updated BehaviorVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
         res.json({ message: 'Updated BehaviorVersion to accepted', element: 'behavior', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewBehavior(req, res) {
   var id_rc = req.swagger.params.id.value;
   BehaviorVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of BehaviorVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of BehaviorVersion with state to_review, function getToReviewBehavior');
+        logger.info('Get list of BehaviorVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a BehaviorVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a BehaviorVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedBehavior(req, res) {
   var id_rc = req.swagger.params.id.value;
   BehaviorVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last BehaviorVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
+        logger.info('Get last BehaviorVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{

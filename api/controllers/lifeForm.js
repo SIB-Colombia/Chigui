@@ -4,17 +4,17 @@ import LifeFormVersion from '../models/lifeForm.js';
 import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
-
 function postLifeForm(req, res) {
-  var life_form  = req.body; 
-    life_form._id = mongoose.Types.ObjectId();
-    life_form.created=Date();
-    //life_form.state="to_review";
-    life_form.state="accepted";
-    life_form.element="lifeForm";
-    var elementValue = life_form.lifeForm;
-    life_form = new LifeFormVersion(life_form);
-    var id_v = life_form._id;
+  var life_form_version  = req.body; 
+    life_form_version._id = mongoose.Types.ObjectId();
+    life_form_version.created=Date();
+    //life_form_version.state="to_review";
+    life_form_version.state="accepted";
+    life_form_version.element="lifeForm";
+    var user = life_form_version.id_user;
+    var elementValue = life_form_version.lifeForm;
+    life_form_version = new LifeFormVersion(life_form_version);
+    var id_v = life_form_version._id;
     var id_rc = req.swagger.params.id.value;
 
     var ob_ids= new Array();
@@ -44,37 +44,37 @@ function postLifeForm(req, res) {
                       callback(new Error("failed getting the last version of lifeFormVersion:" + err.message));
                     }else{
                       var prev = doc.lifeFormVersion;
-                      var next = life_form.lifeFormVersion;
+                      var next = life_form_version.lifeFormVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
-                        life_form.id_record=id_rc;
-                        life_form.version=lenlifeForm+1;
-                        callback(null, life_form);
+                        life_form_version.id_record=id_rc;
+                        life_form_version.version=lenlifeForm+1;
+                        callback(null, life_form_version);
                       }else{
                         callback(new Error("The data in lifeFormVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
                 }else{
-                  life_form.id_record=id_rc;
-                  life_form.version=1;
-                  callback(null, life_form);
+                  life_form_version.id_record=id_rc;
+                  life_form_version.version=1;
+                  callback(null, life_form_version);
                 }
               }else{
                 callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
               }
             },
-            function(life_form, callback){ 
-                ver = life_form.version;
-                life_form.save(function(err){
+            function(life_form_version, callback){ 
+                ver = life_form_version.version;
+                life_form_version.save(function(err){
                   if(err){
                       callback(new Error("failed saving the element version:" + err.message));
                   }else{
-                      callback(null, life_form);
+                      callback(null, life_form_version);
                   }
                 });
             },
-            function(life_form, callback){ 
+            function(life_form_version, callback){ 
                 add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "lifeFormVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
                   if(err){
                       callback(new Error("failed added id to RecordVersion:" + err.message));
@@ -216,7 +216,7 @@ function getLastAcceptedLifeForm(req, res) {
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
         logger.info('Get last LifeFormVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
