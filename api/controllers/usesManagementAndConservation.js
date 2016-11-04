@@ -9,10 +9,12 @@ function postUsesManagementAndConservation(req, res) {
   var uses_management_conservation_version  = req.body; 
     uses_management_conservation_version._id = mongoose.Types.ObjectId();
     uses_management_conservation_version.created=Date();
-    uses_management_conservation_version.state="to_review";
+    //uses_management_conservation_version.state="to_review";
+    uses_management_conservation_version.state="accepted";
     uses_management_conservation_version.version=0;
     uses_management_conservation_version.id_record= mongoose.Types.ObjectId();
     uses_management_conservation_version.element="usesManagementAndConservation";
+    var user = uses_management_conservation_version.id_user;
     var elementValue = uses_management_conservation_version.usesManagementAndConservation;
     uses_management_conservation_version = new UsesManagementAndConservationVersion(uses_management_conservation_version);
     var id_v = uses_management_conservation_version._id;

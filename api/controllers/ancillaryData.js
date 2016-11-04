@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import async from 'async';
-import winston from 'winston';
 import AncillaryDataVersion from '../models/ancillaryData.js';
 import add_objects from '../models/additionalModels.js';
-
+import { logger }  from '../../server/log';
 
 function postAncillaryData(req, res) {
   var ancillary_data_version  = req.body; 
     ancillary_data_version._id = mongoose.Types.ObjectId();
     ancillary_data_version.created=Date();
-    ancillary_data_version.state="to_review";
+    //ancillary_data_version.state="to_review";
+    ancillary_data_version.state="accepted";
     ancillary_data_version.element="ancillaryData";
+    var user = ancillary_data_version.id_user;
     var elementValue = ancillary_data_version.ancillaryData;
     ancillary_data_version = new AncillaryDataVersion(ancillary_data_version);
     var id_v = ancillary_data_version._id;
@@ -36,21 +37,21 @@ function postAncillaryData(req, res) {
             function(data,callback){
               if(data){
                 if(data.ancillaryDataVersion && data.ancillaryDataVersion.length !=0){
-                  var lenAncillaryData = data.ancillaryDataVersion.length;
-                  var idLast = data.ancillaryDataVersion[lenAncillaryData-1];
+                  var lenancillaryData = data.ancillaryDataVersion.length;
+                  var idLast = data.ancillaryDataVersion[lenancillaryData-1];
                   AncillaryDataVersion.findById(idLast , function (err, doc){
                     if(err){
-                      callback(new Error("failed getting the last version of AncillaryDataVersion:" + err.message));
+                      callback(new Error("failed getting the last version of ancillaryDataVersion:" + err.message));
                     }else{
                       var prev = doc.ancillaryDataVersion;
                       var next = ancillary_data_version.ancillaryDataVersion;
                       //if(!compare.isEqual(prev,next)){ //TODO
                       if(true){
                         ancillary_data_version.id_record=id_rc;
-                        ancillary_data_version.version=lenAncillaryData+1;
+                        ancillary_data_version.version=lenancillaryData+1;
                         callback(null, ancillary_data_version);
                       }else{
-                        callback(new Error("The data in AncillaryDataVersion is equal to last version of this element in the database"));
+                        callback(new Error("The data in ancillaryDataVersion is equal to last version of this element in the database"));
                       }
                     }
                   });
@@ -85,23 +86,22 @@ function postAncillaryData(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  console.log("Error: "+err);
-                  winston.error("message: " + err );
+                  logger.error('Error Creation of a new AncillaryDataVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  winston.info('info', 'Save AncillaryDataVersion, version: ' + ver + " for the Record: " + id_rc);
+                  logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save AncillaryDataVersion', element: 'ancillaryData', version : ver, _id: id_v, id_record : id_rc });
                }      
             });
 
       }else{
-        winston.error("message: " + "Empty data in version of the element" );
+        logger.warn('Empty data in version of the element' );
         res.status(400);
         res.json({message: "Empty data in version of the element"});
       }
     }else{
-      winston.error("message: " + "The url doesn't have the id for the Record" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
     }
@@ -114,14 +114,14 @@ function getAncillaryData(req, res) {
 
     AncillaryDataVersion.findOne({ id_record : id_rc, version: version }).exec(function (err, elementVer) {
             if(err){
-              winston.error("message: " + err );
+              logger.error('Error getting the indicated AncillaryDataVersion', JSON.stringify({ message:err, id_record : id_rc, version: version }) );
               res.status(400);
               res.send(err);
             }else{
               if(elementVer){
                 res.json(elementVer);
               }else{
-                winston.error("message: Doesn't exist a AncillaryDataVersion with id_record " + id_rc+" and version: "+version );
+                logger.warn("Doesn't exist a AncillaryDataVersion with id_record", JSON.stringify({ id_record : id_rc, version: version }) );
                 res.status(400);
                 res.json({message: "Doesn't exist a AncillaryDataVersion with id_record: "+id_rc+" and version: "+version});
               }
@@ -172,18 +172,16 @@ function setAcceptedAncillaryData(req, res) {
     ],
     function(err, result) {
       if (err) {
-        console.log("Error: "+err);
-        winston.error("message: " + err );
+        logger.error('Error to set AncillaryDataVersion accepted', JSON.stringify({ message:err }) );
         res.status(400);
         res.json({ ErrorResponse: {message: ""+err }});
       }else{
-        winston.info('info', 'Updated AncillaryDataVersion to accepted, version: ' + version + " for the Record: " + id_rc);
-        res.json({ message: 'Updated AncillaryDataVersion to accepted', element: 'AncillaryData', version : version, id_record : id_rc });
+        logger.info('Updated AncillaryDataVersion to accepted', JSON.stringify({ version:version, id_record: id_rc }) );
+        res.json({ message: 'Updated AncillaryDataVersion to accepted', element: 'ancillaryData', version : version, id_record : id_rc });
       }      
     });
   }else{
-    //res.status(406);
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
+      logger.warn("The url doesn't have the id for the Record (Ficha)");
       res.status(400);
       res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
@@ -193,16 +191,16 @@ function getToReviewAncillaryData(req, res) {
   var id_rc = req.swagger.params.id.value;
   AncillaryDataVersion.find({ id_record : id_rc, state: "to_review" }).exec(function (err, elementList) {
     if(err){
-      winston.error("message: " + err );
+      logger.error('Error getting the list of AncillaryDataVersion at state to_review', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
       if(elementList){
         //var len = elementVer.length;
-        winston.info('info', 'Get list of AncillaryDataVersion with state to_review, function getToReviewAncillaryData');
+        logger.info('Get list of AncillaryDataVersion with state to_review', JSON.stringify({ id_record: id_rc }) );
         res.json(elementList);
       }else{
-        winston.error("message: " + err );
+        logger.warn("Doesn't exist a AncillaryDataVersion with the indicated id_record");
         res.status(406);
         res.json({message: "Doesn't exist a AncillaryDataVersion with id_record: "+id_rc});
       }
@@ -214,11 +212,12 @@ function getLastAcceptedAncillaryData(req, res) {
   var id_rc = req.swagger.params.id.value;
   AncillaryDataVersion.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
     if(err){
-    winston.error("message: " + err );
+      logger.error('Error getting the last AncillaryDataVersion at state accepted', JSON.stringify({ message:err }) );
       res.status(400);
       res.send(err);
     }else{
-      if(elementVer.length !== 0){
+      if(elementVer){
+        logger.info('Get last AncillaryDataVersion with state accepted', JSON.stringify({ id_record: id_rc }) );
         var len = elementVer.length;
         res.json(elementVer[len-1]);
       }else{
