@@ -20,6 +20,8 @@ tags:
     description: This API works against the SiB Colombia Records data store, which store all species records registered through Mamut editor.
   - name: taxonRecordName
     description: A operation related with the element TaxonRecordName
+  - name: AssociatedParty
+    description: A operation related with the element AssociatedParty
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -229,7 +231,7 @@ paths:
   /records/test/{id}/taxon_record_name:
     x-swagger-router-controller: taxonRecordName
     post:
-      description: Save a new version of a taxonRecordNameVersion related with the a record with the id
+      description: Save a new taxonRecordNameVersion related with the record with the id
       tags:
         - taxonRecordName
       operationId: postTestTaxonRecordName
@@ -259,7 +261,7 @@ paths:
   /records/{id}/associated_party/{version}:
     x-swagger-router-controller: associatedParty
     get: 
-      description: Returns a AssociatedPartyVersion by record id and number of version
+      description: Returns a AssociatedPartyVersion by record_id and number of version
       tags:
         - AssociatedParty
       operationId: getAssociatedParty
@@ -542,9 +544,9 @@ paths:
   /records/{id}/synonyms_atomized/{version}:
     x-swagger-router-controller: synonymsAtomized
     get: 
-      description: Returns a version of a SynonymsAtomized element by record id and version
+      description: Returns a SynonymsAtomizedVersion by record_id and number of version
       tags:
-        - element
+        - SynonymsAtomized
       operationId: getSynonymsAtomized
       parameters:
         - name: id
@@ -570,9 +572,9 @@ paths:
   /records/{id}/synonyms_atomized:
     x-swagger-router-controller: synonymsAtomized
     post:
-      description: Save a new version of a SynonymsAtomized related with the a recrd with the id
+      description: Save a new SynonymsAtomized related that belongs to the record with id
       tags:
-        - element
+        - SynonymsAtomized
       operationId: postSynonymsAtomized
       parameters:
         - name: id
@@ -600,9 +602,9 @@ paths:
   /records/to_review/{id}/synonyms_atomized:
     x-swagger-router-controller: synonymsAtomized
     get: 
-      description: Returns a list of SynonymsAtomized version with state "to_review"
+      description: Returns a list of SynonymsAtomizedVersion with state "to_review"
       tags:
-        - element
+        - SynonymsAtomized
       operationId: getToReviewSynonymsAtomized
       parameters:
         - name: id
@@ -625,9 +627,9 @@ paths:
   /records/accepted/{id}/synonyms_atomized:
     x-swagger-router-controller: synonymsAtomized
     get: 
-      description: Returns the synonymsAtomized version accepted #**
+      description: Returns the synonymsAtomizedVersion with state "accepted"
       tags:
-        - element
+        - SynonymsAtomized
       operationId: getLastAcceptedSynonymsAtomized
       parameters:
         - name: id
@@ -651,7 +653,7 @@ paths:
     put: 
       description: Update a SynonymsAtomizedVersion state to accepted
       tags:
-        - element
+        - SynonymsAtomized
       operationId: setAcceptedSynonymsAtomized
       parameters:
         - name: id
@@ -681,9 +683,9 @@ paths:
   /records/{id}/life_cycle/{version}:
     x-swagger-router-controller: lifeCycle
     get: 
-      description: Returns a version of a LifeCycle element by record id and version
+      description: Returns a LifeCycleVersion by record_id and number of version
       tags:
-        - element
+        - LifeCycle
       operationId: getLifeCycle
       parameters:
         - name: id
@@ -709,9 +711,9 @@ paths:
   /records/{id}/life_cycle:
     x-swagger-router-controller: lifeCycle
     post:
-      description: Save a new version of a LifeCycle related with the a recrd with the id
+      description: Save a new LifeCycleVersion related that belongs to the record with id
       tags:
-        - element
+        - LifeCycle
       operationId: postLifeCycle
       parameters:
         - name: id
@@ -739,9 +741,9 @@ paths:
   /records/to_review/{id}/life_cycle:
     x-swagger-router-controller: lifeCycle
     get: 
-      description: Returns a list of LifeCycle version with state "to_review"
+      description: Returns a list of LifeCycleVersion with state "to_review"
       tags:
-        - element
+        - LifeCycle
       operationId: getToReviewLifeCycle
       parameters:
         - name: id
@@ -764,9 +766,9 @@ paths:
   /records/accepted/{id}/life_cycle:
     x-swagger-router-controller: lifeCycle
     get: 
-      description: Returns the lifeCycle version accepted #**
+      description: Returns the lifeCycleVersion with state "accepted"
       tags:
-        - element
+        - LifeCycle
       operationId: getLastAcceptedLifeCycle
       parameters:
         - name: id
@@ -790,7 +792,7 @@ paths:
     put: 
       description: Update a LifeCycleVersion state to accepted
       tags:
-        - element
+        - LifeCycle
       operationId: setAcceptedLifeCycle
       parameters:
         - name: id
