@@ -572,7 +572,7 @@ paths:
   /records/{id}/synonyms_atomized:
     x-swagger-router-controller: synonymsAtomized
     post:
-      description: Save a new SynonymsAtomized related that belongs to the record with id
+      description: Save a new SynonymsAtomizedVersion that belongs to the record with the id in the route
       tags:
         - SynonymsAtomized
       operationId: postSynonymsAtomized
@@ -651,7 +651,7 @@ paths:
   /records/accepted/{id}/synonyms_atomized/{version}:
     x-swagger-router-controller: synonymsAtomized
     put: 
-      description: Update a SynonymsAtomizedVersion state to accepted
+      description: Update a SynonymsAtomizedVersion state to "accepted"
       tags:
         - SynonymsAtomized
       operationId: setAcceptedSynonymsAtomized
@@ -683,17 +683,20 @@ paths:
   /records/{id}/life_cycle/{version}:
     x-swagger-router-controller: lifeCycle
     get: 
-      description: Returns a LifeCycleVersion by record_id and number of version
+      description: Returns a LifeCycleVersion by id_rcord and number of version
       tags:
         - LifeCycle
       operationId: getLifeCycle
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -711,7 +714,7 @@ paths:
   /records/{id}/life_cycle:
     x-swagger-router-controller: lifeCycle
     post:
-      description: Save a new LifeCycleVersion related that belongs to the record with id
+      description: Save a new LifeCycleVersion that belongs to the record with the id in the route
       tags:
         - LifeCycle
       operationId: postLifeCycle
@@ -822,17 +825,20 @@ paths:
   /records/{id}/life_form/{version}:
     x-swagger-router-controller: lifeForm
     get: 
-      description: Returns a version of a LifeForm element by record id and version
+      description: Returns a LifeFormVersion by id_record and number of version
       tags:
-        - element
+        - LifeForm
       operationId: getLifeForm
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -850,9 +856,9 @@ paths:
   /records/{id}/life_form:
     x-swagger-router-controller: lifeForm
     post:
-      description: Save a new version of a LifeForm related with the a recrd with the id
+      description: Save a new LifeFormVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - LifeForm
       operationId: postLifeForm
       parameters:
         - name: id
@@ -880,9 +886,9 @@ paths:
   /records/to_review/{id}/life_form:
     x-swagger-router-controller: lifeForm
     get: 
-      description: Returns a list of LifeForm version with state "to_review"
+      description: Returns a list of LifeFormVersion with state "to_review"
       tags:
-        - element
+        - LifeForm
       operationId: getToReviewLifeForm
       parameters:
         - name: id
@@ -905,9 +911,9 @@ paths:
   /records/accepted/{id}/life_form:
     x-swagger-router-controller: lifeForm
     get: 
-      description: Returns the lifeForm version accepted #**
+      description: Returns the lifeFormVersion with state "accepted"
       tags:
-        - element
+        - LifeForm
       operationId: getLastAcceptedLifeForm
       parameters:
         - name: id
@@ -929,9 +935,9 @@ paths:
   /records/accepted/{id}/life_form/{version}:
     x-swagger-router-controller: lifeForm
     put: 
-      description: Update a LifeFormVersion state to accepted
+      description: Update a LifeFormVersion state to "accepted"
       tags:
-        - element
+        - LifeForm
       operationId: setAcceptedLifeForm
       parameters:
         - name: id
@@ -961,17 +967,20 @@ paths:
   /records/{id}/identification_keys/{version}:
     x-swagger-router-controller: identificationKeys
     get: 
-      description: Returns a version of a IdentificationKeys element by record id and version
+      description: Returns a IdentificationKeysVersion by id_record and number of version
       tags:
-        - element
+        - IdentificationKeys
       operationId: getIdentificationKeys
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -989,9 +998,9 @@ paths:
   /records/{id}/identification_keys:
     x-swagger-router-controller: identificationKeys
     post:
-      description: Save a new version of a IdentificationKeys related with the a recrd with the id
+      description: Save a new IdentificationKeysVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - IdentificationKeys
       operationId: postIdentificationKeys
       parameters:
         - name: id
@@ -1019,9 +1028,9 @@ paths:
   /records/to_review/{id}/identification_keys:
     x-swagger-router-controller: identificationKeys
     get: 
-      description: Returns a list of IdentificationKeys version with state "to_review"
+      description: Returns a list of IdentificationKeysVersion with state "to_review"
       tags:
-        - element
+        - IdentificationKeys
       operationId: getToReviewIdentificationKeys
       parameters:
         - name: id
@@ -1044,9 +1053,9 @@ paths:
   /records/accepted/{id}/identification_keys:
     x-swagger-router-controller: identificationKeys
     get: 
-      description: Returns the identificationKeys version accepted #**
+      description: Returns the identificationKeysVersion with state "accepted"
       tags:
-        - element
+        - IdentificationKeys
       operationId: getLastAcceptedIdentificationKeys
       parameters:
         - name: id
@@ -1068,9 +1077,9 @@ paths:
   /records/accepted/{id}/identification_keys/{version}:
     x-swagger-router-controller: identificationKeys
     put: 
-      description: Update a IdentificationKeysVersion state to accepted
+      description: Update a IdentificationKeysVersion state to "accepted"
       tags:
-        - element
+        - IdentificationKeys
       operationId: setAcceptedIdentificationKeys
       parameters:
         - name: id
@@ -1100,13 +1109,14 @@ paths:
   /records/{id}/full_description/{version}:
     x-swagger-router-controller: fullDescription
     get: 
-      description: Returns a version of a fullDescription element by record id and version
+      description: Returns a FullDescriptionVersion by id_record and number of version
       tags:
-        - element
+        - FullDescription
       operationId: getFullDescription
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
@@ -1128,9 +1138,9 @@ paths:
   /records/{id}/full_description:
     x-swagger-router-controller: fullDescription
     post:
-      description: Save a new version of a fullDescription related with the a recrd with the id
+      description: Save a new  FullDescriptionVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - FullDescription
       operationId: postFullDescription
       parameters:
         - name: id
@@ -1158,9 +1168,9 @@ paths:
   /records/to_review/{id}/full_description:
     x-swagger-router-controller: fullDescription
     get: 
-      description: Returns a list of FullDescription version with state "to_review"
+      description: Returns a list of FullDescriptionVersion with state "to_review"
       tags:
-        - element
+        - FullDescription
       operationId: getToReviewFullDescription
       parameters:
         - name: id
@@ -1183,9 +1193,9 @@ paths:
   /records/accepted/{id}/full_description:
     x-swagger-router-controller: fullDescription
     get: 
-      description: Returns the fullDescription version accepted #**
+      description: Returns the FullDescriptionVersion with state "accepted"
       tags:
-        - element
+        - FullDescription
       operationId: getLastAcceptedFullDescription
       parameters:
         - name: id
@@ -1207,9 +1217,9 @@ paths:
   /records/accepted/{id}/full_description/{version}:
     x-swagger-router-controller: fullDescription
     put: 
-      description: Update a FullDescriptionVersion state to accepted
+      description: Update a FullDescriptionVersion state to "accepted"
       tags:
-        - element
+        - FullDescription
       operationId: setAcceptedFullDescription
       parameters:
         - name: id
@@ -1239,17 +1249,20 @@ paths:
   /records/{id}/abstract/{version}:
     x-swagger-router-controller: abstract
     get: 
-      description: Returns a version of a Abstract element by record id and version
+      description: Returns a AbstractVersion by id_record and number of version
       tags:
-        - element
+        - Abstract
       operationId: getAbstract
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1267,9 +1280,9 @@ paths:
   /records/{id}/abstract:
     x-swagger-router-controller: abstract
     post:
-      description: Save a new version of a abstract related with the a recrd with the id
+      description: Save a new AbstractVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Abstract
       operationId: postAbstract
       parameters:
         - name: id
@@ -1297,9 +1310,9 @@ paths:
   /records/to_review/{id}/abstract:
     x-swagger-router-controller: abstract
     get: 
-      description: Returns a list of Abstract version with state "to_review"
+      description: Returns a list of AbstractVersion with state "to_review"
       tags:
-        - element
+        - Abstract
       operationId: getToReviewAbstract
       parameters:
         - name: id
@@ -1322,9 +1335,9 @@ paths:
   /records/accepted/{id}/abstract:
     x-swagger-router-controller: abstract
     get: 
-      description: Returns the abstract version accepted #**
+      description: Returns the AbstractVersion with state "accepted"
       tags:
-        - element
+        - Abstract
       operationId: getLastAcceptedAbstract
       parameters:
         - name: id
@@ -1346,9 +1359,9 @@ paths:
   /records/accepted/{id}/abstract/{version}:
     x-swagger-router-controller: abstract
     put: 
-      description: Update a AbstractVersion state to accepted
+      description: Update a AbstractVersion state to "accepted"
       tags:
-        - element
+        - Abstract
       operationId: setAcceptedAbstract
       parameters:
         - name: id
@@ -1378,17 +1391,20 @@ paths:
   /records/{id}/hierarchy/{version}:
     x-swagger-router-controller: hierarchy
     get: 
-      description: Returns a version of a Hierarchy element by record id and version
+      description: Returns a HierarchyVersion element by record id and version
       tags:
-        - element
+        - Hierarchy
       operationId: getHierarchy
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1406,9 +1422,9 @@ paths:
   /records/{id}/hierarchy:
     x-swagger-router-controller: hierarchy
     post:
-      description: Save a new version of a hierarchy related with the a recrd with the id
+      description: Save a new HierarchyVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Hierarchy
       operationId: postHierarchy
       parameters:
         - name: id
@@ -1436,9 +1452,9 @@ paths:
   /records/to_review/{id}/hierarchy:
     x-swagger-router-controller: hierarchy
     get: 
-      description: Returns a list of Hierarchy version with state "to_review"
+      description: Returns a list of HierarchyVersion with state "to_review"
       tags:
-        - element
+        - Hierarchy
       operationId: getToReviewHierarchy
       parameters:
         - name: id
@@ -1461,9 +1477,9 @@ paths:
   /records/accepted/{id}/hierarchy:
     x-swagger-router-controller: hierarchy
     get: 
-      description: Returns the hierarchy version accepted #**
+      description: Returns the HierarchyVersion with state "accepted"
       tags:
-        - element
+        - Hierarchy
       operationId: getLastAcceptedHierarchy
       parameters:
         - name: id
@@ -1485,9 +1501,9 @@ paths:
   /records/accepted/{id}/hierarchy/{version}:
     x-swagger-router-controller: hierarchy
     put: 
-      description: Update a HierarchyVersion state to accepted
+      description: Update a HierarchyVersion state to "accepted"
       tags:
-        - element
+        - Hierarchy
       operationId: setAcceptedHierarchy
       parameters:
         - name: id
@@ -1517,17 +1533,20 @@ paths:
   /records/{id}/reproduction/{version}:
     x-swagger-router-controller: reproduction
     get: 
-      description: Returns a version of a Reproduction element by record id and version
+      description: Returns a ReproductionVersion by id_record and number of version
       tags:
-        - element
+        - Reproduction
       operationId: getReproduction
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1545,9 +1564,9 @@ paths:
   /records/{id}/reproduction:
     x-swagger-router-controller: reproduction
     post:
-      description: Save a new version of a reproduction related with the a recrd with the id
+      description: Save a new ReproductionVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Reproduction
       operationId: postReproduction
       parameters:
         - name: id
@@ -1575,9 +1594,9 @@ paths:
   /records/to_review/{id}/reproduction:
     x-swagger-router-controller: reproduction
     get: 
-      description: Returns a list of Reproduction version with state "to_review"
+      description: Returns a list of ReproductionVersion with state "to_review"
       tags:
-        - element
+        - Reproduction
       operationId: getToReviewReproduction
       parameters:
         - name: id
@@ -1600,9 +1619,9 @@ paths:
   /records/accepted/{id}/reproduction:
     x-swagger-router-controller: reproduction
     get: 
-      description: Returns the reproduction version accepted #**
+      description: Returns the ReproductionVersion with state "accepted"
       tags:
-        - element
+        - Reproduction
       operationId: getLastAcceptedReproduction
       parameters:
         - name: id
@@ -1624,9 +1643,9 @@ paths:
   /records/accepted/{id}/reproduction/{version}:
     x-swagger-router-controller: reproduction
     put: 
-      description: Update a ReproductionVersion state to accepted
+      description: Update a ReproductionVersion state to "accepted"
       tags:
-        - element
+        - Reproduction
       operationId: setAcceptedReproduction
       parameters:
         - name: id
@@ -1656,17 +1675,20 @@ paths:
   /records/{id}/annual_cycles/{version}:
     x-swagger-router-controller: annualCycles
     get: 
-      description: Returns a version of a AnnualCycles element by record id and version
+      description: Returns an AnnualCyclesVersion by id_record and number of version
       tags:
-        - element
+        - AnnualCycles
       operationId: getAnnualCycles
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1684,9 +1706,9 @@ paths:
   /records/{id}/annual_cycles:
     x-swagger-router-controller: annualCycles
     post:
-      description: Save a new version of a annualCycles related with the a recrd with the id
+      description: Save a new AnnualCyclesVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - AnnualCycles
       operationId: postAnnualCycles
       parameters:
         - name: id
@@ -1714,9 +1736,9 @@ paths:
   /records/to_review/{id}/annual_cycles:
     x-swagger-router-controller: annualCycles
     get: 
-      description: Returns a list of AnnualCycles version with state "to_review"
+      description: Returns a list of AnnualCyclesVersion with state "to_review"
       tags:
-        - element
+        - AnnualCycles
       operationId: getToReviewAnnualCycles
       parameters:
         - name: id
@@ -1739,9 +1761,9 @@ paths:
   /records/accepted/{id}/annual_cycles:
     x-swagger-router-controller: annualCycles
     get: 
-      description: Returns the annualCycles version accepted #**
+      description: Returns the annualCycles with state "accepted"
       tags:
-        - element
+        - AnnualCycles
       operationId: getLastAcceptedAnnualCycles
       parameters:
         - name: id
@@ -1763,9 +1785,9 @@ paths:
   /records/accepted/{id}/annual_cycles/{version}:
     x-swagger-router-controller: annualCycles
     put: 
-      description: Update a AnnualCyclesVersion state to accepted
+      description: Update a AnnualCyclesVersion state to "accepted"
       tags:
-        - element
+        - AnnualCycles
       operationId: setAcceptedAnnualCycles
       parameters:
         - name: id
@@ -1795,17 +1817,20 @@ paths:
   /records/{id}/feeding/{version}:
     x-swagger-router-controller: feeding
     get: 
-      description: Returns a version of a Feeding element by record id and version
+      description: Returns a FeedingVersion by id_record and number of version
       tags:
-        - element
+        - Feeding
       operationId: getFeeding
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1823,9 +1848,9 @@ paths:
   /records/{id}/feeding:
     x-swagger-router-controller: feeding
     post:
-      description: Save a new version of a feeding related with the a recrd with the id
+      description: Save a new FeedingVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Feeding
       operationId: postFeeding
       parameters:
         - name: id
@@ -1854,9 +1879,9 @@ paths:
   /records/to_review/{id}/feeding:
     x-swagger-router-controller: feeding
     get: 
-      description: Returns a list of Feeding version with state "to_review"
+      description: Returns a list of FeedingVersion with state "to_review"
       tags:
-        - element
+        - Feeding
       operationId: getToReviewFeeding
       parameters:
         - name: id
@@ -1879,9 +1904,9 @@ paths:
   /records/accepted/{id}/feeding:
     x-swagger-router-controller: feeding
     get: 
-      description: Returns the feeding version accepted #**
+      description: Returns the FeedingVersion with state "accepted"
       tags:
-        - element
+        - Feeding
       operationId: getLastAcceptedFeeding
       parameters:
         - name: id
@@ -1903,9 +1928,9 @@ paths:
   /records/accepted/{id}/feeding/{version}:
     x-swagger-router-controller: feeding
     put: 
-      description: Update a FeedingVersion state to accepted
+      description: Update a FeedingVersion state to "accepted"
       tags:
-        - element
+        - Feeding
       operationId: setAcceptedFeeding
       parameters:
         - name: id
