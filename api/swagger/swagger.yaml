@@ -1960,17 +1960,20 @@ paths:
   /records/{id}/dispersal/{version}:
     x-swagger-router-controller: dispersal
     get: 
-      description: Returns a version of a Dispersal element by record id and version
+      description: Returns a DispersalVersion by id_record and number of version
       tags:
-        - element
+        - Dispersal
       operationId: getDispersal
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -1988,9 +1991,9 @@ paths:
   /records/{id}/dispersal:
     x-swagger-router-controller: dispersal
     post:
-      description: Save a new version of a dispersal related with the a recrd with the id
+      description: Save a new DispersalVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Dispersal
       operationId: postDispersal
       parameters:
         - name: id
@@ -2018,9 +2021,9 @@ paths:
   /records/to_review/{id}/dispersal:
     x-swagger-router-controller: dispersal
     get: 
-      description: Returns a list of Dispersal version with state "to_review"
+      description: Returns a list of DispersalVersion with state "to_review"
       tags:
-        - element
+        - Dispersal
       operationId: getToReviewDispersal
       parameters:
         - name: id
@@ -2043,9 +2046,9 @@ paths:
   /records/accepted/{id}/dispersal:
     x-swagger-router-controller: dispersal
     get: 
-      description: Returns the dispersal version accepted #**
+      description: Returns the DispersalVersion with state "accepted"
       tags:
-        - element
+        - Dispersal
       operationId: getLastAcceptedDispersal
       parameters:
         - name: id
@@ -2067,9 +2070,9 @@ paths:
   /records/accepted/{id}/dispersal/{version}:
     x-swagger-router-controller: dispersal
     put: 
-      description: Update a DispersalVersion state to accepted
+      description: Update a DispersalVersion state to "accepted"
       tags:
-        - element
+        - Dispersal
       operationId: setAcceptedDispersal
       parameters:
         - name: id
@@ -2099,17 +2102,20 @@ paths:
   /records/{id}/behavior/{version}:
     x-swagger-router-controller: behavior
     get: 
-      description: Returns a version of a Behavior element by record id and version
+      description: Returns a BehaviorVersion by id_record and number of version
       tags:
-        - element
+        - Behavior
       operationId: getBehavior
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -2127,9 +2133,9 @@ paths:
   /records/{id}/behavior:
     x-swagger-router-controller: behavior
     post:
-      description: Save a new version of a behavior related with the a record with the id
+      description: Save a new BehaviorVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Behavior
       operationId: postBehavior
       parameters:
         - name: id
@@ -2157,9 +2163,9 @@ paths:
   /records/to_review/{id}/behavior:
     x-swagger-router-controller: behavior
     get: 
-      description: Returns a list of Behavior version with state "to_review"
+      description: Returns a list of BehaviorVersion with state "to_review"
       tags:
-        - element
+        - Behavior
       operationId: getToReviewBehavior
       parameters:
         - name: id
@@ -2182,9 +2188,9 @@ paths:
   /records/accepted/{id}/behavior:
     x-swagger-router-controller: behavior
     get: 
-      description: Returns the behavior version accepted #**
+      description: Returns the BehaviorVersion with state "accepted"
       tags:
-        - element
+        - Behavior
       operationId: getLastAcceptedBehavior
       parameters:
         - name: id
@@ -2206,9 +2212,9 @@ paths:
   /records/accepted/{id}/behavior/{version}:
     x-swagger-router-controller: behavior
     put: 
-      description: Update a BehaviorVersion state to accepted
+      description: Update a BehaviorVersion state to "accepted"
       tags:
-        - element
+        - Behavior
       operationId: setAcceptedBehavior
       parameters:
         - name: id
@@ -2238,17 +2244,20 @@ paths:
   /records/{id}/interactions/{version}:
     x-swagger-router-controller: interactions
     get: 
-      description: Returns a version of a Interactions element by record id and version
+      description: Returns a InteractionsVersion by id_record and number of version
       tags:
-        - element
+        - Interactions
       operationId: getInteractions
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -2266,9 +2275,9 @@ paths:
   /records/{id}/interactions:
     x-swagger-router-controller: interactions
     post:
-      description: Save a new version of a Interactions element which belongs to record with id in the url
+      description: Save a new InteractionsVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - Interactions
       operationId: postInteractions
       parameters:
         - name: id
@@ -2296,9 +2305,9 @@ paths:
   /records/to_review/{id}/interactions:
     x-swagger-router-controller: interactions
     get: 
-      description: Returns a list of Interactions version with state "to_review"
+      description: Returns a list of InteractionsVersion with state "to_review"
       tags:
-        - element
+        - Interactions
       operationId: getToReviewInteractions
       parameters:
         - name: id
@@ -2321,9 +2330,9 @@ paths:
   /records/accepted/{id}/interactions:
     x-swagger-router-controller: interactions
     get: 
-      description: Returns the interactions version accepted #**
+      description: Returns the InteractionsVersion with state "accepted"
       tags:
-        - element
+        - Interactions
       operationId: getLastAcceptedInteractions
       parameters:
         - name: id
@@ -2345,9 +2354,9 @@ paths:
   /records/accepted/{id}/interactions/{version}:
     x-swagger-router-controller: interactions
     put: 
-      description: Update a InteractionsVersion state to accepted
+      description: Update a InteractionsVersion state to "accepted"
       tags:
-        - element
+        - Interactions
       operationId: setAcceptedInteractions
       parameters:
         - name: id
@@ -2377,17 +2386,20 @@ paths:
   /records/{id}/molecular_data/{version}:
     x-swagger-router-controller: molecularData
     get: 
-      description: Returns a version of a MolecularData element by record id and version
+      description: Returns a MolecularDataVersion by id_record and number of version
       tags:
-        - element
+        - MolecularData
       operationId: getMolecularData
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -2405,9 +2417,9 @@ paths:
   /records/{id}/molecular_data:
     x-swagger-router-controller: molecularData
     post:
-      description: Save a new version of a MolecularData element which belongs to record with id in the url
+      description: Save a new MolecularDataVersion that belongs to the record with the id in the route
       tags:
-        - element
+        - MolecularData
       operationId: postMolecularData
       parameters:
         - name: id
@@ -2435,9 +2447,9 @@ paths:
   /records/to_review/{id}/molecular_data:
     x-swagger-router-controller: molecularData
     get: 
-      description: Returns a list of MolecularData version with state "to_review"
+      description: Returns a list of MolecularDataVersion with state "to_review"
       tags:
-        - element
+        - MolecularData
       operationId: getToReviewMolecularData
       parameters:
         - name: id
@@ -2460,9 +2472,9 @@ paths:
   /records/accepted/{id}/molecular_data:
     x-swagger-router-controller: molecularData
     get: 
-      description: Returns the molecularData version accepted #**
+      description: Returns the molecularDataVersion  with state "accepted"
       tags:
-        - element
+        - MolecularData
       operationId: getLastAcceptedMolecularData
       parameters:
         - name: id
@@ -2484,9 +2496,9 @@ paths:
   /records/accepted/{id}/molecular_data/{version}:
     x-swagger-router-controller: molecularData
     put: 
-      description: Update a MolecularDataVersion state to accepted
+      description: Update a MolecularDataVersion state to "accepted"
       tags:
-        - element
+        - MolecularData
       operationId: setAcceptedMolecularData
       parameters:
         - name: id

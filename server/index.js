@@ -14,6 +14,7 @@ import mongoose from 'mongoose';
 const app = express();
 const swaggerConfig = {
   appRoot: `${__dirname}/..`
+  
 };
 
 app.server = http.createServer(app);
