@@ -33,6 +33,13 @@ consumes:
 produces:
   - application/json
 paths:
+  /list/{id}:
+    x-swagger-router-controller: records
+    get:
+      description: get a list of records
+      tags:
+        - record
+      operationId: getRecordList
   
   /records/{id}:
     x-swagger-router-controller: records
@@ -3380,17 +3387,20 @@ paths:
   /records/{id}/legislation/{version}:
     x-swagger-router-controller: legislation
     get: 
-      description: Returns a version of a Legislation element by record id and version
+      description: Returns a LegislationVersion by id_record and number of version
       tags:
-        - element
+        - Legislation
       operationId: getLegislation
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -3408,9 +3418,9 @@ paths:
   /records/{id}/legislation:
     x-swagger-router-controller: legislation
     post:
-      description: Save a new version of a Legislation element which belongs to record with id in the url
+      description: Save a new LegislationVersion that belongs to the record with the id in the path
       tags:
-        - element
+        - Legislation
       operationId: postLegislation
       parameters:
         - name: id
@@ -3438,9 +3448,9 @@ paths:
   /records/to_review/{id}/legislation:
     x-swagger-router-controller: legislation
     get: 
-      description: Returns a list of Legislation version with state "to_review"
+      description: Returns a list of LegislationVersion with state "to_review"
       tags:
-        - element
+        - Legislation
       operationId: getToReviewLegislation
       parameters:
         - name: id
@@ -3463,9 +3473,9 @@ paths:
   /records/accepted/{id}/legislation:
     x-swagger-router-controller: legislation
     get: 
-      description: Returns the legislation version accepted #**
+      description: Returns the LegislationVersion with state "accepted"
       tags:
-        - element
+        - Legislation
       operationId: getLastAcceptedLegislation
       parameters:
         - name: id
@@ -3487,9 +3497,9 @@ paths:
   /records/accepted/{id}/legislation/{version}:
     x-swagger-router-controller: legislation
     put: 
-      description: Update a LegislationVersion state to accepted
+      description: Update a LegislationVersion state to "accepted"
       tags:
-        - element
+        - Legislation
       operationId: setAcceptedLegislation
       parameters:
         - name: id
@@ -3520,17 +3530,20 @@ paths:
   /records/{id}/uses_management_conservation/{version}:
     x-swagger-router-controller: usesManagementAndConservation
     get: 
-      description: Returns a version of a UsesManagementAndConservation element by record id and version
+      description: Returns a UsesManagementAndConservationVersion by id_record and number of version
       tags:
-        - element
+        - UsesManagementAndConservation
       operationId: getUsesManagementAndConservation
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -3548,9 +3561,9 @@ paths:
   /records/{id}/uses_management_conservation:
     x-swagger-router-controller: usesManagementAndConservation
     post:
-      description: Save a new version of a UsesManagementAndConservation element which belongs to record with id in the url
+      description: Save a new UsesManagementAndConservationVersion that belongs to the record with the id in the path
       tags:
-        - element
+        - UsesManagementAndConservation
       operationId: postUsesManagementAndConservation
       parameters:
         - name: id
@@ -3578,9 +3591,9 @@ paths:
   /records/to_review/{id}/uses_management_conservation:
     x-swagger-router-controller: usesManagementAndConservation
     get: 
-      description: Returns a list of UsesManagementAndConservation version with state "to_review"
+      description: Returns a list of UsesManagementAndConservationVersion with state "to_review"
       tags:
-        - element
+        - UsesManagementAndConservation
       operationId: getToReviewUsesManagementAndConservation
       parameters:
         - name: id
@@ -3603,9 +3616,9 @@ paths:
   /records/accepted/{id}/uses_management_conservation:
     x-swagger-router-controller: usesManagementAndConservation
     get: 
-      description: Returns the usesManagementAndConservation version accepted #**
+      description: Returns the UsesManagementAndConservationVersion with state "accepted"
       tags:
-        - element
+        - UsesManagementAndConservation
       operationId: getLastAcceptedUsesManagementAndConservation
       parameters:
         - name: id
@@ -3627,9 +3640,9 @@ paths:
   /records/accepted/{id}/uses_management_conservation/{version}:
     x-swagger-router-controller: usesManagementAndConservation
     put: 
-      description: Update a UsesManagementAndConservationVersion state to accepted
+      description: Update a UsesManagementAndConservationVersion state to "accepted"
       tags:
-        - element
+        - UsesManagementAndConservation
       operationId: setAcceptedUsesManagementAndConservation
       parameters:
         - name: id
