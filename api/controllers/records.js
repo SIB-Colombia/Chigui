@@ -40,8 +40,6 @@ import EcologicalSignificanceVersion from '../models/ecologicalSignificance.js';
 import InvasivenessVersion from '../models/invasiveness.js';
 import add_objects from '../models/additionalModels.js';
 
-//winston.add(winston.transports.File, { filename: 'chigui.log' });
-
 
 /*
   Returns the last version of a record according to id
@@ -510,10 +508,18 @@ function lastRecord(req, res) {
 };
 
 function getRecordList(req, res) {
+
+  var RecordVersion = mongoose.model('RecordVersion').schema;
+  //var id_rc=req.swagger.params.id.value;
+  var ver=req.params.version;
+  var lastRec={};
+  //---------------
   var lastRec={};
   var response=[];
   var dataObject ={};
-  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
+  var query = add_objects.RecordVersion.find({}).select('_id').sort({ _id: -1});
+  //var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
+  //var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
   async.waterfall([
     function(callback){ 
       /*
@@ -548,7 +554,6 @@ function getRecordList(req, res) {
 }
 
 module.exports = {
-  occurrenceCount,
-  search,
-  lastRecord
+  lastRecord,
+  getRecordList
 };

@@ -33,13 +33,24 @@ consumes:
 produces:
   - application/json
 paths:
-  /list/{id}:
+  /list/:
     x-swagger-router-controller: records
     get:
       description: get a list of records
       tags:
         - record
       operationId: getRecordList
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Record"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   
   /records/{id}:
     x-swagger-router-controller: records
@@ -3673,17 +3684,20 @@ paths:
   /records/{id}/direct_threats/{version}:
     x-swagger-router-controller: directThreats
     get: 
-      description: Returns a version of a DirectThreats element by record id and version
+      description: Returns a DirectThreatsVersion by id_record and number of version
       tags:
-        - element
+        - DirectThreats
       operationId: getDirectThreats
       parameters:
         - name: id
           type: string
+          description: "ID of the record(ficha)"
           in: path
           required: true
         - name: version
           type: integer
+          description: "Version of the element"
+          minimum: 1
           in: path
           required: true
       responses:
@@ -3701,9 +3715,9 @@ paths:
   /records/{id}/direct_threats:
     x-swagger-router-controller: directThreats
     post:
-      description: Save a new version of a DirectThreats element which belongs to record with id in the url
+      description: Save a new version DirectThreatsVersion that belongs to the record with the id in the path
       tags:
-        - element
+        - DirectThreats
       operationId: postDirectThreats
       parameters:
         - name: id
@@ -3731,9 +3745,9 @@ paths:
   /records/to_review/{id}/direct_threats:
     x-swagger-router-controller: directThreats
     get: 
-      description: Returns a list of DirectThreats version with state "to_review"
+      description: Returns a list of DirectThreatsVersion with state "to_review"
       tags:
-        - element
+        - DirectThreats
       operationId: getToReviewDirectThreats
       parameters:
         - name: id
@@ -3756,9 +3770,9 @@ paths:
   /records/accepted/{id}/direct_threats:
     x-swagger-router-controller: directThreats
     get: 
-      description: Returns the directThreats version accepted #**
+      description: Returns the DirectThreatsVersion with state "accepted"
       tags:
-        - element
+        - DirectThreats
       operationId: getLastAcceptedDirectThreats
       parameters:
         - name: id
@@ -3780,9 +3794,9 @@ paths:
   /records/accepted/{id}/direct_threats/{version}:
     x-swagger-router-controller: directThreats
     put: 
-      description: Update a DirectThreatsVersion state to accepted
+      description: Update a DirectThreatsVersion state to "accepted"
       tags:
-        - element
+        - DirectThreats
       operationId: setAcceptedDirectThreats
       parameters:
         - name: id
@@ -3812,9 +3826,9 @@ paths:
   /records/{id}/endemic_atomized/{version}:
     x-swagger-router-controller: endemicAtomized
     get: 
-      description: Returns a version of a EndemicAtomized element by record id and version
+      description: Returns an EndemicAtomizedVersion by id_record and number of version
       tags:
-        - element
+        - EndemicAtomized
       operationId: getEndemicAtomized
       parameters:
         - name: id
@@ -3840,9 +3854,9 @@ paths:
   /records/{id}/endemic_atomized:
     x-swagger-router-controller: endemicAtomized
     post:
-      description: Save a new version of a EndemicAtomized element which belongs to record with id in the url
+      description: Save a new EndemicAtomizedVersion that belongs to the record with the id in the path
       tags:
-        - element
+        - EndemicAtomized
       operationId: postEndemicAtomized
       parameters:
         - name: id
@@ -3870,9 +3884,9 @@ paths:
   /records/to_review/{id}/endemic_atomized:
     x-swagger-router-controller: endemicAtomized
     get: 
-      description: Returns a list of EndemicAtomized version with state "to_review"
+      description: Returns a list of EndemicAtomizedVersion with state "to_review"
       tags:
-        - element
+        - EndemicAtomized
       operationId: getToReviewEndemicAtomized
       parameters:
         - name: id
@@ -3895,9 +3909,9 @@ paths:
   /records/accepted/{id}/endemic_atomized:
     x-swagger-router-controller: endemicAtomized
     get: 
-      description: Returns the endemicAtomized version accepted #**
+      description: Returns the EndemicAtomizedVersion with state "accepted"
       tags:
-        - element
+        - EndemicAtomized
       operationId: getLastAcceptedEndemicAtomized
       parameters:
         - name: id
@@ -3919,9 +3933,9 @@ paths:
   /records/accepted/{id}/endemic_atomized/{version}:
     x-swagger-router-controller: endemicAtomized
     put: 
-      description: Update a EndemicAtomizedVersion state to accepted
+      description: Update a EndemicAtomizedVersion state to "accepted"
       tags:
-        - element
+        - EndemicAtomized
       operationId: setAcceptedEndemicAtomized
       parameters:
         - name: id
