@@ -108,18 +108,6 @@ function lastRecord(req, res) {
           });
         },
         function(callback){
-          /*
-          TaxonRecordNameVersion.findOne({ id_record : id_rc, version: lenTaxRecNam }).exec(function (err, elementVer) {
-            if(err){
-              callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
-            }else{
-              if(elementVer){
-                lastRec.taxonRecordName = elementVer.taxonRecordName;
-              }
-              callback();
-            }
-          });
-          */
           TaxonRecordNameVersion.findOne({ id_record : id_rc, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
             if(err){
               callback(new Error("Error to get TaxonRecordName element for the record with id: "+id_rc+" : " + err.message));
@@ -584,114 +572,23 @@ function getRecordList(req, res) {
   //res.json(response);
 };
 
-function getRecordList(req, res) {
-  //var response={};
+function deleteRecord(req, res) {
+  var RecordVersion = mongoose.model('RecordVersion').schema;
+  var id_rc=req.swagger.params.id.value;
+  var ver=req.params.version;
   var lastRec={};
-  var response=[];
-  var dataObject ={};
-  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
-  /*
-  var skip = parseInt(req.query.skip);
-  var limit = parseInt(req.query.limit) ;
-  if(typeof skip ==="undefined" || typeof limit ==="undefined" || skip.length==0 || limit.length==0){
-    query.exec(function (err, data) {
-        if (err) 
-          res.send(err);
-        if(data.length==0){
-          res.json({"message" : "No data in the database"});
-        }else{
-          if(data){
-          var lenData=data.length;
-          var lenTaxRecNam=0;
-          var lenAsPar=0;
-          for (i = 0; i < lenData ; i++) {
-            lastRec._id=data[i]._id;
-            lastRec.creation_date=data[i]._id.getTimestamp();
-            lenTaxRecNam=data[i].taxonRecordNameVersion.length;
-            lenAsPar=data[i].associatedPartyVersion.length;
-            if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
-              lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
-            }else{
-              lastRec.associatedParty="";
-            }
-  
-            if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
-              lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
-            }else{
-              lastRec.taxonRecordName="";
-            }
-
-            response.push(lastRec);
-            lastRec={};
-          }
-          console.log(data.length);
-          console.log("Resultado: "+data);
-          res.json(response);
-        }else{
-          res.json({"message" : "No data in the database"});
-        }
+  add_objects.RecordVersion.remove({ _id : id_rc }).exec(function (err, result) {
+    if(err){
+        console.log("error");
+      }else{
+        console.log(result);
       }
-    });
-  }else{
-    if (skip === 1) {
-      skip = 0;
-    }else {
-      skip = ((skip -1)*limit) + 1;
-    };
-    //query=add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate({path: 'taxonRecordNameVersion'}).sort({ _id: -1}).limit(limit).skip(skip);
-    var totalRecords = 0;
-    add_objects.RecordVersion.find({}).count(function (err, count){
-      totalRecords = count;
-    });
-    query = add_objects.RecordVersion.find({});
-    
-    
-    query.skip(skip).limit(limit).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').exec('find', function (err, data) {
-        if (err) 
-          res.send(err);
-        if(data.length==0){
-          res.json({"message" : "No data in the database"});
-        }else{
-          if(data){
-          var lenData=data.length;
-          var lenTaxRecNam=0;
-          var lenAsPar=0;
-          for (i = 0; i < lenData ; i++) {
-            lastRec._id=data[i]._id;
-            lastRec.creation_date=data[i]._id.getTimestamp();
-            lenTaxRecNam=data[i].taxonRecordNameVersion.length;
-            lenAsPar=data[i].associatedPartyVersion.length;
-            if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
-              lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
-            }else{
-              lastRec.associatedParty="";
-            }
-  
-            if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
-              lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
-            }else{
-              lastRec.taxonRecordName="";
-            }
+  });
 
-            response.push(lastRec);
-            lastRec={};
-          }
-          dataObject.docs = response;
-          dataObject.total = totalRecords;
-          console.log(totalRecords);
-          //console.log("Resultado: "+data);
-          res.json(dataObject);
-        }else{
-          res.json({"message" : "No data in the database"});
-        }
-      }
-    });
-  }
-  
 };
 
 module.exports = {
   lastRecord,
   getRecordList
-  */
+  
 };

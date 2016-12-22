@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var async = require('async');
 var TaxonRecordNameVersion = require('../models/taxonRecordName.js');
+var AssociatedPartyVersion = require('../models/associatedParty.js');
 var add_objects = require('../models/additionalModels.js');
 
 var value={};
@@ -22,6 +23,9 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
         var taxonSchema = TaxonRecordNameVersion.schema;
         TaxonRecordNameVersion = catalogoDb.model('TaxonRecordNameVersion', taxonSchema );
+
+        var associatedPartySchema = AssociatedPartyVersion.schema;
+        AssociatedPartyVersion = catalogoDb.model('AssociatedPartyVersion', associatedPartySchema );
 
     	async.waterfall([
     		function(callback){
@@ -48,17 +52,43 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     								//console.log(elementVer.taxonRecordName.scientificName.simple);
     								record_data.scientificName = elementVer.taxonRecordName.scientificName.simple;
     							}
-    							//console.log(record_data.scientificName);
-    							callback();
     						}else{
     							record_data.scientificName = "";
-    							callback();
+    							
     						}
-
+    						callback();
     					}
     				});
-    				//callback();
     			},function(err){
+    				if(err){
+          				callback(new Error("Error"));
+        			}else{
+          				callback(null, data);
+        			}
+    			});
+    			//callback(null, data);
+    		},
+    		function(data,callback){
+    			async.eachSeries(data, function(record_data, callback){
+    				AssociatedPartyVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+	            		if(err){
+	              			callback(new Error("Error to get AssociatedParty element for the record with id: "+id_rc+" : " + err.message));
+             			}else{ 
+              				if(elementVer){
+              					if(typeof elementVer.associatedParty[0].firstName != 'undefined' && elementVer.associatedParty[0].firstName != ''){
+    								record_data.firstName = elementVer.associatedParty[0].firstName;
+    							}
+    							if(typeof elementVer.associatedParty[0].lastName != 'undefined' && elementVer.associatedParty[0].lastName != ''){
+    								record_data.lastName = elementVer.associatedParty[0].lastName;
+    							}
+              				}else{
+              					record_data.firstName = "";
+              					record_data.lastName = "";
+              				}
+              				callback();
+            			}
+          			});
+	    		},function(err){
     				if(err){
           				callback(new Error("Error"));
         			}else{
@@ -66,13 +96,34 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           				callback(null, data);
         			}
     			});
-    		},
-    		function(data,callback){
-    			console.log(data.length);
-    			//async.eachSeries(data, function(record_data, callback){});
-
-    		}
-    	],
+    			//callback(null, data);
+	    	},
+	    	function(data,callback){
+	    		console.log(data.length);
+	    		async.eachSeries(data, function(record_data, callback){
+	    			console.log(record_data._id);
+	    			console.log(record_data.scientificName);
+	    			console.log(record_data.firstName);
+	    			console.log(record_data.lastName);
+	    			RecordModel.update({ _id: record_data._id }, { $set: { scientificName: record_data.scientificName, associatedParty_firstName: record_data.firstName, associatedParty_lastName: record_data.lastName}}, function (err, raw){
+	    				if(err){
+            				callback(new Error(err.message));
+          				}else{
+            				console.log("response: "+raw);
+            				callback();
+          				}
+	    			});
+	    		},function(err){
+    				if(err){
+          				callback(new Error("Error"));
+        			}else{
+          				callback(null, data);
+        			}
+    			});
+	    	},function(data,callback){
+	    		console.log(data.length);
+	    	}
+	    	],
     	function(err, result) {
       		if(err){
         		res.status(400);

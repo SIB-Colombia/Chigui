@@ -86,6 +86,8 @@ var Element = new Schema ({
 });
 */
 
+var recordSchema = new Schema({name:String}, { strict: false, versionKey: false });
+
 var Element = new Schema ({
 	ancillaryData : [AncillaryData]
 }, { versionKey: false });
@@ -101,6 +103,10 @@ var ElementVersion = new Schema ({
 
 var RecordVersion = new Schema({
 	language : String,
+	scientificName : String,
+	associatedParty_firstName: String,
+	associatedParty_lastName: String,
+	lastVersion: recordSchema,
 	moreInformationVersion : [{ type: Schema.Types.ObjectId, ref: 'MoreInformationVersion' }],
 	associatedPartyVersion : [{ type: Schema.Types.ObjectId, ref: 'AssociatedPartyVersion' }],
 	directThreatsVersion : [{ type: Schema.Types.ObjectId, ref: 'DirectThreatsVersion' }],
