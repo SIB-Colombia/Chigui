@@ -5,22 +5,22 @@ import add_objects from '../models/additionalModels.js';
 import { logger }  from '../../server/log';
 
 function postEnvironmentalEnvelope(req, res) {
-  var environmental_envelope_version  = req.body; 
+    var environmental_envelope_version  = req.body; 
+    var id_v = environmental_envelope_version._id;
+    var id_rc = req.swagger.params.id.value;
+    var ob_ids= new Array();
+    var ver = "";
     environmental_envelope_version._id = mongoose.Types.ObjectId();
     environmental_envelope_version.created=Date();
-    //environmental_envelope_version.state="to_review";
     environmental_envelope_version.state="accepted";
     environmental_envelope_version.element="environmentalEnvelope";
     var user = environmental_envelope_version.id_user;
     var elementValue = environmental_envelope_version.environmentalEnvelope;
     environmental_envelope_version = new EnvironmentalEnvelopeVersion(environmental_envelope_version);
-    var id_v = environmental_envelope_version._id;
-    var id_rc = req.swagger.params.id.value;
-
-    var ob_ids= new Array();
+    
     ob_ids.push(id_v);
 
-    var ver = "";
+    
 
     if(typeof  id_rc!=="undefined" && id_rc!=""){
       if(typeof  elementValue!=="undefined" && elementValue!=""){

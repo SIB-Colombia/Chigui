@@ -8,11 +8,11 @@ var value={};
 var response=[];
 var dataObject ={};
 
-//query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
-query = add_objects.RecordVersion.find({}).select('_id').sort({ _id: -1});
+
+var query = add_objects.RecordVersion.find({ }).select('_id').sort({ _id: -1});
 
 var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb', function(err) {
-	if(err) {
+	if(err){
     	console.log('connection error', err);
     }else{
     	console.log('connection successful');
