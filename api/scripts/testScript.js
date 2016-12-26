@@ -460,9 +460,12 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     if(elementVer){
                       lastRec.invasiveness = elementVer.invasiveness;
                     }
-                    callback();
+                    callback(lastRec);
                   }
                 });
+              },
+              function(callback){
+                console.log();
               }
             ],function(err, result) {
               if(err){
@@ -474,7 +477,6 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 res.json("Ok");
               }
             });
-    				
     			},function(err){
     				if(err){
           				callback(new Error("Error"));
@@ -483,7 +485,8 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
         			}
     			});
     			//callback(null, data);
-    		}function(data,callback){
+    		},
+        function(data,callback){
 	    		console.log(data.length);
 	    	}
 	    	],
