@@ -119,6 +119,46 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
       var distributionSchema = DistributionVersion.schema;
       DistributionVersion = catalogoDb.model('DistributionVersion', distributionSchema );
 
+      var territorySchema = TerritoryVersion.schema;
+      TerritoryVersion = catalogoDb.model('TerritoryVersion', territorySchema );
+
+      var populationBiologySchema = PopulationBiologyVersion.schema;
+      PopulationBiologyVersion = catalogoDb.model('PopulationBiologyVersion', populationBiologySchema );
+
+      var moreInformationSchema = MoreInformationVersion.schema;
+      MoreInformationVersion = catalogoDb.model('MoreInformationVersion', moreInformationSchema );
+
+      var threatStatusSchema = ThreatStatusVersion.schema;
+      ThreatStatusVersion = catalogoDb.model('ThreatStatusVersion', threatStatusSchema );
+
+      var legislationSchema = LegislationVersion.schema;
+      LegislationVersion = catalogoDb.model('LegislationVersion', legislationSchema );
+
+      var usesManagementAndConservationSchema = UsesManagementAndConservationVersion.schema;
+      UsesManagementAndConservationVersion = catalogoDb.model('UsesManagementAndConservationVersion', usesManagementAndConservationSchema );
+
+      var directThreatsSchema = DirectThreatsVersion.schema;
+      DirectThreatsVersion = catalogoDb.model('DirectThreatsVersion', directThreatsSchema );
+
+      var ancillaryDataSchema = AncillaryDataVersion.schema;
+      AncillaryDataVersion = catalogoDb.model('AncillaryDataVersion', ancillaryDataSchema );
+
+      var endemicAtomizedSchema = EndemicAtomizedVersion.schema;
+      EndemicAtomizedVersion = catalogoDb.model('EndemicAtomizedVersion', endemicAtomizedSchema );
+
+      var referencesSchema = ReferencesVersion.schema;
+      ReferencesVersion = catalogoDb.model('ReferencesVersion', referencesSchema );
+
+      var environmentalEnvelopeSchema = EnvironmentalEnvelopeVersion.schema;
+      EnvironmentalEnvelopeVersion = catalogoDb.model('EnvironmentalEnvelopeVersion', environmentalEnvelopeSchema );
+
+      var ecologicalSignificanceSchema = EcologicalSignificanceVersion.schema;
+      EcologicalSignificanceVersion = catalogoDb.model('EcologicalSignificanceVersion', ecologicalSignificanceSchema );
+
+      var InvasivenessSchema = InvasivenessVersion.schema;
+      InvasivenessVersion = catalogoDb.model('InvasivenessVersion', InvasivenessSchema );
+
+
     	async.waterfall([
     		function(callback){
     			console.log("***Execution of the query***");
@@ -432,7 +472,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                       lastRec.habitats = "";
                     }
                     //console.log("!!!"+lastRec.habitats);
-                    //callback();
+                    callback();
                   }
                 });
               },
@@ -458,7 +498,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.territory = elementVer.territory;
+                    }else{
+                      lastRec.territory = "";
                     }
+                    console.log("!!!"+lastRec.territory);
                     callback();
                   }
                 });
@@ -470,7 +513,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.populationBiology = elementVer.populationBiology;
+                    }else{
+                      lastRec.populationBiology = "";
                     }
+                    console.log("!!!"+lastRec.populationBiology);
                     callback();
                   }
                 });
@@ -482,7 +528,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.moreInformation = elementVer.moreInformation;
+                    }else{
+                      lastRec.moreInformation = "";
                     }
+                    console.log("!!!"+lastRec.moreInformation);
                     callback();
                   }
                 });
@@ -494,7 +543,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.threatStatus = elementVer.threatStatus;
+                    }else{
+                      lastRec.threatStatus = "";
                     }
+                    console.log("!!!"+lastRec.threatStatus);
                     callback();
                   }
                 });
@@ -506,7 +558,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.legislation = elementVer.legislation;
+                    }else{
+                      lastRec.legislation = "";
                     }
+                    console.log("!!!"+lastRec.legislation);
                     callback();
                   }
                 });
@@ -518,7 +573,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.usesManagementAndConservation = elementVer._doc.usesManagementAndConservation;
+                    }else{
+                      lastRec.usesManagementAndConservation = "";
                     }
+                    console.log("!!!"+lastRec.usesManagementAndConservation);
                     callback();
                   }
                 });
@@ -530,7 +588,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.directThreats = elementVer.directThreats;
+                    }else{
+                      lastRec.directThreats = "";
                     }
+                    console.log("!!!"+lastRec.directThreats);
                     callback();
                   }
                 });
@@ -542,7 +603,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.ancillaryData = elementVer.ancillaryData;
+                    }else{
+                      lastRec.ancillaryData = "";
                     }
+                    console.log("!!!"+lastRec.ancillaryData);
                     callback();
                   }
                 });
@@ -554,7 +618,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.endemicAtomized = elementVer.endemicAtomized;
+                    }else{
+                      lastRec.endemicAtomized = "";
                     }
+                    console.log("!!!"+lastRec.endemicAtomized);
                     callback();
                   }
                 });
@@ -566,7 +633,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.references = elementVer.references;
+                    }else{
+                      lastRec.references = "";
                     }
+                    console.log("!!!"+lastRec.references);
                     callback();
                   }
                 });
@@ -578,7 +648,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.environmentalEnvelope = elementVer.environmentalEnvelope;
+                    }else{
+                      lastRec.environmentalEnvelope = "";
                     }
+                    console.log("!!!"+lastRec.environmentalEnvelope);
                     callback();
                   }
                   });
@@ -590,7 +663,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.ecologicalSignificance = elementVer.ecologicalSignificance;
+                    }else{
+                      lastRec.ecologicalSignificance = "";
                     }
+                    console.log("!!!"+lastRec.ecologicalSignificance);
                     callback();
                   }
                 });
@@ -602,7 +678,10 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                   }else{
                     if(elementVer){
                       lastRec.invasiveness = elementVer.invasiveness;
+                    }else{
+                      lastRec.invasiveness = "";
                     }
+                    console.log("!!!"+lastRec.invasiveness);
                     callback(lastRec);
                   }
                 });
