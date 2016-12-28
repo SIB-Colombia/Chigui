@@ -175,7 +175,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     			//console.log(data.length);
     			async.eachSeries(data, function(record_data, callback){
     				//console.log(record_data._id);
-            record_data._id = "567c053cf289f5a40c0cd33b";
+            record_data._id = "56702bfef289f5a40c0cd2ac";
             async.waterfall([
               function(callback){
                 console.log("! "+record_data);
@@ -486,8 +486,8 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.distribution = "";
                     }
-                    console.log("!!!"+lastRec.distribution);
-                    //callback();
+                    //console.log("!!!"+lastRec.distribution);
+                    callback();
                   }
                 });
               },
@@ -501,7 +501,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.territory = "";
                     }
-                    console.log("!!!"+lastRec.territory);
+                    //console.log("!!!"+lastRec.territory);
                     callback();
                   }
                 });
@@ -516,7 +516,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.populationBiology = "";
                     }
-                    console.log("!!!"+lastRec.populationBiology);
+                    //console.log("!!!"+lastRec.populationBiology);
                     callback();
                   }
                 });
@@ -531,7 +531,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.moreInformation = "";
                     }
-                    console.log("!!!"+lastRec.moreInformation);
+                    //console.log("!!!"+lastRec.moreInformation);
                     callback();
                   }
                 });
@@ -546,7 +546,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.threatStatus = "";
                     }
-                    console.log("!!!"+lastRec.threatStatus);
+                    //console.log("!!!"+lastRec.threatStatus);
                     callback();
                   }
                 });
@@ -561,7 +561,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.legislation = "";
                     }
-                    console.log("!!!"+lastRec.legislation);
+                    //console.log("!!!"+lastRec.legislation);
                     callback();
                   }
                 });
@@ -576,7 +576,9 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.usesManagementAndConservation = "";
                     }
-                    console.log("!!!"+lastRec.usesManagementAndConservation);
+                    //console.log("!!!"+lastRec.usesManagementAndConservation);
+                    //console.log("!!!"+Object.keys(lastRec.usesManagementAndConservation));
+                    //console.log("!!!"+JSON.stringify(lastRec.usesManagementAndConservation));
                     callback();
                   }
                 });
@@ -591,7 +593,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.directThreats = "";
                     }
-                    console.log("!!!"+lastRec.directThreats);
+                    //console.log("!!!"+lastRec.directThreats);
                     callback();
                   }
                 });
@@ -606,7 +608,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.ancillaryData = "";
                     }
-                    console.log("!!!"+lastRec.ancillaryData);
+                    //console.log("!!!"+lastRec.ancillaryData);
                     callback();
                   }
                 });
@@ -621,7 +623,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.endemicAtomized = "";
                     }
-                    console.log("!!!"+lastRec.endemicAtomized);
+                    //console.log("!!!"+lastRec.endemicAtomized);
                     callback();
                   }
                 });
@@ -636,7 +638,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.references = "";
                     }
-                    console.log("!!!"+lastRec.references);
+                    //console.log("!!!"+lastRec.references);
                     callback();
                   }
                 });
@@ -651,7 +653,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.environmentalEnvelope = "";
                     }
-                    console.log("!!!"+lastRec.environmentalEnvelope);
+                    //console.log("!!!"+lastRec.environmentalEnvelope);
                     callback();
                   }
                   });
@@ -666,7 +668,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.ecologicalSignificance = "";
                     }
-                    console.log("!!!"+lastRec.ecologicalSignificance);
+                    //console.log("!!!"+lastRec.ecologicalSignificance);
                     callback();
                   }
                 });
@@ -682,7 +684,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                       lastRec.invasiveness = "";
                     }
                     console.log("!!!"+lastRec.invasiveness);
-                    callback(lastRec);
+                    //callback(lastRec);
                   }
                 });
               },
@@ -695,7 +697,6 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 res.json({ ErrorResponse: {message: ""+err }});
               }else{
                 console.log("ok");
-                //logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: record_data._id, version: ver, _id: id_v, id_user: user}));
                 res.json("Ok");
               }
             });
