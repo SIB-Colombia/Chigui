@@ -161,7 +161,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 
     	async.waterfall([
     		function(callback){
-    			console.log("***Execution of the query***");
+    			console.log("***!Execution of the query***");
     			query = RecordModel.find({}).select('_id').sort({ _id: -1});
     			query.exec(function (err, data) {
         			if(err){
@@ -174,11 +174,11 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     		function(data,callback){
     			//console.log(data.length);
     			async.eachSeries(data, function(record_data, callback){
-    				//console.log(record_data._id);
-            record_data._id = "56702bfef289f5a40c0cd2ac";
+    				console.log(record_data._id);
+            //record_data._id = "56702bfef289f5a40c0cd2ac";
             async.waterfall([
               function(callback){
-                console.log("! "+record_data);
+                //console.log("! "+record_data);
                 TaxonRecordNameVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
                   if(err){
                     callback(new Error("Error to get TaxonRecordName element for the record with id: "+record_data._id+" : " + err.message));
@@ -192,7 +192,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 });
               },
               function(callback){
-                console.log("!*");
+                //console.log("!*");
                 AssociatedPartyVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
                   if(err){
                     callback(new Error("Error to get AssociatedParty element for the record with id: "+record_data._id+" : " + err.message));
@@ -683,21 +683,30 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     }else{
                       lastRec.invasiveness = "";
                     }
-                    console.log("!!!"+lastRec.invasiveness);
-                    //callback(lastRec);
+                    //console.log("!!!"+lastRec.invasiveness);
+                    console.log("!!!");
+                    callback();
                   }
                 });
               },
               function(callback){
-                console.log();
+                //console.log(lastRec);
+                RecordModel.update({ _id: record_data._id }, { $set: { lastVersion: lastRec }}, function (err, raw){
+                  if(err){
+                    callback(new Error(err.message));
+                  }else{
+                    //console.log("updated");
+                    //console.log("response: "+raw);
+                    callback();
+                  }
+                });
               }
             ],function(err, result) {
               if(err){
-                res.status(400);
-                res.json({ ErrorResponse: {message: ""+err }});
+                callback(new Error("Error"));
               }else{
-                console.log("ok");
-                res.json("Ok");
+                //console.log("ok");
+                callback();
               }
             });
     			},function(err){
@@ -710,17 +719,16 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     			//callback(null, data);
     		},
         function(data,callback){
-	    		console.log(data.length);
+	    		console.log("End cascade");
 	    	}
 	    	],
-    	function(err, result) {
+    	   function(err, result) {
       		if(err){
-        		res.status(400);
-        		res.json({ ErrorResponse: {message: ""+err }});
+        		console.log(err);
       		}else{
-        		console.log("ok");
+        		console.log("End of the process");
         		//logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: record_data._id, version: ver, _id: id_v, id_user: user}));
-        		res.json("Ok");
+        		//res.json("End of the process");
       		}
     	});
     }
