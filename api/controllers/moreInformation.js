@@ -157,18 +157,31 @@ function setAcceptedMoreInformation(req, res) {
             console.log("response: "+raw);
             callback();
           }
-        });
-        
+        }); 
       },
       function(callback){ 
         MoreInformationVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
           if(err){
             callback(new Error(err.message));
           }else{
+            console.log();
             callback();
           }
         });
       }
+      /*
+      function(callback){ 
+        RecordModel.update({ _id: record_data._id }, { $set: { lastVersion: lastRec }}, function (err, raw){
+                  if(err){
+                    callback(new Error(err.message));
+                  }else{
+                    //console.log("updated");
+                    //console.log("response: "+raw);
+                    callback();
+                  }
+        });
+      }
+      */
     ],
     function(err, result) {
       if (err) {
