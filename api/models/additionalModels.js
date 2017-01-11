@@ -86,7 +86,7 @@ var Element = new Schema ({
 });
 */
 
-var recordSchema = new Schema({name:String}, { strict: false, versionKey: false });
+var Record = new Schema({name:String}, { strict: false, versionKey: false });
 
 var Element = new Schema ({
 	ancillaryData : [AncillaryData]
@@ -106,7 +106,6 @@ var RecordVersion = new Schema({
 	scientificName : String,
 	associatedParty_firstName: String,
 	associatedParty_lastName: String,
-	lastVersion: recordSchema,
 	moreInformationVersion : [{ type: Schema.Types.ObjectId, ref: 'MoreInformationVersion' }],
 	associatedPartyVersion : [{ type: Schema.Types.ObjectId, ref: 'AssociatedPartyVersion' }],
 	directThreatsVersion : [{ type: Schema.Types.ObjectId, ref: 'DirectThreatsVersion' }],
@@ -168,6 +167,7 @@ module.exports = {
 	             	AncillaryData: mongoose.model('AncillaryData', AncillaryData ),
 	             	Agent: mongoose.model('Agent', Agent ),
 	             	RecordVersion : mongoose.model('RecordVersion', RecordVersion ),
+	             	Record : mongoose.model('Record', Record ),
 	             	Reference : mongoose.model('Reference', Reference ),
 	             	MeasurementOrFact : mongoose.model('MeasurementOrFact', MeasurementOrFact)
 	             };

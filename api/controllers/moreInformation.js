@@ -177,10 +177,10 @@ function setAcceptedMoreInformation(req, res) {
       function(callback){ 
         console.log(id_rc);
         console.log(elementUpdated);
-        //add_objects.RecordVersion.update({ _id: id_rc }, { $set: { 'lastVersion.moreInformation': elementUpdated }}, function (err, raw){
+        add_objects.RecordVersion.update({ '_id': id_rc }, { $set: { 'lastVersion.$.moreInformation': elementUpdated }}, function (err, raw){
 
         
-        add_objects.RecordVersion.update({ '_id': id_rc }, { 'lastVersion.$.moreInformation': elementUpdated }, function (err, raw){
+        //add_objects.RecordVersion.update({ '_id': id_rc }, { 'lastVersion.$.moreInformation': elementUpdated }, function (err, raw){
           if(err){
             callback(new Error(err.message));
           }else{
