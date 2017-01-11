@@ -73,6 +73,16 @@ function postMoreInformation(req, res) {
                       callback(null, more_information_version);
                   }
                 });
+            },
+            function(molecular_data_version, callback){ 
+                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+                  if(err){
+                      callback(new Error("failed added id to RecordVersion:" + err.message));
+                  }else{
+                      console.log("added id");
+                      callback();
+                  }
+                });
             }
             ],
             function(err, result) {
@@ -158,32 +168,39 @@ function setAcceptedMoreInformation(req, res) {
           if(err){
             callback(new Error(err.message));
           }else{
-            console.log(elementVer);
+            //console.log(elementVer);
             JSON.stringify(elementVer);
             callback();
           }
         });
       },
       function(callback){ 
+        console.log(id_rc);
         console.log(elementUpdated);
-        RecordModel.update({ _id: id_rc }, { $set: { 'lastVersion.moreInformation': elementUpdated }}, function (err, raw){
+        //add_objects.RecordVersion.update({ _id: id_rc }, { $set: { 'lastVersion.moreInformation': elementUpdated }}, function (err, raw){
+
+        
+        add_objects.RecordVersion.update({ '_id': id_rc }, { 'lastVersion.$.moreInformation': elementUpdated }, function (err, raw){
           if(err){
             callback(new Error(err.message));
           }else{
-            //console.log("updated");
-            //console.log("response: "+raw);
+            console.log("response!: "+raw.ok);
+            console.log("response!: "+raw.n);
+            console.log("response!: "+raw.nModified);
+            console.log(Object.keys(raw));
             callback();
           }
         });
-      },
-      function(more_information_version, callback){ 
-                add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "moreInformationVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
-                  if(err){
-                      callback(new Error("failed added id to RecordVersion:" + err.message));
-                  }else{
-                      callback();
-                  }
-                });
+        /*
+        add_objects.RecordVersion.findOneAndUpdate({ "_id": id_rc },{ "$set": { 'lastVersion.$.moreInformation': elementUpdated }},function(err, doc){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            console.log(doc);
+            callback();
+          }
+        });
+        */
       }
     ],
     function(err, result) {
