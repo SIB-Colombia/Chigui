@@ -187,7 +187,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get TaxonRecordName element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.taxonRecordNameAccepted = elementVer.taxonRecordName;
+                      lastRec.taxonRecordNameAccepted = elementVer;
                     }
                     //console.log("!!"+lastRec.taxonRecordName);
                     callback();
@@ -201,7 +201,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get AssociatedParty element for the record with id: "+record_data._id+" : " + err.message));
                   }else{ 
                     if(elementVer){
-                      lastRec.associatedPartyAccepted = elementVer.associatedParty;
+                      lastRec.associatedPartyAccepted = elementVer;
                     }else{
                       lastRec.associatedParty="";
                     }
@@ -217,7 +217,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get CommonNamesAtomized element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.commonNamesAtomizedAccepted = elementVer.commonNamesAtomized;
+                      lastRec.commonNamesAtomizedAccepted = elementVer;
                     }else{
                       lastRec.commonNamesAtomized = "";
                     }
@@ -232,7 +232,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get SynonymsAtomized element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.synonymsAtomizedAccepted = elementVer.synonymsAtomized;
+                      lastRec.synonymsAtomizedAccepted = elementVer;
                     }else{
                       lastRec.synonymsAtomized = ""; //***** quitar después
                     }
@@ -247,7 +247,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get LifeCycle element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.lifeCycleAccepted = elementVer.lifeCycle;
+                      lastRec.lifeCycleAccepted = elementVer;
                     }else{
                       lastRec.lifeCycle = ""; //***** quitar después
                     }
@@ -262,7 +262,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get LifeForm element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.lifeFormAccepted = elementVer.lifeForm;
+                      lastRec.lifeFormAccepted = elementVer;
                     }else{
                       lastRec.lifeForm = ""; //***** quitar después
                     }
@@ -277,7 +277,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get IdentificationKeys element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.identificationKeysAccepted = elementVer.identificationKeys;
+                      lastRec.identificationKeysAccepted = elementVer;
                     }else{
                       lastRec.identificationKeys = ""; //***** quitar después
                     }
@@ -292,7 +292,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get FullDescription element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.fullDescriptionAccepted = elementVer.fullDescription;
+                      lastRec.fullDescriptionAccepted = elementVer;
                     }else{
                       lastRec.fullDescription = ""; //***** quitar después
                     }
@@ -307,7 +307,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get BriefDescription element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.briefDescriptionAccepted = elementVer.briefDescription;
+                      lastRec.briefDescriptionAccepted = elementVer;
                     }else{
                       lastRec.briefDescription = ""; //***** quitar después
                     }
@@ -322,7 +322,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Abstract element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.abstractAccepted = elementVer.abstract;
+                      lastRec.abstractAccepted = elementVer;
                     }else{
                       lastRec.abstract = ""; //***** quitar después
                     }
@@ -337,7 +337,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Hierarchy element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.hierarchyAccepted = elementVer.hierarchy;
+                      lastRec.hierarchyAccepted = elementVer;
                     }
                     //console.log("!!!"+lastRec.hierarchy);
                     callback();
@@ -350,7 +350,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Reproduction element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.reproductionAccepted = elementVer.reproduction;
+                      lastRec.reproductionAccepted = elementVer;
                     }else{
                       lastRec.reproduction = "";
                     }
@@ -365,7 +365,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get AnnualCycles element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.annualCyclesAccepted = elementVer.annualCycles;
+                      lastRec.annualCyclesAccepted = elementVer;
                     }else{
                       lastRec.annualCycles = "";
                     }
@@ -380,7 +380,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Feeding element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.feedingAccepted = elementVer.feeding;
+                      lastRec.feedingAccepted = elementVer;
                     }else{
                       lastRec.feeding = "";
                     }
@@ -395,7 +395,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Dispersal element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.dispersalAccepted = elementVer.dispersal;
+                      lastRec.dispersalAccepted = elementVer;
                     }else{
                       lastRec.dispersal = "";
                     }
@@ -410,7 +410,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Behavior element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.behaviorAccepted = elementVer.behavior;
+                      lastRec.behaviorAccepted = elementVer;
                     }else{
                       lastRec.behavior = "";
                     }
@@ -425,7 +425,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Interactions element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.interactionsAccepted = elementVer.interactions;
+                      lastRec.interactionsAccepted = elementVer;
                     }else{
                       lastRec.interactions = "";
                     }
@@ -440,7 +440,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get MolecularData element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.molecularDataAccepted = elementVer.molecularData;
+                      lastRec.molecularDataAccepted = elementVer;
                     }else{
                       lastRec.molecularData = "";
                     }
@@ -455,7 +455,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Migratory element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.migratoryAccepted = elementVer.migratory;
+                      lastRec.migratoryAccepted = elementVer;
                     }else{
                       lastRec.migratory = "";
                     }
@@ -470,7 +470,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Habitats element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.habitatsAccepted = elementVer.habitats;
+                      lastRec.habitatsAccepted = elementVer;
                     }else{
                       lastRec.habitats = "";
                     }
@@ -485,7 +485,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Distribution element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.distributionAccepted = elementVer.distribution;
+                      lastRec.distributionAccepted = elementVer;
                     }else{
                       lastRec.distribution = "";
                     }
@@ -500,7 +500,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Territory element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.territoryAccepted = elementVer.territory;
+                      lastRec.territoryAccepted = elementVer;
                     }else{
                       lastRec.territory = "";
                     }
@@ -515,7 +515,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get PopulationBiology element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.populationBiologyAccepted = elementVer.populationBiology;
+                      lastRec.populationBiologyAccepted = elementVer;
                     }else{
                       lastRec.populationBiology = "";
                     }
@@ -530,7 +530,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get PopulationBiology element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.moreInformationAccepted = elementVer.moreInformation;
+                      lastRec.moreInformationAccepted = elementVer;
                     }else{
                       lastRec.moreInformation = "";
                     }
@@ -545,7 +545,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get ThreatStatus element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.threatStatusAccepted = elementVer.threatStatus;
+                      lastRec.threatStatusAccepted = elementVer;
                     }else{
                       lastRec.threatStatus = "";
                     }
@@ -560,7 +560,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Legislation element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.legislationAccepted = elementVer.legislation;
+                      lastRec.legislationAccepted = elementVer;
                     }else{
                       lastRec.legislation = "";
                     }
@@ -575,7 +575,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get UsesManagementAndConservation element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.usesManagementAndConservationAccepted = elementVer._doc.usesManagementAndConservation;
+                      lastRec.usesManagementAndConservationAccepted = elementVer._doc;
                     }else{
                       lastRec.usesManagementAndConservation = "";
                     }
@@ -592,7 +592,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get DirectThreats element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.directThreatsAccepted = elementVer.directThreats;
+                      lastRec.directThreatsAccepted = elementVer;
                     }else{
                       lastRec.directThreats = "";
                     }
@@ -607,7 +607,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get AncillaryData element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.ancillaryDataAccepted = elementVer.ancillaryData;
+                      lastRec.ancillaryDataAccepted = elementVer
                     }else{
                       lastRec.ancillaryData = "";
                     }
@@ -622,7 +622,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get EndemicAtomized element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.endemicAtomizedAccepted = elementVer.endemicAtomized;
+                      lastRec.endemicAtomizedAccepted = elementVer;
                     }else{
                       lastRec.endemicAtomized = "";
                     }
@@ -637,7 +637,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get References element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.referencesAccepted = elementVer.references;
+                      lastRec.referencesAccepted = elementVer;
                     }else{
                       lastRec.references = "";
                     }
@@ -652,7 +652,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get EnvironmentalEnvelope element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.environmentalEnvelopeAccepted = elementVer.environmentalEnvelope;
+                      lastRec.environmentalEnvelopeAccepted = elementVer;
                     }else{
                       lastRec.environmentalEnvelope = "";
                     }
@@ -667,7 +667,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get EcologicalSignificance element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.ecologicalSignificanceAccepted = elementVer.ecologicalSignificance;
+                      lastRec.ecologicalSignificanceAccepted = elementVer
                     }else{
                       lastRec.ecologicalSignificance = "";
                     }
@@ -682,7 +682,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get Invasiveness element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
-                      lastRec.invasivenessAccepted = elementVer.invasiveness;
+                      lastRec.invasivenessAccepted = elementVer;
                     }else{
                       lastRec.invasiveness = "";
                     }
