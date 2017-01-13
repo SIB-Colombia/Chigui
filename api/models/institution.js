@@ -6,14 +6,13 @@ var ad_objects = require('./additionalModels.js');
 var Agent = require('mongoose').model('Agent').schema;
 
 
-var User = new Schema ({
+var Institution = new Schema ({
 //var User = Agent.extend({
 	//id_user: { type: String, required: true, unique: true }, //***
-	id_user : { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
-	role : { type: String, required: true },
+	id_institution : { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
+	description: String,
 	groups : [{ type: Schema.Types.ObjectId, ref: 'Groups' }]
-	institution : String
-},{ collection: 'Users' });
+},{ collection: 'Institution' });
 
 User.plugin(uniqueValidator);
 

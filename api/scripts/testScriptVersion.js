@@ -187,6 +187,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                     callback(new Error("Error to get TaxonRecordName element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
                     if(elementVer){
+                      lastRec._id = mongoose.Types.ObjectId(record_data._id);
                       lastRec.taxonRecordNameAccepted = elementVer;
                     }else{
                       console.log("No existe TaxonRecordNameVersion for id record : "+record_data._id);
@@ -680,7 +681,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
             });
     			},function(err){
     				if(err){
-          				callback(new Error("Error"));
+          				callback(new Error("Error: "+err));
         			}else{
           				callback(null, data);
         			}

@@ -86,7 +86,7 @@ var Element = new Schema ({
 });
 */
 
-var Record = new Schema({name:String}, { strict: false, versionKey: false });
+var Record = new Schema({name:String}, { collection: 'Record', strict: false, versionKey: false });
 
 var Element = new Schema ({
 	ancillaryData : [AncillaryData]
@@ -98,7 +98,8 @@ var ElementVersion = new Schema ({
 	id_user : String,
 	version : { type: Number, min: 0 },
 	state : String,
-	element : String
+	element : String,
+	edition_type : String 
 });
 
 var RecordVersion = new Schema({

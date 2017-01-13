@@ -133,6 +133,7 @@ function postRecord(req, res) {
   if(typeof  elementValue!=="undefined" && elementValue!=""){
     add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){
       if(count==0){
+        //Also create a Record (accepted versions of elements) and put the accepted taxonRecordName
         add_objects.RecordVersion.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
           if(err){
             logger.error('Creation of a record error', JSON.stringify({ message:err }) );
