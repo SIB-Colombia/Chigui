@@ -181,8 +181,9 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
             //record_data._id = "56702bfef289f5a40c0cd2ac";
             async.waterfall([
               function(callback){
-                //console.log("! "+record_data);
+                console.log("! "+record_data._id);
                 TaxonRecordNameVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("TaxonRecordName");
                   if(err){
                     callback(new Error("Error to get TaxonRecordName element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -605,6 +606,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 });
               },
               function(callback){
+                console.log("References");
                 ReferencesVersion.findOne({ "id_record" : mongoose.Types.ObjectId(record_data._id), state: "accepted" }).exec(function (err, elementVer) {
                   if(err){
                     callback(new Error("Error to get References element for the record with id: "+record_data._id+" : " + err.message));
@@ -690,12 +692,14 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
     		},
         function(data,callback){
 	    		console.log("End cascade");
+          catalogoDb=mongoose.disconnect();
 	    	}
 	    	],
     	   function(err, result) {
       		if(err){
         		console.log(err);
       		}else{
+            catalogoDb=mongoose.disconnect();
         		console.log("End of the process");
         		//logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: record_data._id, version: ver, _id: id_v, id_user: user}));
         		//res.json("End of the process");

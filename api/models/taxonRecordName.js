@@ -9,7 +9,7 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 
 var scientificName = Element.extend({
-	attributes : { id : Number, isAnamorphic: Boolean, nomenclaturalCode: String },
+	attributes : { id : {type: Number, required: [true, 'required value'], min: 0, default: 0 }, isAnamorphic: Boolean, nomenclaturalCode: String },
 	simple : String,
 	rank : String,
 	canonicalName : { simple : String, uninomial : String, genus : { ref : String, linkType : String }, epithet :{ infragenericEpithet : String, specificEpithet : String, infraspecificEpithet : String }},
