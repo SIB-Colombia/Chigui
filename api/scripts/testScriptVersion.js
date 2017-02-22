@@ -46,7 +46,7 @@ query = add_objects.RecordVersion.find({}).select('_id').sort({ _id: -1});
 
 var lastRec ={};
 
-var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb', function(err) {
+var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDbTest', function(err) {
 	if(err) {
     	console.log('connection error', err);
     }else{
@@ -666,6 +666,8 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
                 acceptedRecord = new Record(lastRec);
                 acceptedRecord.save(function (err){
                   if(err){
+                    console.log("aquí está el error");
+                    console.log(err);
                     callback(new Error(err.message));
                   }else{
                     console.log("Saved last accpeted version with id: "+record_data._id);

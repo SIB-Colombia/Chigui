@@ -10,8 +10,8 @@ function postTaxonRecordName(req, res) {
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
-    //taxon_record_name_version.state="to_review";
-    taxon_record_name_version.state="accepted"
+    taxon_record_name_version.state="to_review";
+    //taxon_record_name_version.state="accepted"
   	taxon_record_name_version.element="taxonRecordName";
     var user = taxon_record_name_version.id_user;
   	var elementValue = taxon_record_name_version.taxonRecordName;

@@ -7,10 +7,10 @@ var ElementVersion = require('mongoose').model('ElementVersion').schema;
 var AncillaryData = require('mongoose').model('AncillaryData').schema;
 var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
-
+//temporalCoverage : { startDate : { type: Date, required: true, default: Date.now }, endDate : { type: Date, required: true, default: Date.now } },
 var Distribution = new Schema({
 	distributionScope : { type : {type: String}, ancillaryData: [AncillaryData] },
-	temporalCoverage : { startDate : { type: Date, default: Date.now }, endDate : { type: Date, default: Date.now } },
+	temporalCoverage : { startDate : { type: Date, required: true, default: Date.now }, endDate : { type: Date, required: true, default: Date.now } },
 	distributionAtomizedBranch: [String],
 	distributionUnstructured : String
 });

@@ -1,7 +1,7 @@
 {
   database: {
     mongoDb: {
-      url: ['192.168.75.159:27017/catalogoDbTest']
+      url: ['localhost:27017/catalogoDbTest']
     }
   }
 }

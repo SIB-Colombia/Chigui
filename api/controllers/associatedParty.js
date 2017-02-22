@@ -8,8 +8,8 @@ function postAssociatedParty(req, res) {
   var associated_party_version  = req.body; 
     associated_party_version._id = mongoose.Types.ObjectId();
     associated_party_version.created=Date();
-    //associated_party_version.state="to_review";
-    associated_party_version.state="accepted";
+    associated_party_version.state="to_review";
+    //associated_party_version.state="accepted";
     associated_party_version.element="associatedParty";
     var user = associated_party_version.id_user;
     var elementValue = associated_party_version.associatedParty;
@@ -86,11 +86,11 @@ function postAssociatedParty(req, res) {
             ],
             function(err, result) {
                 if (err) {
-                  logger.error('Error Creation of a new MoreInformationVersion', JSON.stringify({ message:err }) );
+                  logger.error('Error Creation of a new AssociatedPartyVersion', JSON.stringify({ message:err }) );
                   res.status(400);
                   res.json({ ErrorResponse: {message: ""+err }});
                 }else{
-                  logger.info('Creation a new AssociatedPartyVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
+                  logger.info('Creation a new AssociatedPartyVersion sucess!', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
                   res.json({ message: 'Save AssociatedPartyVersion', element: 'associatedParty', version : ver, _id: id_v, id_record : id_rc });
                }      
             });

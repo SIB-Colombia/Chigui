@@ -393,17 +393,38 @@ var Schema = mongoose.Schema;
             var common_names_atomized = {};
             ob_ids= new Array(); 
             var elementTemp=record._doc.commonNamesAtomized;
+            console.log(record._doc);
+            console.log(record._doc.commonNamesAtomized);
+            console.log(elementTemp);
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               common_names_atomized.commonNamesAtomized=elementTemp;
             }else{
               common_names_atomized.commonNamesAtomized=record._doc.commonNameAtomized;
             }
+            console.log("******!!"+Object.keys(elementTemp));
             common_names_atomized._id = mongoose.Types.ObjectId();
             common_names_atomized.id_record=record._id;
             common_names_atomized.created=record._id.getTimestamp(); //***
             common_names_atomized.id_user="sib+ac@humboldt.org.co";
             common_names_atomized.state="accepted";
             common_names_atomized.element="commonNamesAtomized";
+            console.log(common_names_atomized);
+            if(common_names_atomized.commonNamesAtomized!=="undefined"){
+              for(var i=0;i<common_names_atomized.commonNamesAtomized.length;i++){
+                if(common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== "" || common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== ""){
+                  //taxon_record_name_version.taxonRecordName.scientificName.attributes.id = 0;
+                  delete common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage;
+                }
+              }
+            }
+            /*
+            for(var i=0;i<common_names_atomized.commonNamesAtomized.length;i++){
+              if(common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== "" || common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== ""){
+                //taxon_record_name_version.taxonRecordName.scientificName.attributes.id = 0;
+                delete common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage;
+              }
+            }
+            */
             common_names_atomized = new CommonNamesAtomizedVersionModel(common_names_atomized);
             var id_v = common_names_atomized._id;
             var id_rc = common_names_atomized.id_record;

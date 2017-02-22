@@ -30,7 +30,7 @@ export const config = convict({
     port: {
       doc: 'The server port to bind.',
       format: 'port',
-      default: 8000,
+      default: 3000,
       env: 'PORT'
     }
   },
@@ -38,7 +38,7 @@ export const config = convict({
     mongoDb: {
       url: {
         doc: 'MongoDb url to connect',
-        default: ['localhost:27017/catalogoDb'],
+        default: ['localhost:27017/catalogoDbTest'],
         env: 'MONGODB_URL'
       },
       password:{

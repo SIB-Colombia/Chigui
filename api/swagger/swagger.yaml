@@ -12,7 +12,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 # during dev, should point to your local machine
-host: localhost:8000
+host: localhost:3000
 # basePath prefixes all resource paths
 basePath: /api/v1.5
 tags:
