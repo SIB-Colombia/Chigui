@@ -8,8 +8,8 @@ function postLifeForm(req, res) {
   var life_form_version  = req.body; 
     life_form_version._id = mongoose.Types.ObjectId();
     life_form_version.created=Date();
-    //life_form_version.state="to_review";
-    life_form_version.state="accepted";
+    life_form_version.state="to_review";
+    //life_form_version.state="accepted";
     life_form_version.element="lifeForm";
     var user = life_form_version.id_user;
     var elementValue = life_form_version.lifeForm;

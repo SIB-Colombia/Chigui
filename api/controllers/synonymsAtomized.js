@@ -8,8 +8,8 @@ function postSynonymsAtomized(req, res) {
   var synonyms_atomized_version  = req.body; 
     synonyms_atomized_version._id = mongoose.Types.ObjectId();
     synonyms_atomized_version.created=Date();
-    //synonyms_atomized_version.state="to_review";
-    synonyms_atomized_version.state="accepted";
+    synonyms_atomized_version.state="to_review";
+    //synonyms_atomized_version.state="accepted";
     synonyms_atomized_version.element="synonymsAtomized";
     var user = synonyms_atomized_version.id_user;
     var elementValue = synonyms_atomized_version.synonymsAtomized;

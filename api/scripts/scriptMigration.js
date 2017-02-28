@@ -334,6 +334,13 @@ var Schema = mongoose.Schema;
             synonyms_atomized_version.id_user="sib+ac@humboldt.org.co";
             synonyms_atomized_version.state="accepted";
             synonyms_atomized_version.element="synonymsAtomized";
+            if(typeof synonyms_atomized_version.synonymsAtomized!=="undefined"){
+              for(var i=0;i<synonyms_atomized_version.synonymsAtomized.length;i++){
+                if(synonyms_atomized_version.synonymsAtomized[i].synonymName.attributes.id== ""){
+                  delete synonyms_atomized_version.synonymsAtomized[i].synonymName.attributes.id;
+                }
+              }
+            }
             synonyms_atomized_version = new SynonymsAtomizedVersionModel(synonyms_atomized_version);
             var id_v = synonyms_atomized_version._id;
             var id_rc = synonyms_atomized_version.id_record;
@@ -393,38 +400,24 @@ var Schema = mongoose.Schema;
             var common_names_atomized = {};
             ob_ids= new Array(); 
             var elementTemp=record._doc.commonNamesAtomized;
-            console.log(record._doc);
-            console.log(record._doc.commonNamesAtomized);
-            console.log(elementTemp);
             if(typeof  elementTemp!=="undefined" && elementTemp.length!=0){
               common_names_atomized.commonNamesAtomized=elementTemp;
             }else{
               common_names_atomized.commonNamesAtomized=record._doc.commonNameAtomized;
             }
-            console.log("******!!"+Object.keys(elementTemp));
             common_names_atomized._id = mongoose.Types.ObjectId();
             common_names_atomized.id_record=record._id;
             common_names_atomized.created=record._id.getTimestamp(); //***
             common_names_atomized.id_user="sib+ac@humboldt.org.co";
             common_names_atomized.state="accepted";
             common_names_atomized.element="commonNamesAtomized";
-            console.log(common_names_atomized);
-            if(common_names_atomized.commonNamesAtomized!=="undefined"){
+            if(typeof common_names_atomized.commonNamesAtomized!=="undefined"){
               for(var i=0;i<common_names_atomized.commonNamesAtomized.length;i++){
                 if(common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== "" || common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== ""){
-                  //taxon_record_name_version.taxonRecordName.scientificName.attributes.id = 0;
                   delete common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage;
                 }
               }
             }
-            /*
-            for(var i=0;i<common_names_atomized.commonNamesAtomized.length;i++){
-              if(common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== "" || common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage.endDate== ""){
-                //taxon_record_name_version.taxonRecordName.scientificName.attributes.id = 0;
-                delete common_names_atomized.commonNamesAtomized[i].usedIn.temporalCoverage;
-              }
-            }
-            */
             common_names_atomized = new CommonNamesAtomizedVersionModel(common_names_atomized);
             var id_v = common_names_atomized._id;
             var id_rc = common_names_atomized.id_record;
@@ -815,6 +808,16 @@ var Schema = mongoose.Schema;
             life_form_version.id_user="sib+ac@humboldt.org.co";
             life_form_version.state="accepted";
             life_form_version.element="lifeForm";
+            if(typeof life_form_version.lifeForm!=="undefined"){
+              for(var i=0;i<life_form_version.lifeForm.lifeFormAtomized.length;i++){
+                if(life_form_version.lifeForm.lifeFormAtomized[i].ancillaryData.modified== ""){
+                  delete life_form_version.lifeForm.lifeFormAtomized[i].ancillaryData.modified;
+                }
+                if(life_form_version.lifeForm.lifeFormAtomized[i].ancillaryData.created== ""){
+                  delete life_form_version.lifeForm.lifeFormAtomized[i].ancillaryData.created;
+                }
+              }
+            }
             life_form_version = new LifeFormVersionModel(life_form_version);
             var id_v = life_form_version._id;
             var id_rc = life_form_version.id_record;
