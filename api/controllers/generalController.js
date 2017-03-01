@@ -2,160 +2,64 @@ import mongoose from 'mongoose';
 import async from 'async';
 import winston from 'winston';
 import add_objects from '../models/additionalModels.js';
+import { logger }  from '../../server/log';
 
-function postElementVersion(Element_model, element_version, id_rc) {
-	element_version._id = mongoose.Types.ObjectId();
-	element_version.created=Date();
-	element_version.state="to_review";
-	var elementName = element_version.element;
-	//console.log("Element: "+element_version);
-	//console.log("Element: "+Object.keys(element_version));
-	//console.log(elementName);
-	//var elementValue = taxon_record_name_version.taxonRecordName;
-	var elementValue = element_version[elementName];
+function returnName(name){
+  var message = "hello"+name;
+  return message;
+}
 
-	//taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
-	element_version = new Element_model(element_version);
+function getLastAcceptedElement(ElementModel, ElementVersion, id_rc) {
+  var answ = {};
+  console.log("here");
+  ElementModel.find({ id_record : id_rc, state: "accepted" }).exec(function (err, elementVer) {
+    console.log("Here!!!!");
+    if(err){
+      console.log("Error");
+      var text_log = 'Error getting the last '+ ElementVersion +' at state accepted';
+      logger.error(text_log, JSON.stringify({ message:err }) );
+      result.status = 400;
+      result.err = err;
+      /*
+      res.status(400);
+      res.send(err);
+      */
+      return result;
+    }else{
+      console.log("No error!!!!");
+      if(elementVer.length !== 0){
+        var text_log = 'Get last '+ ElementVersion +' with state accepted';
+        logger.info(text_log, JSON.stringify({ id_record: id_rc }) );
+        var len = elementVer.length;
+        answ.status = 200;
+        answ.rest = elementVer[len-1];
+        console.log("len no zero!!!!");
+        return answ;
+      }else{
 
-	//console.log("Element!: "+Object.keys(element_version));
-	//console.log("Element!: "+Object.keys(element_version._doc));
-
-	//var id_v = taxon_record_name_version._id;
-    //var id_rc = req.swagger.params.id.value;
-
-    var id_v = element_version._id;
-    var ob_ids= new Array();
-  	ob_ids.push(id_v);
-
-  	var ver = "";
-  	var element_text_version = elementName + 'Version';
-  	var element_text_up = element_text_version.charAt(0).toUpperCase() + element_text_version.slice(1);
-
-  	//console.log(element_text_version);
-  	//console.log(element_text_up);
-
-  	var resr = {};
-
-  	if(typeof  id_rc!=="undefined" && id_rc!=""){
-  		if(typeof  elementValue!=="undefined" && elementValue!=""){
-  			async.waterfall([
-  					function(callback){ 
-          				add_objects.RecordVersion.findById(id_rc , function (err, data){
-            				if(err){
-              					callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist.:" + err.message));
-           			 		}else{
-              					callback(null, data);
-            				}
-          				});
-        			},
-        			function(data,callback){
-              			if(data){
-              				//console.log(data[element_text_version]);
-                			if(data[element_text_version] && data[element_text_version].length !=0){
-                  				var lenElement = data[element_text_version].length;
-                  				var idLast = data[element_text_version][lenElement-1];
-                  				Element_model.findById(idLast , function (err, doc){
-                    				if(err){
-                      					callback(new Error("failed getting the last version of"+ element_text_up +":" + err.message));
-                    				}else{
-                    				
-                      					//var prev = doc[element_text_version];
-                      					//ar next = element_version[element_text_version];
-                      					//if(!compare.isEqual(prev,next)){ //TODO
-                      					if(true){
-                        					element_version.id_record = id_rc;
-                        					element_version.version = lenElement+1;
-                        					callback(null, element_version);
-                      					}else{
-                        					callback(new Error("The data in "+ element_text_version +" is equal to last version of this element in the database"));
-                      					}
-                      					/*
-                      					var next = element_version[element_text_version];
-                      					callback(null, element_version);
-                      					*/
-                    				}
-                  				});
-                			}else{
-                  				element_version.id_record=id_rc;
-                  				element_version.version=1;
-                  				callback(null, element_version);
-                			}
-              			}else{
-                			callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
-              			}
-            		},
-            		function(element_version, callback){ 
-          				ver = element_version.version;
-          				console.log("version: "+ver);
-          				element_version.save(function(err){
-            				if(err){
-              					callback(new Error("failed saving the element version:" + err.message));
-            				}else{
-              					callback(null, element_version);
-           					}
-          				});
-      				},
-      				function(taxon_record_name_version, callback){ 
-      					var push_val = {};
-      					push_val[element_text_version] = id_v;
-          				add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: push_val },{ safe: true, upsert: true }).exec(function (err, record) {
-            				if(err){
-              					callback(new Error("failed added _id to RecordVersion:" + err.message));
-            				}else{
-              					callback();
-            				}
-          				});
-      				}
-  				],
-        		function(err, result) {
-          			if (err) {
-          				/*
-            			console.log("Error: "+err);
-                  		winston.error("message: " + err );
-            			res.status(400);
-            			res.json({ ErrorResponse: {message: ""+err }});
-            			*/
-            			console.log("Error: "+err);
-                  		winston.error("message: " + err );
-            			resr.status = 400;
-            			resr.message = "Error" + err;
-          			}else{
-                  		//winston.info('info', 'Saved '+ element_text_up +' version: ' + ver + " for the Record: " + id_rc);
-                  		resr.message = 'Save ' + element_text_up;
-                  		resr.element = element_text_version;
-                  		resr.version = ver;
-                  		resr._id = id_v;
-                  		resr.id_record = id_rc;
-                  		resr.status = 200;
-            			//res.json({ message: 'Save ' + element_text_up, element: element_text_version, version : ver, _id: id_v, id_record : id_rc });
-            			console.log("response: "+JSON.stringify(resr));
-            			return resr;
-         			 }
-         			 /*	
-         			console.log("$$$"+Object.keys(resr));	
-         			return resr; 
-         			*/	
-        		}
-  			);
-  		}else{
-        winston.error("message: " + "Empty data in version of the element" );
-    	//res.status(400);
-    	//res.json({message: "Empty data in version of the element"});
-   		}
-  	}else{
-      winston.error("message: " + "The url doesn't have the id for the Record (Ficha)" );
-  	  //res.status(400);
-      //res.json({message: "The url doesn't have the id for the Record (Ficha)"});
-  	}
-  	console.log("response: "+JSON.stringify(resr));
-  	/*
-  	console.log("----"+resr);
-  	console.log("----"+Object.keys(resr));
-  	console.log(JSON.stringify(resr));
-  	*/
-  	//return resr;
+      }
+      /*
+      if(elementVer.length !== 0){
+        logger.info('Get last '+ ElementVersion +' with state accepted', JSON.stringify({ id_record: id_rc }) );
+        var len = elementVer.length;
+        result.status = 200;
+        result.rest = elementVer[len-1];
+        //res.json(elementVer[len-1]);
+        return result;
+      }else{
+        result.status = 400;
+        result.err = {message: "Doesn't exist a " + ElementVersion + " with id_record: "+id_rc};
+        
+        //res.status(400);
+        //res.json({message: "Doesn't exist a TaxonRecordNameVersion with id_record: "+id_rc});
+        //return result;
+      }
+      */
+    }
+  });
 }
 
 module.exports = {
-	postElementVersion
+  returnName,
+  getLastAcceptedElement
 }

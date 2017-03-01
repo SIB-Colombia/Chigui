@@ -261,6 +261,13 @@ function getLastAcceptedTaxonRecordName(req, res) {
   });
 }
 
+function getLastAcceptedTaxonRecordNameTest(req, res) {
+  console.log("function");
+  var id_rc = req.swagger.params.id.value;
+  var result = generalController.getLastAcceptedElement(TaxonRecordNameVersion, "TaxonRecordName", id_rc);
+  console.log("result: "+result);
+}
+
 function getTaxonRecordName(req, res) {
   	var id_rc = req.swagger.params.id.value;
   	var version = req.swagger.params.version.value;
@@ -282,74 +289,12 @@ function getTaxonRecordName(req, res) {
     });
 }
 
-function postTestTaxonRecordName(req, res) {
-  var element_version  = req.body; 
-    //taxon_record_name_version._id = mongoose.Types.ObjectId();
-    //taxon_record_name_version.created=Date();
-    //taxon_record_name_version.state="to_review";
-    //taxon_record_name_version.state="accepted";
-    //var element = element_version.element;
-    //taxon_record_name_version.element="taxonRecordName";
-    //var elementValue = taxon_record_name_version.taxonRecordName;
-    //taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
-    //var id_v = taxon_record_name_version._id;
-  var id_rc = req.swagger.params.id.value;
 
 
-
-  //var response = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
-  //console.log("***"+response);
-  //console.log("***"+generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
-
-  async.waterfall([
-      function(callback){ 
-        var result = "-";
-        /*
-        result = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
-        //console.log("***" + generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
-        console.log("***"+result);
-        */
-        callback(null, result);
-      },
-      function(result,callback){ 
-        console.log(result);
-        //result = generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc);
-        callback(null, generalController.postElementVersion(TaxonRecordNameVersion, element_version, id_rc));
-      },
-      function(result,callback){ 
-        console.log("*"+result);
-        callback(null, result);
-      },
-    ],function(err, result) {
-      if (err) {
-        logger.error("message: " + err );
-        res.status(400);
-        res.json({ ErrorResponse: {message: ""+err }});
-      }else{
-        console.log("!!"+result);
-        //res.status(result[status]);
-        //delete result[status];
-        //res.json(result);
-      }      
-    });
-  /*
-  res.status(response[status]);
-  response[status];
-  res.json(response);
-  /*
-  if(response.status == 400){
-    res.status(400);
-    delete response[status];
-    res.json(response);
-  }else{
-    res.status(200);
-    delete response[status];
-    res.json(response);
-  }
-  */
-
-  //
-
+function returnNameMessage(req, res) {
+ var name = req.swagger.params.name.value;
+ var message = generalController.returnName(name);
+ res.json(message);
 }
 
 
@@ -361,6 +306,7 @@ module.exports = {
   setAcceptedTaxonRecordName,
   getToReviewTaxonRecordName,
   getLastAcceptedTaxonRecordName,
-  postTestTaxonRecordName,
-  postRecord
+  getLastAcceptedTaxonRecordNameTest,
+  postRecord,
+  returnNameMessage
 };

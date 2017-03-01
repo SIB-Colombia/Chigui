@@ -8,8 +8,8 @@ function postIdentificationKeys(req, res) {
   var identification_keys_version  = req.body; 
     identification_keys_version._id = mongoose.Types.ObjectId();
     identification_keys_version.created=Date();
-    //identification_keys_version.state="to_review";
-    identification_keys_version.state="accepted";
+    identification_keys_version.state="to_review";
+    //identification_keys_version.state="accepted";
     identification_keys_version.element="identificationKeys";
     var user = identification_keys_version.id_user;
     var elementValue = identification_keys_version.identificationKeys;

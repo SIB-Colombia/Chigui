@@ -8,8 +8,8 @@ function postFullDescription(req, res) {
   var full_description_version  = req.body; 
     full_description_version._id = mongoose.Types.ObjectId();
     full_description_version.created=Date();
-    //full_description_version.state="to_review";
-    full_description_version.state="accepted";
+    full_description_version.state="to_review";
+    //full_description_version.state="accepted";
     full_description_version.element="fullDescription";
     var user = full_description_version.id_user;
     var elementValue = full_description_version.fullDescription;

@@ -678,6 +678,24 @@ var Schema = mongoose.Schema;
             full_description_version.id_user="sib+ac@humboldt.org.co";
             full_description_version.state="accepted";
             full_description_version.element="fullDescription";
+            if(typeof full_description_version.fullDescription!=="undefined"){
+              for(var i=0;i<full_description_version.fullDescription.ancillaryData.length;i++){
+                if(full_description_version.fullDescription.ancillaryData[i].modified== ""){
+                  delete full_description_version.fullDescription.ancillaryData[i].modified;
+                }
+                if(full_description_version.fullDescription.ancillaryData[i].created== ""){
+                  delete full_description_version.fullDescription.ancillaryData[i].created;
+                }
+                for(var j=0;j<full_description_version.fullDescription.ancillaryData[i].reference.length;j++){
+                  if(full_description_version.fullDescription.ancillaryData[i].reference[j].created == ""){
+                    delete full_description_version.fullDescription.ancillaryData[i].reference[j].created;
+                  }
+                  if(full_description_version.fullDescription.ancillaryData[i].reference[j].created == ""){
+                    delete full_description_version.fullDescription.ancillaryData[i].reference[j].created;
+                  }
+                }
+              }
+            }
             full_description_version = new FullDescriptionVersionModel(full_description_version);
             var id_v = full_description_version._id;
             var id_rc = full_description_version.id_record;
