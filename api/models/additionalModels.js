@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 var Reference = new Schema ({
 	profile_id : String,
 	group_id : String,
-	created : {type: Date, default: Date.now},
-	last_modified : {type: Date, default: Date.now},
+	created : {type: Date},
+	last_modified : {type: Date},
 	identifiers : [String],
 	abstract : String,
 	tags : String,

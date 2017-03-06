@@ -690,8 +690,8 @@ var Schema = mongoose.Schema;
                   if(full_description_version.fullDescription.ancillaryData[i].reference[j].created == ""){
                     delete full_description_version.fullDescription.ancillaryData[i].reference[j].created;
                   }
-                  if(full_description_version.fullDescription.ancillaryData[i].reference[j].created == ""){
-                    delete full_description_version.fullDescription.ancillaryData[i].reference[j].created;
+                  if(full_description_version.fullDescription.ancillaryData[i].reference[j].last_modified == ""){
+                    delete full_description_version.fullDescription.ancillaryData[i].reference[j].last_modified;
                   }
                 }
               }

@@ -495,81 +495,108 @@ function lastRecord(req, res) {
 };
 
 function getRecordList(req, res) {
-
-  var RecordVersion = mongoose.model('RecordVersion').schema;
-  //var id_rc=req.swagger.params.id.value;
-  var ver=req.params.version;
+  console.log("getRecordList");
   var lastRec={};
   var response=[];
   var dataObject ={};
-  var query = add_objects.RecordVersion.find({}).select('_id').sort({ _id: -1});
-  async.waterfall([
-    function(callback){
-      console.log("algo");
-      query.exec(function (err, data) {
-        if(err){
-          callback(new Error("Error getting the total of Records:" + err.message));
+  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
+  var skip = parseInt(req.query.skip);
+  var limit = parseInt(req.query.limit) ;
+  if(typeof skip ==="undefined" || typeof limit ==="undefined" || skip.length==0 || limit.length==0){
+    query.exec(function (err, data) {
+        if (err) 
+          res.json(err);
+        if(data.length==0){
+          res.json({"message" : "No data in the database"});
         }else{
-          callback(null, data);
-        }
-      });
-    },
-    function(data,callback){
-      async.eachSeries(data, function(id_record, callback){
-        //console.log(id_record);
-        callback();
-      },function(err){
-        if(err){
-          callback(new Error("Error"));
+          if(data){
+            var lenData=data.length;
+            var lenTaxRecNam=0;
+            var lenAsPar=0;
+            for (i = 0; i < lenData ; i++) {
+              lastRec._id=data[i]._id;
+              lastRec.creation_date=data[i]._id.getTimestamp();
+              lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+              lenAsPar=data[i].associatedPartyVersion.length;
+              if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+                lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+              }else{
+                lastRec.associatedParty="";
+              }
+  
+              if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+                lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+              }else{
+                lastRec.taxonRecordName="";
+              }
+              response.push(lastRec);
+              lastRec={};
+            }
+            /*
+            console.log(data.length);
+            console.log("Resultado: "+data);
+            */
+          res.json(response);
         }else{
-          console.log("All Users are in the Data Base");
-          callback();
+          res.json({"message" : "No data in the database"});
         }
-      });
-      console.log(data.length);
-      callback(null);
-    }
-    ],
-    function(err, result) {
-      if(err){
-        res.status(400);
-        res.json({ ErrorResponse: {message: ""+err }});
-      }else{
-        console.log("ok");
-        //logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
-        res.json("Ok");
       }
     });
-  /*
-  async.waterfall([
-    function(callback){ 
-      query.exec(function (err, data) {
-          if (err) {
-            //res.send(err);
-            callback(new Error("Error getting the total of Records:" + err.message));
-          }else{
-            //console.log(data);
-            callback(null, data);
-          }
-      });
-    },
-    function(data,callback){
-      console.log();
-      callback();
-    }
-  ],function(err, result) {
-      if (err) {
-        //logger.error('Error Creation of a new AncillaryDataVersion', JSON.stringify({ message:err }) );
-        res.status(400);
-        res.json({ ErrorResponse: {message: ""+err }});
-      }else{
-        console.log("ok");
-        //logger.info('Creation a new AncillaryDataVersion sucess', JSON.stringify({id_record: id_rc, version: ver, _id: id_v, id_user: user}));
-        res.json("Ok");
-      }      
+  }else{
+    if (skip === 1) {
+      skip = 0;
+    }else {
+      skip = ((skip -1)*limit) + 1;
+    };
+    //query=add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate({path: 'taxonRecordNameVersion'}).sort({ _id: -1}).limit(limit).skip(skip);
+    var totalRecords = 0;
+    add_objects.RecordVersion.find({}).count(function (err, count){
+      totalRecords = count;
     });
-  */
-  //res.json(response);
+    query = add_objects.RecordVersion.find({});
+    
+    query.skip(skip).limit(limit).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').exec('find', function (err, data) {
+        if (err) 
+          res.send(err);
+        if(data.length==0){
+          res.json({"message" : "No data in the database"});
+        }else{
+          if(data){
+          var lenData=data.length;
+          var lenTaxRecNam=0;
+          var lenAsPar=0;
+          for (i = 0; i < lenData ; i++) {
+            lastRec._id=data[i]._id;
+            lastRec.creation_date=data[i]._id.getTimestamp();
+            lenTaxRecNam=data[i].taxonRecordNameVersion.length;
+            lenAsPar=data[i].associatedPartyVersion.length;
+            if(typeof data[i].associatedPartyVersion[lenAsPar-1]!=="undefined"){
+              lastRec.associatedParty=data[i].associatedPartyVersion[lenAsPar-1].associatedParty;
+            }else{
+              lastRec.associatedParty="";
+            }
+  
+            if(typeof data[i].taxonRecordNameVersion[lenTaxRecNam-1]!=="undefined"){
+              lastRec.taxonRecordName=data[i].taxonRecordNameVersion[lenTaxRecNam-1].taxonRecordName;
+            }else{
+              lastRec.taxonRecordName="";
+            }
+
+            response.push(lastRec);
+            lastRec={};
+          }
+          dataObject.docs = response;
+          dataObject.total = totalRecords;
+          console.log(totalRecords);
+          //console.log("Resultado: "+data);
+          res.json(dataObject);
+        }else{
+          res.json({"message" : "No data in the database"});
+        }
+      }
+    });
+  }
+  
 };
 
 function deleteRecord(req, res) {

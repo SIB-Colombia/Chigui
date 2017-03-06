@@ -9,8 +9,8 @@ function postMoreInformation(req, res) {
   var more_information_version  = req.body; 
     more_information_version._id = mongoose.Types.ObjectId();
     more_information_version.created=Date();
-    //more_information_version.state="to_review";
-    more_information_version.state="accepted";
+    more_information_version.state="to_review";
+    //more_information_version.state="accepted";
     var user = more_information_version.id_user;
     more_information_version.element="moreInformation";
     var elementValue = more_information_version.moreInformation;
@@ -136,6 +136,7 @@ function setAcceptedMoreInformation(req, res) {
   var id_rc = req.swagger.params.id.value;
   var version = req.swagger.params.version.value;
   var id_rc = req.swagger.params.id.value;
+  var elementUpdated = '';
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
     async.waterfall([
@@ -146,6 +147,8 @@ function setAcceptedMoreInformation(req, res) {
           }else if(elementVer == null){
             callback(new Error("Doesn't exist a MoreInformationVersion with the properties sent."));
           }else{
+            elementVer.state="accepted";
+            elementUpdated = elementVer;
             callback();
           }
         });
@@ -155,6 +158,7 @@ function setAcceptedMoreInformation(req, res) {
           if(err){
             callback(new Error(err.message));
           }else{
+            //remove user from the accepted version of the Record
             console.log("response: "+raw);
             callback();
           }
@@ -166,7 +170,19 @@ function setAcceptedMoreInformation(req, res) {
           if(err){
             callback(new Error(err.message));
           }else{
+            //added user and institution to the accepted version of the record
             callback();
+          }
+        });
+      },
+      function(callback){
+        console.log("updated last version of the element");
+        console.log("!elementUpdated: "+elementUpdated);
+        add_objects.Record.update({ '_id': id_rc }, { $set: { 'moreInformationAccepted': elementUpdated }}, function (err, raw){
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            //callback();
           }
         });
       }

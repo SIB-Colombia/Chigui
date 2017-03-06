@@ -46,7 +46,7 @@ query = add_objects.RecordVersion.find({}).select('_id').sort({ _id: -1});
 
 var lastRec ={};
 
-var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJunio', function(err) {
+var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDbJunio', function(err) {
 	if(err) {
     	console.log('connection error', err);
     }else{
@@ -168,20 +168,22 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
     			query = RecordVersion.find({}).select('_id').sort({ _id: -1});
     			query.exec(function (err, data) {
         			if(err){
+                  console.log("1");
           				callback(new Error("Error getting the total of Records:" + err.message));
         			}else{
+                  console.log("2");
           				callback(null, data);
         			}
       			});
     		},
     		function(data,callback){
-    			//console.log(data.length);
+    			console.log(data.length);
     			async.eachSeries(data, function(record_data, callback){
     				console.log(record_data._id);
             //record_data._id = "56702bfef289f5a40c0cd2ac";
             async.waterfall([
               function(callback){
-                console.log("! "+record_data._id);
+                //console.log("! "+record_data._id);
                 TaxonRecordNameVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
                   console.log("TaxonRecordName");
                   if(err){
@@ -200,6 +202,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               function(callback){
                 //console.log("!*");
                 AssociatedPartyVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("AssociatedParty");
                   if(err){
                     callback(new Error("Error to get AssociatedParty element for the record with id: "+record_data._id+" : " + err.message));
                   }else{ 
@@ -214,6 +217,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 CommonNamesAtomizedVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("CommonNamesAtomized");
                   if(err){
                     console.log(err);
                     callback(new Error("Error to get CommonNamesAtomized element for the record with id: "+record_data._id+" : " + err.message));
@@ -229,6 +233,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 SynonymsAtomizedVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("SynonymsAtomized");
                   if(err){
                     callback(new Error("Error to get SynonymsAtomized element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -243,6 +248,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 LifeCycleVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("LifeCycle");
                   if(err){
                     callback(new Error("Error to get LifeCycle element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -257,6 +263,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 LifeFormVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("LifeForm");
                   if(err){
                     callback(new Error("Error to get LifeForm element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -271,6 +278,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 IdentificationKeysVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("IdentificationKeys");
                   if(err){
                     callback(new Error("Error to get IdentificationKeys element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -285,6 +293,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 FullDescriptionVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("FullDescription");
                   if(err){
                     callback(new Error("Error to get FullDescription element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -299,6 +308,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 BriefDescriptionVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("BriefDescription");
                   if(err){
                     callback(new Error("Error to get BriefDescription element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -313,6 +323,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 AbstractVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Abstract");
                   if(err){
                     callback(new Error("Error to get Abstract element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -327,6 +338,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 HierarchyVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Hierarchy");
                   if(err){
                     callback(new Error("Error to get Hierarchy element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -341,6 +353,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 ReproductionVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Reproduction");
                   if(err){
                     callback(new Error("Error to get Reproduction element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -355,6 +368,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 AnnualCyclesVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("AnnualCycles");
                   if(err){
                     callback(new Error("Error to get AnnualCycles element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -369,6 +383,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 FeedingVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Feeding");
                   if(err){
                     callback(new Error("Error to get Feeding element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -383,6 +398,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 DispersalVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Dispersal");
                   if(err){
                     callback(new Error("Error to get Dispersal element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -397,6 +413,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 BehaviorVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Behavior");
                   if(err){
                     callback(new Error("Error to get Behavior element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -411,6 +428,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 InteractionsVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Interactions");
                   if(err){
                     callback(new Error("Error to get Interactions element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -425,6 +443,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 MolecularDataVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("MolecularData");
                   if(err){
                     callback(new Error("Error to get MolecularData element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -439,6 +458,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 MigratoryVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Migratory");
                   if(err){
                     callback(new Error("Error to get Migratory element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -453,6 +473,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 HabitatsVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Habitats");
                   if(err){
                     callback(new Error("Error to get Habitats element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -467,6 +488,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 DistributionVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Distribution");
                   if(err){
                     callback(new Error("Error to get Distribution element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -481,6 +503,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 TerritoryVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("TerritoryVersion");
                   if(err){
                     callback(new Error("Error to get Territory element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -495,6 +518,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 PopulationBiologyVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("PopulationBiology");
                   if(err){
                     callback(new Error("Error to get PopulationBiology element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -509,6 +533,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 MoreInformationVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("MoreInformation");
                   if(err){
                     callback(new Error("Error to get PopulationBiology element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -523,6 +548,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 ThreatStatusVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("ThreatStatus");
                   if(err){
                     callback(new Error("Error to get ThreatStatus element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -537,6 +563,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 LegislationVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("Legislation");
                   if(err){
                     callback(new Error("Error to get Legislation element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -551,6 +578,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 UsesManagementAndConservationVersion.findOne({ "id_record" : mongoose.Types.ObjectId(record_data._id), state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("UsesManagementAndConservation");
                   if(err){
                     callback(new Error("Error to get UsesManagementAndConservation element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -565,6 +593,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 DirectThreatsVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("DirectThreats");
                   if(err){
                     callback(new Error("Error to get DirectThreats element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -579,6 +608,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 AncillaryDataVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("AncillaryData");
                   if(err){
                     callback(new Error("Error to get AncillaryData element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -593,6 +623,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 EndemicAtomizedVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("EndemicAtomized");
                   if(err){
                     callback(new Error("Error to get EndemicAtomized element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -606,8 +637,9 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
                 });
               },
               function(callback){
-                console.log("References");
+                
                 ReferencesVersion.findOne({ "id_record" : mongoose.Types.ObjectId(record_data._id), state: "accepted" }).exec(function (err, elementVer) {
+                  console.log("References");
                   if(err){
                     callback(new Error("Error to get References element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
@@ -622,6 +654,7 @@ var catalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoJu
               },
               function(callback){
                 EnvironmentalEnvelopeVersion.findOne({ id_record : record_data._id, state: "accepted" }).sort({created: -1}).exec(function (err, elementVer) {
+                  console.log("EnvironmentalEnvelope");
                   if(err){
                     callback(new Error("Error to get EnvironmentalEnvelope element for the record with id: "+record_data._id+" : " + err.message));
                   }else{
