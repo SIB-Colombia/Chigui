@@ -39,6 +39,7 @@ import EcologicalSignificanceVersion from '../models/ecologicalSignificance.js';
 import InvasivenessVersion from '../models/invasiveness.js';
 import add_objects from '../models/additionalModels.js';
 
+mongoose.Promise = require('bluebird');
 
 /*
   Returns the last version of a record according to id
@@ -499,9 +500,13 @@ function getRecordList(req, res) {
   var lastRec={};
   var response=[];
   var dataObject ={};
-  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1}).limit(1);
+  var query = add_objects.RecordVersion.find({}).select('taxonRecordNameVersion associatedPartyVersion creation_date').populate('taxonRecordNameVersion associatedPartyVersion').sort({ _id: -1});
+  /*
   var skip = parseInt(req.query.skip);
   var limit = parseInt(req.query.limit) ;
+  */
+  
+  
   if(typeof skip ==="undefined" || typeof limit ==="undefined" || skip.length==0 || limit.length==0){
     query.exec(function (err, data) {
         if (err) 
@@ -510,9 +515,13 @@ function getRecordList(req, res) {
           res.json({"message" : "No data in the database"});
         }else{
           if(data){
+
             var lenData=data.length;
             var lenTaxRecNam=0;
             var lenAsPar=0;
+            console.log(lenData);
+            console.log(data);
+            /*
             for (i = 0; i < lenData ; i++) {
               lastRec._id=data[i]._id;
               lastRec.creation_date=data[i]._id.getTimestamp();
@@ -532,11 +541,10 @@ function getRecordList(req, res) {
               response.push(lastRec);
               lastRec={};
             }
-            /*
-            console.log(data.length);
-            console.log("Resultado: "+data);
             */
           res.json(response);
+
+
         }else{
           res.json({"message" : "No data in the database"});
         }

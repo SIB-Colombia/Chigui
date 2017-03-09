@@ -8,8 +8,8 @@ function postAbstract(req, res) {
   var abstract_version  = req.body; 
     abstract_version._id = mongoose.Types.ObjectId();
     abstract_version.created=Date();
-    //abstract_version.state="to_review";
-    abstract_version.state="accepted";
+    abstract_version.state="to_review";
+    //abstract_version.state="accepted";
     abstract_version.element="abstract";
     var user = abstract_version.id_user;
     var elementValue = abstract_version.abstract;

@@ -30,10 +30,11 @@
     "util": "^0.10.3",
     "validator": "^5.4.0",
     "winston": "^2.2.0",
-    "mongoose": "~4.2.7",
-    "mongoose-schema-extend": "0.2.0",
+    "mongoose": "latest",
+    "mongoose-schema-extend": "latest",
     "async" : "latest",
-    "mongoose-unique-validator" : "latest"
+    "mongoose-unique-validator" : "latest",
+    "bluebird" : "latest"
   },
   "bugs": {
     "url": ""

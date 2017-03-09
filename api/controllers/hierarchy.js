@@ -8,8 +8,8 @@ function postHierarchy(req, res) {
   var hierarchy_version  = req.body; 
     hierarchy_version._id = mongoose.Types.ObjectId();
     hierarchy_version.created=Date();
-    //hierarchy_version.state="to_review";
-    hierarchy_version.state="accepted";
+    hierarchy_version.state="to_review";
+    //hierarchy_version.state="accepted";
     hierarchy_version.element="hierarchy";
     var user = hierarchy_version.id_user;
     var elementValue = hierarchy_version.hierarchy;
