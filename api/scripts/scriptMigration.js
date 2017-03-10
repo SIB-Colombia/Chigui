@@ -966,6 +966,16 @@ var Schema = mongoose.Schema;
             reproduction_version.id_user="sib+ac@humboldt.org.co";
             reproduction_version.state="accepted";
             reproduction_version.element="reproduction";
+            if(typeof reproduction_version.reproduction!=="undefined"){
+              for(var i=0;i<reproduction_version.reproduction.reproductionAtomized.length;i++){
+                if(reproduction_version.reproduction.reproductionAtomized[i].ancillaryData.modified == ""){
+                  delete reproduction_version.reproduction.reproductionAtomized[i].ancillaryData.modified;
+                }
+                if(reproduction_version.reproduction.reproductionAtomized[i].ancillaryData.created == ""){
+                  delete reproduction_version.reproduction.reproductionAtomized[i].ancillaryData.created;
+                }
+              }
+            }
             reproduction_version = new ReproductionVersionModel(reproduction_version);
             var id_v = reproduction_version._id;
             var id_rc = reproduction_version.id_record;
