@@ -8,8 +8,8 @@ function postFeeding(req, res) {
   var feeding_version  = req.body; 
     feeding_version._id = mongoose.Types.ObjectId();
     feeding_version.created=Date();
-    //feeding_version.state="to_review";
-    feeding_version.state="accepted";
+    feeding_version.state="to_review";
+    //feeding_version.state="accepted";
     feeding_version.element="feeding";
     var user = feeding_version.id_user;
     var elementValue = feeding_version.feeding;

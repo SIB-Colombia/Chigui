@@ -9,8 +9,8 @@ function postAnnualCycles(req, res) {
   var annual_cycles_version  = req.body; 
     annual_cycles_version._id = mongoose.Types.ObjectId();
     annual_cycles_version.created=Date();
-    //annual_cycles_version.state="to_review";
-    annual_cycles_version.state="accepted";
+    annual_cycles_version.state="to_review";
+    //annual_cycles_version.state="accepted";
     annual_cycles_version.element="annualCycles";
     var user = annual_cycles_version.id_user;
     var elementValue = annual_cycles_version.annualCycles;

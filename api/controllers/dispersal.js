@@ -8,8 +8,8 @@ function postDispersal(req, res) {
   var dispersal_version  = req.body; 
     dispersal_version._id = mongoose.Types.ObjectId();
     dispersal_version.created=Date();
-    //dispersal_version.state="to_review";
-    dispersal_version.state="accepted";
+    dispersal_version.state="to_review";
+    //dispersal_version.state="accepted";
     dispersal_version.element="dispersal";
     var user = dispersal_version.id_user;
     var elementValue = dispersal_version.dispersal;
