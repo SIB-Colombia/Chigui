@@ -89,7 +89,8 @@ var Element = new Schema ({
 var Record = new Schema({name:String}, { collection: 'Record', strict: false, versionKey: false });
 
 var Element = new Schema ({
-	ancillaryData : [AncillaryData]
+	//ancillaryData : [AncillaryData]
+	ancillaryData: { type: [AncillaryData], default: void 0 }
 }, { versionKey: false });
 
 var ElementVersion = new Schema ({

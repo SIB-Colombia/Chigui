@@ -7,6 +7,9 @@ import { logger }  from '../../server/log';
 
 
 function postTaxonRecordName(req, res) {
+    //var recordSchema = add_objects.Record.schema;
+    //var Record = catalogoDb.model('Record', recordSchema );
+    /*************************/ 
 	  var taxon_record_name_version  = req.body; 
   	taxon_record_name_version._id = mongoose.Types.ObjectId();
   	taxon_record_name_version.created=Date();
@@ -69,16 +72,18 @@ function postTaxonRecordName(req, res) {
             },
         		function(taxon_record_name_version, callback){ 
           			ver = taxon_record_name_version.version;
-          			taxon_record_name_version.save(function(err){
+                //console.log(Object.keys(taxon_record_name_version));
+          			taxon_record_name_version.save(function(err, record){
             			if(err){
               				callback(new Error("failed saving the element version:" + err.message));
             			}else{
+                      //console.log("Document"+JSON.stringify(record));
               				callback(null, taxon_record_name_version);
            				}
           			});
                 
       			},
-      			function(taxon_record_name_version, callback){ 
+      			function(element, callback){ 
           			add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "taxonRecordNameVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
             			if(err){
               				callback(new Error("failed added id to RecordVersion:" + err.message));
@@ -189,13 +194,37 @@ function setAcceptedTaxonRecordName(req, res) {
           if(err){
             callback(new Error(err.message));
           }else{
+            //console.log("document: "+JSON.stringify(raw));
             callback();
           }
         });
         
       },
       function(callback){ 
-        TaxonRecordNameVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+        //TaxonRecordNameVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+        TaxonRecordNameVersion.findOneAndUpdate({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            //console.log("Document: "+ JSON.stringify(elementVer));
+            callback(null, elementVer);
+          }
+        });
+      },
+      function(elementVer,callback){ 
+        elementVer.state="accepted";
+        //console.log(elementVer);
+        //console.log(Object.keys(add_objects.Record));
+        /*
+        add_objects.Record.find({_id:id_rc},function(err,docs){
+          if(err){
+            console.log("Error");
+          }else{
+            console.log(JSON.stringify(docs));
+          }
+        });
+        */
+        add_objects.Record.update({_id:id_rc},{ taxonRecordNameAccepted: elementVer }, function(err, result){
           if(err){
             callback(new Error(err.message));
           }else{

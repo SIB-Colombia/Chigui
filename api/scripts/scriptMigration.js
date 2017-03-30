@@ -1650,6 +1650,24 @@ var Schema = mongoose.Schema;
             interactions_version.id_user="sib+ac@humboldt.org.co";
             interactions_version.state="accepted";
             interactions_version.element="interactions";
+            if(typeof interactions_version.interactions!=="undefined"){
+              for(var i=0;i<interactions_version.interactions.ancillaryData.length;i++){
+                if(interactions_version.interactions.ancillaryData[i].modified== ""){
+                  delete interactions_version.interactions.ancillaryData[i].modified;
+                }
+                if(interactions_version.interactions.ancillaryData[i].created== ""){
+                  delete interactions_version.interactions.ancillaryData[i].created;
+                }
+                for(var j=0;j<interactions_version.interactions.ancillaryData[i].reference.length;j++){
+                  if(interactions_version.interactions.ancillaryData[i].reference[j].created == ""){
+                    delete interactions_version.interactions.ancillaryData[i].reference[j].created;
+                  }
+                  if(interactions_version.interactions.ancillaryData[i].reference[j].last_modified == ""){
+                    delete interactions_version.interactions.ancillaryData[i].reference[j].last_modified;
+                  }
+                }
+              }
+            }
             interactions_version = new InteractionsVersionModel(interactions_version);
             var id_v = interactions_version._id;
             var id_rc = interactions_version.id_record;

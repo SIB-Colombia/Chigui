@@ -8,8 +8,8 @@ function postInteractions(req, res) {
   var interactions_version  = req.body; 
     interactions_version._id = mongoose.Types.ObjectId();
     interactions_version.created=Date();
-    //interactions_version.state="to_review";
-    interactions_version.state="accepted";
+    interactions_version.state="to_review";
+    //interactions_version.state="accepted";
     interactions_version.element="interactions";
     var user = interactions_version.id_user;
     var elementValue = interactions_version.interactions;

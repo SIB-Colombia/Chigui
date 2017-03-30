@@ -9,12 +9,14 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var FeedingAtomized = new Schema ({
 	type : String,
-	thropic : [{ strategy : String }],
-	ancillaryData : AncillaryData
+	//thropic : [{ strategy : String }],
+	thropic: { type: [{ strategy : String }], default: void 0 },
+	ancillaryData: { type: [AncillaryData], default: void 0 }
 },{ strict: false, versionKey: false });
 
 var Feeding = Element.extend({
-	feedingAtomized : [FeedingAtomized],
+	//feedingAtomized : [FeedingAtomized],
+	feedingAtomized: { type: [FeedingAtomized], default: void 0 },
 	feedingUnstructured : String
 },{ strict: false, versionKey: false });
 
