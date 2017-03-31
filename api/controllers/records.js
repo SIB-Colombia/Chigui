@@ -41,6 +41,18 @@ import add_objects from '../models/additionalModels.js';
 
 mongoose.Promise = require('bluebird');
 
+function lastRecordTest(req, res) {
+  var id_rc=req.swagger.params.id.value;
+  var lastRec={};
+  add_objects.Record.find({_id:id_rc},function(err, result){
+          if(err){
+            console.log("Error: "+err);
+          }else{
+            lastRec.associatedParty=elementVer.associatedParty; //taxonRecordNameAccepted
+          }
+  });
+};
+
 /*
   Returns the last version of a record according to id
 

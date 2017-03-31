@@ -128,6 +128,7 @@ function postRecord(req, res) {
   taxon_record_name_version.element="taxonRecordName";
   var user = taxon_record_name_version.id_user;
   var elementValue = taxon_record_name_version.taxonRecordName;
+  var taxonRecordNameElement = taxon_record_name_version;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
   var id_v = taxon_record_name_version._id;
   var id_rc = taxon_record_name_version.id_record;
@@ -148,12 +149,32 @@ function postRecord(req, res) {
             taxon_record_name_version.version=1;
             taxon_record_name_version.save(function(err){
               if(err){
-                logger.error('Creation of a record error', JSON.stringify({ message:err }) );
+                logger.error('Creation of a record error, error saving TaxonRecordVersion', JSON.stringify({ message:err }) );
                 res.status(400);
                 res.json({message: err });
               }else{
+                /*
                 logger.info('Creation new record and TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, TaxonRecordNameVersion: ver, _id: id_v, id_user: user}));
                 res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc, id_user: user });
+                */
+                /*
+                var newRecord = {};
+                newRecord._id = mongoose.Types.ObjectId(id_rc);
+                newRecord.taxonRecordNameAccepted = taxonRecordNameElement;
+                */
+                add_objects.Record.create({ _id:id_rc, taxonRecordNameAccepted: taxonRecordNameElement },function(err, doc){
+                  if(err){
+                    logger.error('Creation of a record error, error saving accepted version Record', JSON.stringify({ message:err }) );
+                    res.status(400);
+                    res.json({message: err });
+                  }else{
+                    console.log("Document Record: "+doc);
+                    logger.info('Creation new record and TaxonRecordNameVersion sucess', JSON.stringify({id_record: id_rc, TaxonRecordNameVersion: ver, _id: id_v, id_user: user}));
+                    res.json({ message: 'Created a new Record and Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc, id_user: user });
+                  }
+
+                });
+
               }
             });
           }
