@@ -39,7 +39,7 @@ paths:
       description: get a list of records
       tags:
         - record
-      operationId: getRecordList
+      operationId: getRecordListTest
       responses:
         "200":
           description: Success
@@ -59,6 +59,54 @@ paths:
       tags:
         - record
       operationId: lastRecord
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Record"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /record-info/{id}:
+    x-swagger-router-controller: records
+    get:
+      description: get the latest version of a record
+      tags:
+        - record
+      operationId: lastRecordTest
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/Record"
+        # responses may fall through to errors
+        "400":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /complete-record/{id}:
+    x-swagger-router-controller: records
+    get:
+      description: get the latest version of a record
+      tags:
+        - record
+      operationId: completeLastRecordTest
       parameters:
         - name: id
           type: string
