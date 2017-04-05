@@ -161,7 +161,17 @@ function setAcceptedFeeding(req, res) {
         
       },
       function(callback){ 
-        FeedingVersion.update({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+        FeedingVersion.findOneAndUpdate({ id_record : id_rc, state: "to_review", version : version }, { state: "accepted" }, function (err, elementVer) {
+          if(err){
+            callback(new Error(err.message));
+          }else{
+            callback(null, elementVer);
+          }
+        });
+      },
+      function(elementVer,callback){ 
+        elementVer.state="accepted";
+        add_objects.Record.update({_id:id_rc},{ feedingAccepted: elementVer }, function(err, result){
           if(err){
             callback(new Error(err.message));
           }else{

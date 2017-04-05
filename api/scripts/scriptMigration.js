@@ -1111,6 +1111,24 @@ var Schema = mongoose.Schema;
             molecular_data_version.id_user="sib+ac@humboldt.org.co";
             molecular_data_version.state="accepted";
             molecular_data_version.element="molecularData";
+            if(typeof molecular_data_version.molecularData!=="undefined"){
+              for(var i=0;i<molecular_data_version.molecularData.ancillaryData.length;i++){
+                if(molecular_data_version.molecularData.ancillaryData[i].modified== ""){
+                  delete molecular_data_version.molecularData.ancillaryData[i].modified;
+                }
+                if(molecular_data_version.molecularData.ancillaryData[i].created== ""){
+                  delete molecular_data_version.molecularData.ancillaryData[i].created;
+                }
+                for(var j=0;j<molecular_data_version.molecularData.ancillaryData[i].reference.length;j++){
+                  if(molecular_data_version.molecularData.ancillaryData[i].reference[j].created == ""){
+                    delete molecular_data_version.molecularData.ancillaryData[i].reference[j].created;
+                  }
+                  if(molecular_data_version.molecularData.ancillaryData[i].reference[j].last_modified == ""){
+                    delete molecular_data_version.molecularData.ancillaryData[i].reference[j].last_modified;
+                  }
+                }
+              }
+            }
             molecular_data_version = new MolecularDataVersionModel(molecular_data_version);
             var id_v = molecular_data_version._id;
             var id_rc = molecular_data_version.id_record;

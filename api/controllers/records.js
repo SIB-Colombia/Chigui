@@ -41,224 +41,239 @@ import add_objects from '../models/additionalModels.js';
 
 mongoose.Promise = require('bluebird');
 
+function completeLastRecordTest(req, res) {
+  var id_rc=req.swagger.params.id.value;
+  add_objects.Record.findById(id_rc,function(err, result){
+    if(err){
+      res.send("Error: "+err);
+    }else{
+      res.json(result);
+    }
+  });
+}
+
 function lastRecordTest(req, res) {
   var id_rc=req.swagger.params.id.value;
   var lastRec={};
   add_objects.Record.findById(id_rc,function(err, result){
           if(err){
-            console.log("Error: "+err);
+            res.send("Error: "+err);
           }else{
             //null or undefined
-            if(result._doc.associatedPartyAccepted == null){
-              console.log("undefined");
-            }else{
-              //console.log(result._doc.associatedPartyAccepted.associatedParty);
-              lastRec.associatedParty = result._doc.associatedPartyAccepted.associatedParty;
-            }
+            if(!(result == null)){
+              //null or undefined
+              if(result._doc.associatedPartyAccepted == null){
+                console.log("undefined");
+              }else{
+                //console.log(result._doc.associatedPartyAccepted.associatedParty);
+                lastRec.associatedParty = result._doc.associatedPartyAccepted.associatedParty;
+              }
 
-            if(result._doc.commonNamesAtomizedAccepted == null){
-              console.log("undefined");
-            }else{
-              //console.log(result._doc.commonNamesAtomizedAccepted.commonNamesAtomized);
-              lastRec.commonNamesAtomized = result._doc.commonNamesAtomizedAccepted.commonNamesAtomized;
-            }
+              if(result._doc.commonNamesAtomizedAccepted == null){
+                console.log("undefined");
+              }else{
+                //console.log(result._doc.commonNamesAtomizedAccepted.commonNamesAtomized);
+                lastRec.commonNamesAtomized = result._doc.commonNamesAtomizedAccepted.commonNamesAtomized;
+              }
 
-            if(result._doc.synonymsAtomizedAccepted == null){
-              //console.log("undefined");
-            }else{
-              //console.log(result._doc.synonymsAtomizedAccepted.synonymsAtomized);
-              lastRec.synonymsAtomized = result._doc.synonymsAtomizedAccepted.synonymsAtomized;
-            }
+              if(result._doc.synonymsAtomizedAccepted == null){
+                //console.log("undefined");
+              }else{
+                //console.log(result._doc.synonymsAtomizedAccepted.synonymsAtomized);
+                lastRec.synonymsAtomized = result._doc.synonymsAtomizedAccepted.synonymsAtomized;
+              }
 
-            if(result._doc.taxonRecordNameAccepted == null){
-              console.log("undefined");
-            }else{
-              //console.log(result._doc.taxonRecordNameAccepted.taxonRecordName);
-              lastRec.taxonRecordName = result._doc.taxonRecordNameAccepted.taxonRecordName;
-            }
+              if(result._doc.taxonRecordNameAccepted == null){
+                console.log("undefined");
+              }else{
+                //console.log(result._doc.taxonRecordNameAccepted.taxonRecordName);
+                lastRec.taxonRecordName = result._doc.taxonRecordNameAccepted.taxonRecordName;
+              }
 
-            if(result._doc.lifeCycleAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.lifeCycle = result._doc.lifeCycleAccepted.lifeCycle;
-            }
+              if(result._doc.lifeCycleAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.lifeCycle = result._doc.lifeCycleAccepted.lifeCycle;
+              }
 
-            if(result._doc.lifeFormAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.lifeForm = result._doc.lifeFormAccepted.lifeForm;
-            }
+              if(result._doc.lifeFormAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.lifeForm = result._doc.lifeFormAccepted.lifeForm;
+              }
 
-            if(result._doc.identificationKeysAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.identificationKeys = result._doc.identificationKeysAccepted.identificationKeys;
-            }
+              if(result._doc.identificationKeysAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.identificationKeys = result._doc.identificationKeysAccepted.identificationKeys;
+              }
 
-            if(result._doc.fullDescriptionAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.fullDescription = result._doc.fullDescriptionAccepted.fullDescription;
-            }
+              if(result._doc.fullDescriptionAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.fullDescription = result._doc.fullDescriptionAccepted.fullDescription;
+              }
 
-            if(result._doc.briefDescriptionAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.briefDescription = result._doc.briefDescriptionAccepted.briefDescription;
-            }
+              if(result._doc.briefDescriptionAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.briefDescription = result._doc.briefDescriptionAccepted.briefDescription;
+              }
 
-            if(result._doc.abstractAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.abstract = result._doc.abstractAccepted.abstract;
-            }
+              if(result._doc.abstractAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.abstract = result._doc.abstractAccepted.abstract;
+              }
 
-            if(result._doc.hierarchyAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.hierarchy = result._doc.hierarchyAccepted.hierarchy;
-            }
+              if(result._doc.hierarchyAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.hierarchy = result._doc.hierarchyAccepted.hierarchy;
+              }
 
-            if(result._doc.reproductionAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.reproduction = result._doc.reproductionAccepted.reproduction;
-            }
+              if(result._doc.reproductionAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.reproduction = result._doc.reproductionAccepted.reproduction;
+              }
 
-            if(result._doc.annualCyclesAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.annualCycles = result._doc.annualCyclesAccepted.annualCycles;
-            }
+              if(result._doc.annualCyclesAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.annualCycles = result._doc.annualCyclesAccepted.annualCycles;
+              }
 
-            if(result._doc.feedingAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.feeding = result._doc.feedingAccepted.feeding;
-            }
+              if(result._doc.feedingAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.feeding = result._doc.feedingAccepted.feeding;
+              }
 
-            if(result._doc.dispersalAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.dispersal = result._doc.dispersalAccepted.dispersal;
-            }
+              if(result._doc.dispersalAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.dispersal = result._doc.dispersalAccepted.dispersal;
+              }
 
-            if(result._doc.behaviorAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.behavior = result._doc.behaviorAccepted.behavior;
-            }
+              if(result._doc.behaviorAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.behavior = result._doc.behaviorAccepted.behavior;
+              }
 
-            if(result._doc.interactionsAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.interactions = result._doc.interactionsAccepted.interactions;
-            }
+              if(result._doc.interactionsAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.interactions = result._doc.interactionsAccepted.interactions;
+              }
 
-            if(result._doc.molecularDataAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.molecularData = result._doc.molecularDataAccepted.molecularData;
-            }
+              if(result._doc.molecularDataAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.molecularData = result._doc.molecularDataAccepted.molecularData;
+              }
 
-            if(result._doc.migratoryAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.migratory = result._doc.migratoryAccepted.migratory;
-            }
+              if(result._doc.migratoryAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.migratory = result._doc.migratoryAccepted.migratory;
+              }
 
-            if(result._doc.habitatsAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.habitats = result._doc.habitatsAccepted.habitats;
-            }
+              if(result._doc.habitatsAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.habitats = result._doc.habitatsAccepted.habitats;
+              }
 
-            if(result._doc.distributionAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.distribution = result._doc.distributionAccepted.distribution;
-            }
+              if(result._doc.distributionAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.distribution = result._doc.distributionAccepted.distribution;
+              }
 
-            if(result._doc.territoryAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.territory = result._doc.territoryAccepted.territory;
-            }
+              if(result._doc.territoryAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.territory = result._doc.territoryAccepted.territory;
+              }
 
-            if(result._doc.populationBiologyAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.populationBiology = result._doc.populationBiologyAccepted.populationBiology;
-            }
+              if(result._doc.populationBiologyAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.populationBiology = result._doc.populationBiologyAccepted.populationBiology;
+              }
 
-            if(result._doc.moreInformationAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.moreInformation = result._doc.moreInformationAccepted.moreInformation;
-            }
+              if(result._doc.moreInformationAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.moreInformation = result._doc.moreInformationAccepted.moreInformation;
+              }
 
-            if(result._doc.threatStatusAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.threatStatus = result._doc.threatStatusAccepted.threatStatus;
-            }
+              if(result._doc.threatStatusAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.threatStatus = result._doc.threatStatusAccepted.threatStatus;
+              }
 
-            if(result._doc.legislationAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.legislation = result._doc.legislationAccepted.legislation;
-            }
+              if(result._doc.legislationAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.legislation = result._doc.legislationAccepted.legislation;
+              }
 
-            if(result._doc.usesManagementAndConservationAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.usesManagementAndConservation = result._doc.usesManagementAndConservationAccepted.usesManagementAndConservation;
-            }
+              if(result._doc.usesManagementAndConservationAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.usesManagementAndConservation = result._doc.usesManagementAndConservationAccepted.usesManagementAndConservation;
+              }
 
-            if(result._doc.directThreatsAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.directThreats = result._doc.directThreatsAccepted.directThreats;
-            }
+              if(result._doc.directThreatsAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.directThreats = result._doc.directThreatsAccepted.directThreats;
+              }
 
-            if(result._doc.ancillaryDataAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.ancillaryData = result._doc.ancillaryDataAccepted.ancillaryData;
-            }
+              if(result._doc.ancillaryDataAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.ancillaryData = result._doc.ancillaryDataAccepted.ancillaryData;
+              }
 
-            if(result._doc.endemicAtomizedAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.endemicAtomized = result._doc.endemicAtomizedAccepted.endemicAtomized;
-            }
+              if(result._doc.endemicAtomizedAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.endemicAtomized = result._doc.endemicAtomizedAccepted.endemicAtomized;
+              }
 
-            if(result._doc.referencesAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.references = result._doc.referencesAccepted.references;
-            }
+              if(result._doc.referencesAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.references = result._doc.referencesAccepted.references;
+              }
 
-            if(result._doc.environmentalEnvelopeAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.environmentalEnvelope = result._doc.environmentalEnvelopeAccepted.environmentalEnvelope;
-            }
+              if(result._doc.environmentalEnvelopeAccepted == null){
+                console.log("undefined");
+              }else{
+               lastRec.environmentalEnvelope = result._doc.environmentalEnvelopeAccepted.environmentalEnvelope;
+              }
 
-            if(result._doc.ecologicalSignificanceAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.ecologicalSignificance = result._doc.ecologicalSignificanceAccepted.ecologicalSignificance;
-            }
+              if(result._doc.ecologicalSignificanceAccepted == null){
+               console.log("undefined");
+              }else{
+                lastRec.ecologicalSignificance = result._doc.ecologicalSignificanceAccepted.ecologicalSignificance;
+              }
 
-            if(result._doc.invasivenessAccepted == null){
-              console.log("undefined");
-            }else{
-              lastRec.invasiveness = result._doc.invasivenessAccepted.invasiveness;
-            }
-
+              if(result._doc.invasivenessAccepted == null){
+                console.log("undefined");
+              }else{
+                lastRec.invasiveness = result._doc.invasivenessAccepted.invasiveness;
+              }
             res.json(lastRec);
+          }else{
+            res.json("No data");
           }
+      }       
   });
 };
 
@@ -717,18 +732,15 @@ function lastRecord(req, res) {
 };
 
 function getRecordListTest(req, res) {
-
-  //var query = add_objects.RecordVersion.find({}).select('_doc.taxonRecordNameAccepted _id');
-  var query = add_objects.Record.find({}).select('taxonRecordNameAccepted.taxonRecordName.scientificName.simple _id');
+  var query = add_objects.Record.find({}).select('taxonRecordNameAccepted.taxonRecordName.scientificName.simple associatedPartyAccepted.associatedParty _id');
   query.exec(function (err, data) {
     if(err){
       res.json(err);
     }else if(data.length==0){
       res.json({"message" : "No data in the database"});
     }else{
-      console.log("Documents: "+ data[0]);
+      res.json(data);
     }
-
   });
   
 
@@ -865,6 +877,6 @@ module.exports = {
   lastRecord,
   getRecordList,
   lastRecordTest,
-  getRecordListTest
-  
+  getRecordListTest,
+  completeLastRecordTest 
 };

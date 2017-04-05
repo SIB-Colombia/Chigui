@@ -9,8 +9,8 @@ function postMolecularData(req, res) {
   var molecular_data_version  = req.body; 
     molecular_data_version._id = mongoose.Types.ObjectId();
     molecular_data_version.created=Date();
-    //molecular_data_version.state="to_review";
-    molecular_data_version.state="accepted";
+    molecular_data_version.state="to_review";
+    //molecular_data_version.state="accepted";
     var user = molecular_data_version.id_user;
     molecular_data_version.element="molecularData";
     var elementValue = molecular_data_version.molecularData;
