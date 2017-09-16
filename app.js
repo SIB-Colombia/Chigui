@@ -31,21 +31,21 @@ var feeding = require('./routes/feedingRoutes');
 var dispersal = require('./routes/dispersalRoutes');
 var behavior = require('./routes/behaviorRoutes');
 var interactions = require('./routes/interactionsRoutes');
-var molecular_data = require('./routes/molecularData');
-var migratory = require('./routes/migratory');
-var ecological_significance = require('./routes/ecologicalSignificance');
-var environmental_envelope = require('./routes/environmentalEnvelope');
-var invasiveness = require('./routes/invasiveness');
-var habitats = require('./routes/habitats');
-var distribution = require('./routes/distribution');
+var molecular_data = require('./routes/molecularDataRoutes');
+var migratory = require('./routes/migratoryRoutes');
+var ecological_significance = require('./routes/ecologicalSignificanceRoutes');
+var environmental_envelope = require('./routes/environmentalEnvelopeRoutes');
+var invasiveness = require('./routes/invasivenessRoutes');
+var habitats = require('./routes/habitatsRoutes');
+var distribution = require('./routes/distributionRoutes');
 var territory = require('./routes/territoryRoutes');
 var population_biology = require('./routes/populationBiologyRoutes');
-var threat_status = require('./routes/threatStatus');
-var legislation = require('./routes/legislation');
-var uses_management_and_conservation = require('./routes/usesManagementAndConservation');
+var threat_status = require('./routes/threatStatusRoutes');
+var legislation = require('./routes/legislationRoutes');
+var uses_management_and_conservation = require('./routes/usesManagementAndConservationRoutes');
 var ancillary_data = require('./routes/ancillaryDataRoutes');
 var references = require('./routes/referencesRoutes');
-var endemic_atomized = require('./routes/endemicAtomized');
+var endemic_atomized = require('./routes/endemicAtomizedRoutes');
 
 var app = express();
 app.use(compress());
@@ -58,14 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-
-
-
-
-
 
 /*
 
@@ -83,8 +76,8 @@ app.get('/fichas/:id_record/', record.getRecordLast);
 app.post('/fichas/', taxon_record_name.postRecord);
 
 app.get('/lista/', record.getRecordList);
+app.get('/search/tax_author/:ficha_aut_tax', record.search);
 app.get('/record/:id_record/', record.getRecord);
-
 app.post('/fichas/:id_record/more_information/', more_information.postVersion);
 app.get('/fichas/:id_record/more_information/:version', more_information.getVersion);
 app.post('/fichas/:id_record/associated_party/', associated_party.postVersion);
@@ -92,7 +85,6 @@ app.get('/fichas/:id_record/associated_party/:version', associated_party.getVers
 app.post('/fichas/:id_record/direct_threats/', direct_threats.postVersion);
 app.get('/fichas/:id_record/direct_threats/:version', direct_threats.getVersion);
 app.post('/fichas/:id_record/taxon_record_name/', taxon_record_name.postVersion);
-//app.post('/fichas/taxon_record_name/', taxon_record_name.postRecord);
 app.get('/fichas/:id_record/taxon_record_name/:version', taxon_record_name.getVersion);
 app.post('/fichas/:id_record/synonyms_atomized/', synonyms_atomized.postVersion);
 app.get('/fichas/:id_record/synonyms_atomized/:version', synonyms_atomized.getVersion);
@@ -132,13 +124,10 @@ app.post('/fichas/:id_record/ecological_significance/', ecological_significance.
 app.get('/fichas/:id_record/ecological_significance/:version', ecological_significance.getVersion);
 app.post('/fichas/:id_record/environmental_envelope/', environmental_envelope.postVersion);
 app.get('/fichas/:id_record/environmental_envelope/:version', environmental_envelope.getVersion);
-
 app.post('/fichas/:id_record/invasiveness/', invasiveness.postVersion);
 app.get('/fichas/:id_record/invasiveness/:version', invasiveness.getVersion);
-
 app.post('/fichas/:id_record/habitats/', habitats.postVersion);
 app.get('/fichas/:id_record/habitats/:version', habitats.getVersion);
-
 app.post('/fichas/:id_record/territory/', territory.postVersion);
 app.get('/fichas/:id_record/territory/:version', territory.getVersion);
 

@@ -1,0 +1,72 @@
+connection successful to the CatalogoDb
+Number of Records found: 3528
+Scientific name: Acanthella
+Scientific name to search images: Acanthella
+URL to consult: http://eol.org/api/search/1.0.json?q=Acanthella&page=1&exact=true&filter_by_taxon_concept_id=&filter_by_hierarchy_entry_id=&filter_by_string=&cache_ttl=
+API Response Status code: 200
+[ { taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984 },
+  { taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984 } ]
+id_image: [object Object]
+id: 30971984
+taxon: Acanthella
+URL to consult: http://eol.org/api/pages/1.0/30971984.json?images=10&videos=0&sounds=0&maps=0&text=0&iucn=false&subjects=overview&licenses=all&details=true&common_names=false&synonyms=false&references=false&vetted=0&cache_ttl=
+API Response Status code: 200
+[ { url: 'http://media.eol.org/content/2012/01/31/11/05592_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2130243',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' },
+  { url: 'http://media.eol.org/content/2012/01/31/11/97854_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2118017',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' } ]
+id_image: [object Object]
+id: 30971984
+taxon: Acanthella
+URL to consult: http://eol.org/api/pages/1.0/30971984.json?images=10&videos=0&sounds=0&maps=0&text=0&iucn=false&subjects=overview&licenses=all&details=true&common_names=false&synonyms=false&references=false&vetted=0&cache_ttl=
+API Response Status code: 200
+[ { url: 'http://media.eol.org/content/2012/01/31/11/05592_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2130243',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' },
+  { url: 'http://media.eol.org/content/2012/01/31/11/97854_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2118017',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' },
+  { url: 'http://media.eol.org/content/2012/01/31/11/05592_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2130243',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' },
+  { url: 'http://media.eol.org/content/2012/01/31/11/97854_orig.jpg',
+    source: 'http://collections.mnh.si.edu/search/botany/?irn=2118017',
+    imageRights: 'This image was obtained from the Smithsonian Institution. Unless otherwise noted, this image or its contents may be protected by international copyright laws.',
+    rightsHolder: 'Smithsonian Institution, National Museum of Natural History, Department of Botany',
+    taxName: 'Acanthella',
+    taxRecId: 5661f9186752b5394179b668,
+    resultId: 30971984,
+    imageLicense: 'http://creativecommons.org/licenses/by-nc-sa/3.0/' } ]
+All records processed
+{"photos":{"page":1,"pages":1,"perpage":100,"total":"17","photo":[{"id":"16409226889","owner":"98788120@N02","secret":"09092081be","server":"7358","farm":8,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"16006565205","owner":"98771984@N05","secret":"aa5c75fbde","server":"8610","farm":9,"title":"TULV16940 Maclura tinctoria (L.) D.Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15997932472","owner":"98788120@N02","secret":"dc6f7da258","server":"7463","farm":8,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15752697118","owner":"98787512@N02","secret":"fbd25bce76","server":"7580","farm":8,"title":"Maclura tinctoria (L.) D. Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15752675718","owner":"98787512@N02","secret":"04b46f96d7","server":"7582","farm":8,"title":"Maclura tinctoria (L.) D. Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15938143731","owner":"98787512@N02","secret":"8deb796541","server":"8569","farm":9,"title":"Maclura tinctoria (L.) D. Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15643205999","owner":"98787512@N02","secret":"0fa591470f","server":"7570","farm":8,"title":"Maclura tinctoria (L.) D. Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15799841086","owner":"98787512@N02","secret":"044c35d8a7","server":"7513","farm":8,"title":"Maclura tinctoria (L.) D. Don ex Steud.","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15276407947","owner":"98115610@N03","secret":"2afcbc1c4b","server":"5601","farm":6,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"15126359826","owner":"98788120@N02","secret":"0518c2398e","server":"5584","farm":6,"title":"Maclura  tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"14382662655","owner":"98115610@N03","secret":"01223cea6d","server":"5320","farm":6,"title":"Maclura tinctoria subsp. tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"14382632365","owner":"98115610@N03","secret":"c4200ebd6c","server":"3890","farm":4,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"14359529876","owner":"98115610@N03","secret":"00d7de2148","server":"5593","farm":6,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"14284070276","owner":"109886592@N04","secret":"e229e3b455","server":"2913","farm":3,"title":"Maclura tinctoria","ispublic":1,"isfriend":0,"isfamily":0},{"id":"11857540776","owner":"98115610@N03","secret":"f5624376c0","server":"7324","farm":8,"title":"FMB91748","ispublic":1,"isfriend":0,"isfamily":0},{"id":"11856547655","owner":"98115610@N03","secret":"93e3f5aaa8","server":"2860","farm":3,"title":"FMB19531","ispublic":1,"isfriend":0,"isfamily":0},{"id":"11856786946","owner":"98115610@N03","secret":"cf6b6209c0","server":"3771","farm":4,"title":"FMB95514","ispublic":1,"isfriend":0,"isfamily":0}]},"stat":"ok"}

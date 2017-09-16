@@ -29,7 +29,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
         		var input = fs.createReadStream("/home/inaturalist/Desktop/TAX.csv");
         		var parser = parse({delimiter: ','});
         		parser.on('readable', function(){
-  					while(record == parser.read()){
+  					while(record = parser.read()){
     					scNames.push(record);
   					}
 				});
@@ -140,7 +140,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
             						var ver = 1;
             						ob_ids.push(id_v);
             						taxon_record_name_version.taxonRecordName = taxonRecordName;
-            						if(typeof  taxon_record_name_version.taxonRecordName!="undefined" && taxon_record_name_version.taxonRecordName!=""){
+            						if(typeof  taxon_record_name_version.taxonRecordName!=="undefined" && taxon_record_name_version.taxonRecordName!=""){
             							newRecordModel.create({ _id:id_rc, taxonRecordNameVersion: ob_ids },function(err, doc){
             								if(err){
             									console.log("Saving taxonRecordName Error!: "+err+" id_record: "+id_rc);

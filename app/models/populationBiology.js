@@ -64,15 +64,15 @@ var PopulationBiologyAtomized = Element.extend({
 	carryingCapacity : {
 		measurementValue : String
 	}
-});
+}, {versionKey: false});
 
 var PopulationBiology = Element.extend({
 	populationBiologyAtomized: [PopulationBiologyAtomized],
 	populationBiologyUnstructured : String
-},{collection: 'populationBiology'});
+},{collection: 'populationBiology', versionKey: false});
 
 var PopulationBiologyVersion = ElementVersion.extend({
 	populationBiology : PopulationBiology
-},{ collection: 'PopulationBiologyVersion' });
+},{ collection: 'PopulationBiologyVersion', versionKey: false });
 
 module.exports = mongoose.model('PopulationBiologyVersion', PopulationBiologyVersion );

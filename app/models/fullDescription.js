@@ -14,12 +14,12 @@ var FullDescriptionAtomized = new Schema ({
 },{ versionKey: false });
 
 var FullDescription = Element.extend({
-	fullDescriptionAtomized : FullDescriptionAtomized,
+	fullDescriptionAtomized : [FullDescriptionAtomized],
 	fullDescriptionUnstructured : String
 },{ versionKey: false });
 
 var FullDescriptionVersion = ElementVersion.extend({
 	fullDescription : FullDescription
-},{ collection: 'FullDescription', versionKey: false });
+},{ collection: 'FullDescriptionVersion', versionKey: false });
 
 module.exports = mongoose.model('FullDescriptionVersion', FullDescriptionVersion );

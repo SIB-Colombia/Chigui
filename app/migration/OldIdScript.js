@@ -10,7 +10,6 @@ var add_objects = require('../models/additionalModels.js');
 var parse = require('csv-parse');
 var rest = require('restler');
 var Schema = mongoose.Schema;
-var fs = require("fs");
 
 function ScriptException(message) {
    this.message = message;
@@ -55,20 +54,15 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           			TaxonRecordNameVersionModel.findOne({'taxonRecordName.scientificName.canonicalName.simple': taxName }, function(err, tax_record){
           				if(err){
           					console.log("Error finding scientificName in the database!: " + taxName);
-							      throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
+							throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           				}else{
           					if(tax_record){
+          						console.log(taxID);
           						var id_record = tax_record.id_record;
-                      console.log("Id of the record: "+id_record);
-                      console.log("Id legacy: "+taxID);
-
-          						newRecordModel.findByIdAndUpdate(id_record, {"legacy_id":taxID }, {safe: true}, function(err, record){
-                      //newRecordModel.update({_id: id_record }, {"legacy_id":taxID },function(err, record){
-                      //newRecordModel.findOne({ _id : id_record }).update({ legacy_id : taxID }).exec(function (err, record) {
-                        //console.log(record);
+          						newRecordModel.findByIdAndUpdate(id_record, {"legacy_id":taxID }, {safe: true},function(err, record){
           							if(err){
           								console.log("Error finding scientificName in the database!: " + taxName);
-										      throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
+										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{
           								console.log("Updated RecordVersion: " + record.id);
           								console.log("Id ficha: " + record.id + " " + id_record);
@@ -78,7 +72,6 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           						});
           					}else{
           						console.log("Does not exist record with that scientificName");
-                      fs.appendFileSync("./missing_names.txt", taxName.toString() + "\n");
           						callback();
           					}
           				}

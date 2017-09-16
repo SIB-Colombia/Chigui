@@ -60,8 +60,8 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
 										throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           							}else{	
           								console.log("Number of Records finded: " + records.length);
-          								//if(records.length > 0){
-          								if(false){
+          								if(records.length > 0){
+          								//if(false){
           									//throw error to end the the function
           									try{
           										throw new ScriptException("ScriptException for: " + taxName);
@@ -88,12 +88,12 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           										taxonRecordName.scientificName.canonicalName = {};
           										taxonRecordName.scientificName.canonicalAuthorship = {};
           										taxonRecordName.scientificName.publishedln = {};
-  												taxonRecordName.scientificName.simple = (data.results[0].scientificName !== undefined) ? data.results[0].scientificName : '';
-												taxonRecordName.scientificName.rank = (data.results[0].rank !== undefined) ? data.results[0].rank : '';
-												taxonRecordName.scientificName.canonicalName.simple = (data.results[0].canonicalName !== undefined) ? data.results[0].canonicalName : '';
-												taxonRecordName.scientificName.canonicalAuthorship.simple = (data.results[0].authorship !== undefined) ? data.results[0].authorship : '';
-												taxonRecordName.scientificName.publishedln.simple = (data.results[0].publishedIn !== undefined) ? data.results[0].publishedIn : '';
-												callback(null, data, taxonRecordName);
+  												    taxonRecordName.scientificName.simple = (data.results[0].scientificName !== undefined) ? data.results[0].scientificName : '';
+												      taxonRecordName.scientificName.rank = (data.results[0].rank !== undefined) ? data.results[0].rank : '';
+												      taxonRecordName.scientificName.canonicalName.simple = (data.results[0].canonicalName !== undefined) ? data.results[0].canonicalName : '';
+												      taxonRecordName.scientificName.canonicalAuthorship.simple = (data.results[0].authorship !== undefined) ? data.results[0].authorship : '';
+												      taxonRecordName.scientificName.publishedln.simple = (data.results[0].publishedIn !== undefined) ? data.results[0].publishedIn : '';
+												      callback(null, data, taxonRecordName);
           									}else{
           										console.log("No results for the name: " + taxName + "In the GBIF API");
           										try{

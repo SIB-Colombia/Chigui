@@ -26,7 +26,7 @@ var CatalogoDb = mongoose.createConnection('mongodb://localhost:27017/catalogoDb
           				console.log("Error finding scientificName in the database!: " + taxName);
 						throw new ScriptException("Error finding scientific Name in the database!: " + taxName);
           			}else{
-          				console.log("Number of Records finded: " + records.length);
+          				console.log("Number of Records found: " + records.length);
           				if(records.length > 0){
           					callback(null, records);
           				}else{

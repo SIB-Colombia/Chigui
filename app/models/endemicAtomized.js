@@ -9,10 +9,10 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 var EndemicAtomized = Element.extend({
 	endemicTo: [String],
 	endemicIn : String,
-},{collection: 'endemicAtomized'});
+},{ collection: 'endemicAtomized', versionKey: false });
 
 var EndemicAtomizedVersion = ElementVersion.extend({
 	endemicAtomized : [EndemicAtomized]
-},{ collection: 'EndemicAtomizedVersion' });
+},{ collection: 'EndemicAtomizedVersion', versionKey: false });
 
 module.exports = mongoose.model('EndemicAtomizedVersion', EndemicAtomizedVersion );

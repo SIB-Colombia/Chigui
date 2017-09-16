@@ -8,7 +8,7 @@ var Reference = new Schema ({
 	created : {type: Date, default: Date.now},
 	last_modified : {type: Date, default: Date.now},
 	identifiers : [String],
-	abstractText : String,
+	abstract : String,
 	tags : String,
 	type : String,
 	source : String,
@@ -22,8 +22,9 @@ var Reference = new Schema ({
 	series : String,
 	chapter : String,
 	websites : String,
-	accesed : String,
+	accessed : String,
 	publisher : String,
+	address : String,
 	city : String, 
 	edition : String,
 	institution : String,
@@ -34,7 +35,7 @@ var Reference = new Schema ({
 	issn : String,
 	link : String,
 	recordId : String
-},{ collection: 'Reference' });
+},{ collection: 'Reference', versionKey: false });
 
 var Agent = new Schema({
 	firstName: String,
@@ -52,15 +53,16 @@ var Agent = new Schema({
 	personnelDirectory : String,
 	personnelIdentifier : String,
 	role: String
-});
+}, { versionKey: false });
 
 var AncillaryData = new Schema({
 	//identifier : String,
 	dataType : String,
-	mimeType : String,
+	mimeType : String, 
 	agent: [Agent],
-	created : {type: Date, default: Date.now },
-	modified : {type: Date, default: Date.now },
+	created : { type: Date },
+	modified : { type: Date },
+	title : String,
 	license : String,
 	rights  : String,
 	rightsHolder : String,
@@ -76,7 +78,7 @@ var AncillaryData = new Schema({
 	additionalInformation : String,
 	dataObject: String,
 	reference : [Reference]
-},{ collection: 'ancillaryData' });
+},{ collection: 'ancillaryData', versionKey: false });
 
 /*
 var Element = new Schema ({
@@ -86,7 +88,7 @@ var Element = new Schema ({
 
 var Element = new Schema ({
 	ancillaryData : [AncillaryData]
-});
+}, { versionKey: false });
 
 var ElementVersion = new Schema ({
 	id_record : { type: Schema.Types.ObjectId, ref: 'RecordVersion' },
@@ -99,7 +101,6 @@ var ElementVersion = new Schema ({
 
 var RecordVersion = new Schema({
 	language : String,
-	legacy_id : String,
 	moreInformationVersion : [{ type: Schema.Types.ObjectId, ref: 'MoreInformationVersion' }],
 	associatedPartyVersion : [{ type: Schema.Types.ObjectId, ref: 'AssociatedPartyVersion' }],
 	directThreatsVersion : [{ type: Schema.Types.ObjectId, ref: 'DirectThreatsVersion' }],
@@ -135,7 +136,7 @@ var RecordVersion = new Schema({
 	referencesVersion : [{ type: Schema.Types.ObjectId, ref: 'ReferencesVersion' }],
 	ancillaryDataVersion : [{ type: Schema.Types.ObjectId, ref: 'AncillaryDataVersion' }],
 	endemicAtomizedVersion : [{ type: Schema.Types.ObjectId, ref: 'EndemicAtomizedVersion' }]
-}, { collection: 'RecordVersion' });
+}, { collection: 'RecordVersion', versionKey: false });
 
 var MeasurementOrFact = new Schema({
 	measurementID : String,
@@ -148,7 +149,7 @@ var MeasurementOrFact = new Schema({
 	measurementMethod : String,
 	measurementRemarks : String,
 	relatedTo : String
-},{ collection : 'measurementOrFact'});
+},{ collection : 'measurementOrFact', versionKey: false});
 
 
 

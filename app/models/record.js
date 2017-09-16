@@ -1,7 +1,4 @@
-var mongoose = require('mongoose');
-var mongoosePaginate = require('mongoose-paginate');
-//var searchable = require('mongoose-searchable');
-//var textSearch = require('mongoose-text-search');
+var mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
 var recordSchema = new Schema({name:String}, { strict: false, versionKey: false });
@@ -13,5 +10,6 @@ Version
 Revision
 taxonRecordName
 */
+
 
 module.exports = mongoose.model('Record', recordSchema);

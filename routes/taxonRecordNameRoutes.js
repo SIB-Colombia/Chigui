@@ -1,4 +1,5 @@
 var express = require('express');
+var async = require('async');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
@@ -12,7 +13,6 @@ exports.postVersion = function(req, res) {
   var taxon_record_name_version  = req.body; 
   taxon_record_name_version._id = mongoose.Types.ObjectId();
   taxon_record_name_version.created=Date();
-  taxon_record_name_version.state="accepted";
   taxon_record_name_version.element="taxonRecordName";
   var eleValue = taxon_record_name_version.taxonRecordName;
   taxon_record_name_version = new TaxonRecordNameVersion(taxon_record_name_version);
@@ -23,41 +23,86 @@ exports.postVersion = function(req, res) {
   var ob_ids= new Array();
   ob_ids.push(id_v);
 
-  console.log("ID Ficha: "+id_rc);
+  var ver = "";
 
   if(typeof  id_rc!=="undefined" && id_rc!=""){
     if(typeof  eleValue!=="undefined" && eleValue!=""){
-    add_objects.RecordVersion.count({ _id : id_rc }, function (err, count){ 
-      if(typeof count!=="undefined"){
-      if(count==0){
-        res.json({message: "The Record (Ficha) with id: "+id_rc+" doesn't exist."});
-      }else{
-       add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "taxonRecordNameVersion": id_v } },{safe: true, upsert: true},function(err, doc) {
-          if (err){
-              res.status(406);
-              res.send(err);
-          }
-          taxon_record_name_version.id_record=id_rc;
-          taxon_record_name_version.version=doc.taxonRecordNameVersion.length+1;
-          var ver = taxon_record_name_version.version;
+      async.waterfall([
+        function(callback){ 
+          add_objects.RecordVersion.findById(id_rc , function (err, data){
+            if(err){
+              //callback(new Error("failed getting something!:" + err.message));
+              callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist.:" + err.message));
+            }else{
+              callback(null, data);
+            }
+          });
+        },
+        function(data,callback){ 
+          if(data){
+            var lentaxonRecordName = data.taxonRecordNameVersion.length;
+            if( lentaxonRecordName !=0 ){
+              var idLast = data.taxonRecordNameVersion[lentaxonRecordName-1];
+              TaxonRecordNameVersion.findById(idLast , function (err, doc){
+                if(err){
+                  callback(new Error("failed getting the last version of taxonRecordNameVersion:" + err.message));
+                }else{
+                  var prev = doc.taxonRecordName;
+                  var next = taxon_record_name_version.taxonRecordName;
+                  //if(!compare.isEqual(prev,next)){ //TODO
+                  if(true){
+                    taxon_record_name_version.id_record=id_rc;
+                    taxon_record_name_version.version=lentaxonRecordName+1;
+                    callback(null, taxon_record_name_version);
+                  }else{
+                    callback(new Error("The data in taxonRecordName is equal to last version of this element in the database"));
+                  }
+                }
+              }); 
+            }else{
+              taxon_record_name_version.id_record=id_rc;
+              taxon_record_name_version.version=1;
+              callback(null, taxon_record_name_version);
+            }
+        }else{
+          callback(new Error("The Record (Ficha) with id: "+id_rc+" doesn't exist."));
+        }
+      },
+      function(taxon_record_name_version, callback){ 
+          ver = taxon_record_name_version.version;
           taxon_record_name_version.save(function(err){
             if(err){
-              res.status(406);
-              res.send(err);
+              callback(new Error("failed saving the element version:" + err.message));
             }else{
-              res.json({ message: 'Save TaxonRecordNameVersion', element: 'TaxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+              callback(null, taxon_record_name_version);
             }
-         });
-        });
+          });
+      },
+      function(taxon_record_name_version, callback){ 
+          add_objects.RecordVersion.findByIdAndUpdate( id_rc, { $push: { "taxonRecordNameVersion": id_v } },{ safe: true, upsert: true }).exec(function (err, record) {
+            if(err){
+              callback(new Error("failed added id to RecordVersion:" + err.message));
+            }else{
+              callback();
+            }
+          });
       }
-      }else{
-        res.json({message: "Empty Database"});
-      }
-   });
+      ],function(err, result) {
+          if (err) {
+            console.log("Error: "+err);
+            res.status(406);
+            res.json({ message: ""+err });
+          }else{
+            res.json({ message: 'Save TaxonRecordNameVersion', element: 'taxonRecordName', version : ver, _id: id_v, id_record : id_rc });
+          }
+        }
+      );
    }else{
+    res.status(406);
     res.json({message: "Empty data in version of the element"});
    } 
   }else{
+    res.status(406);
     res.json({message: "The url doesn't have the id for the Record (Ficha)"});
   }
 };

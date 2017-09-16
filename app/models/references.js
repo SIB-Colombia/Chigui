@@ -10,6 +10,6 @@ var RecordVersion = require('mongoose').model('RecordVersion').schema;
 
 var ReferencesVersion = ElementVersion.extend({
 	references : [Reference]
-}, { collection: 'ReferencesVersion'});
+}, { collection: 'ReferencesVersion', versionKey: false });
 
 module.exports = mongoose.model( 'ReferencesVersion', ReferencesVersion );

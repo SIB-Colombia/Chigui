@@ -2,10 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoDB = require('../config/server');
 var mongoose = require('mongoose');
-var mongoosePaginate = require('mongoose-paginate');
-var textSearch = require('mongoose-text-search');
 var Record = require('../app/models/record.js');
-Object.assign = require('object-assign');
 
 //var schemaFicha = new mongoose.Schema({name:'string'},{ strict: false });
 //var Ficha = mongoose.model('Ficha', schemaFicha);
@@ -35,4 +32,3 @@ router.get('/:ficha_id', function(req, res) {
 
 
 module.exports = router;
-

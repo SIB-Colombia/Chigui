@@ -19,15 +19,15 @@ var LegislationAtomized = Element.extend({
 		municipality : String,
 		locality : String
 	}
-});
+}, { versionKey: false });
 
 var Legislation = Element.extend({
 	legislationAtomized : [LegislationAtomized],
 	legislationUnstructured : String
-},{collection: 'legislation'});
+},{collection: 'legislation', versionKey: false});
 
 var LegislationVersion = ElementVersion.extend({
 	legislation : Legislation
-},{ collection: 'LegislationVersion' });
+},{ collection: 'LegislationVersion', versionKey: false });
 
 module.exports = mongoose.model('LegislationVersion', LegislationVersion );

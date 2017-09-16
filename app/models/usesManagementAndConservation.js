@@ -48,7 +48,7 @@ var ManagementAndConservation = Element.extend({
 var UsesManagementAndConservation = Element.extend({
 	usesAtomized : [UsesAtomized],
 	managementAndConservation : ManagementAndConservation
-},{collection: 'UsesManagementAndConservation', strict: false });
+},{collection: 'UsesManagementAndConservation', strict: false, versionKey: false });
 
 /*
 var UsesManagementAndConservationVersion = ElementVersion.extend({
@@ -58,6 +58,6 @@ var UsesManagementAndConservationVersion = ElementVersion.extend({
 
 var UsesManagementAndConservationVersion = new Schema({
 	name : String
-},{ collection: 'UsesManagementAndConservationVersion', strict: false });
+},{ collection: 'UsesManagementAndConservationVersion', strict: false, versionKey: false });
 
 module.exports = mongoose.model('UsesManagementAndConservationVersion', UsesManagementAndConservationVersion );
